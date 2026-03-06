@@ -1,0 +1,66 @@
+$bg-primary: #0A0A1A;
+$bg-secondary: #12122A;
+$bg-card: #1A1A3E;
+$bg-card-hover: #222255;
+
+$accent-gold: #D4AF37;
+$accent-purple: #8B5CF6;
+$accent-blue: #3B82F6;
+$accent-pink: #EC4899;
+$accent-green: #10B981;
+
+$text-primary: #F5F5F5;
+$text-secondary: #A0A0C0;
+$text-gold: #FFD700;
+$text-muted: #6B6B8D;
+
+$glow-purple: rgba(139, 92, 246, 0.3);
+$glow-gold: rgba(212, 175, 55, 0.3);
+$glow-blue: rgba(59, 130, 246, 0.3);
+$glow-pink: rgba(236, 72, 153, 0.3);
+
+$gradient-mystical: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+$gradient-gold: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
+$gradient-dark: linear-gradient(180deg, #0A0A1A 0%, #12122A 100%);
+$gradient-card: linear-gradient(145deg, #1A1A3E 0%, #0F0F2D 100%);
+
+$font-display: 'Cinzel Decorative', serif;
+$font-body: 'Inter', sans-serif;
+$font-accent: 'Playfair Display', serif;
+
+$radius-sm: 8px;
+$radius-md: 12px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+$radius-full: 9999px;
+
+$shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+$shadow-glow-gold: 0 0 20px rgba(212, 175, 55, 0.3);
+$shadow-glow-purple: 0 0 20px rgba(139, 92, 246, 0.3);
+
+$z-particles: 0;
+$z-content: 1;
+$z-nav: 100;
+$z-modal: 200;
+$z-overlay: 300;
+
+$nav-height: 70px;
+$header-height: 56px;
+
+@mixin glass($opacity: 0.1) {
+  background: rgba(26, 26, 62, $opacity);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@mixin glow($color: $accent-gold, $size: 20px) {
+  box-shadow: 0 0 $size rgba($color, 0.3);
+}
+
+@mixin text-gradient($gradient: $gradient-mystical) {
+  background: $gradient;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}

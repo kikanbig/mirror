@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(uuid())
+  telegramId      BigInt    @unique
+  username        String?
+  firstName       String?
+  birthDate       DateTime?
+  birthTime       String?
+  birthPlace      String?
+  zodiacSign      String?
+  lifePathNumber  Int?
+  soulNumber      Int?
+  destinyNumber   Int?
+  level           Int       @default(1)
+  experience      Int       @default(0)
+  streak          Int       @default(0)
+  lastActiveDate  DateTime?
+  premiumUntil    DateTime?
+  interests       String[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  readings        Reading[]
+  journalEntries  JournalEntry[]
+  dailyCards      DailyCard[]
+}
+
+model Reading {
+  id              String      @id @default(uuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id])
+  type            ReadingType
+  spreadType      String
+  question        String?
+  cards           Json
+  interpretation  String?
+  userNotes       String?
+  mood            String?
+  area            String?
+  isBookmarked    Boolean     @default(false)
+  createdAt       DateTime    @default(now())
+}
+
+model DailyCard {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  cardId          String
+  reversed        Boolean
+  interpretation  String?
+  date            DateTime @db.Date
+  createdAt       DateTime @default(now())
+
+  @@unique([userId, date])
+}
+
+model JournalEntry {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  readingId String?
+  content   String
+  mood      String?
+  tags      String[]
+  createdAt DateTime @default(now())
+}
+
+enum ReadingType {
+  TAROT
+  RUNES
+  ORACLE
+}

@@ -1,0 +1,74 @@
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: rgba(10, 10, 26, 0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+.tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  flex: 1;
+  height: 100%;
+  position: relative;
+  transition: color 0.3s;
+  color: $text-muted;
+
+  &.active {
+    color: $accent-gold;
+  }
+}
+
+.icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.indicator {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 2px;
+  background: $accent-gold;
+  border-radius: 0 0 4px 4px;
+}
+
+.center {
+  flex: 1.2;
+}
+
+.centerBtn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $accent-gold, #b8860b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -20px;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+
+.centerIcon {
+  font-size: 1.4rem;
+}

@@ -1,0 +1,170 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.title {
+  font-family: $font-display;
+  font-size: 1.3rem;
+  color: $accent-gold;
+}
+
+.date {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  text-transform: capitalize;
+}
+
+.cardArea {
+  perspective: 1000px;
+  margin: 8px 0;
+}
+
+.cardBack, .cardFront {
+  width: 160px;
+  height: 250px;
+  border-radius: $radius-lg;
+  cursor: pointer;
+}
+
+.cardBack {
+  background: linear-gradient(145deg, #1a1a4e, #2d1b69);
+  border: 2px solid $accent-gold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+}
+
+.backInner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.backStar {
+  color: $accent-gold;
+  font-size: 1.8rem;
+  opacity: 0.7;
+}
+
+.backLabel {
+  font-family: $font-accent;
+  font-size: 0.7rem;
+  color: $text-secondary;
+  text-align: center;
+  max-width: 100px;
+}
+
+.cardFront {
+  background: $gradient-card;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.frontInner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px;
+}
+
+.cardNumber {
+  font-family: $font-display;
+  font-size: 3rem;
+  color: $accent-gold;
+  font-weight: 700;
+}
+
+.cardNameRu {
+  font-family: $font-accent;
+  font-size: 0.95rem;
+  color: $text-primary;
+  text-align: center;
+}
+
+.suitIcon {
+  font-size: 1.5rem;
+}
+
+.reversedLabel {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(236, 72, 153, 0.8);
+  color: white;
+  font-size: 0.6rem;
+  padding: 2px 8px;
+  border-radius: $radius-sm;
+  font-weight: 600;
+}
+
+.reading {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.keywords {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.keyword {
+  background: rgba(139, 92, 246, 0.15);
+  color: $accent-purple;
+  font-size: 0.7rem;
+  padding: 4px 10px;
+  border-radius: $radius-full;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.meaning {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.advice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(212, 175, 55, 0.08);
+  border-radius: $radius-md;
+  border-left: 3px solid $accent-gold;
+
+  p {
+    font-size: 0.8rem;
+    color: $text-primary;
+    line-height: 1.5;
+  }
+}
+
+.adviceIcon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.affirmation {
+  font-family: $font-accent;
+  font-style: italic;
+  font-size: 0.85rem;
+  color: $accent-gold;
+  text-align: center;
+  padding: 8px 0;
+  opacity: 0.8;
+}

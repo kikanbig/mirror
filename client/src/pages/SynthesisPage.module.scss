@@ -1,0 +1,67 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.icon { font-size: 3rem; }
+
+.title {
+  font-family: $font-display;
+  font-size: 1.3rem;
+  color: $accent-gold;
+}
+
+.description {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  line-height: 1.6;
+  max-width: 320px;
+}
+
+.features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(26, 26, 62, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: $radius-lg;
+  font-size: 0.8rem;
+  color: $text-primary;
+
+  span:first-child { font-size: 1.3rem; }
+}
+
+.btn {
+  width: 100%;
+  max-width: 300px;
+  padding: 14px;
+  background: linear-gradient(135deg, $accent-purple, #6d28d9);
+  color: white;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: $radius-lg;
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+}
+
+.hint {
+  font-size: 0.7rem;
+  color: $text-muted;
+}
