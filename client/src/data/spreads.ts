@@ -31,7 +31,7 @@ export const spreads: Spread[] = [
       },
     ],
     isPremium: false,
-    icon: '🃏',
+    icon: '/icons/icon_spread_single.webp',
     category: 'general',
   },
   {
@@ -58,7 +58,7 @@ export const spreads: Spread[] = [
       },
     ],
     isPremium: false,
-    icon: '🔮',
+    icon: '/icons/icon_spread_three.webp',
     category: 'general',
   },
   {
@@ -75,7 +75,7 @@ export const spreads: Spread[] = [
       },
     ],
     isPremium: false,
-    icon: '⚖️',
+    icon: '/icons/icon_spread_yesno.webp',
     category: 'general',
   },
   {
@@ -137,7 +137,7 @@ export const spreads: Spread[] = [
       },
     ],
     isPremium: true,
-    icon: '✝️',
+    icon: '/icons/icon_spread_celtic.webp',
     category: 'general',
   },
   {
@@ -174,7 +174,7 @@ export const spreads: Spread[] = [
       },
     ],
     isPremium: true,
-    icon: '💕',
+    icon: '/icons/icon_spread_love.webp',
     category: 'love',
   },
   {
@@ -211,7 +211,7 @@ export const spreads: Spread[] = [
       },
     ],
     isPremium: true,
-    icon: '💼',
+    icon: '/icons/icon_spread_career.webp',
     category: 'career',
   },
   {
@@ -258,7 +258,7 @@ export const spreads: Spread[] = [
       },
     ],
     isPremium: true,
-    icon: '📅',
+    icon: '/icons/icon_spread_week.webp',
     category: 'general',
   },
 ];

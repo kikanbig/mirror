@@ -43,7 +43,13 @@
   }
 }
 
-.spreadIcon { font-size: 1.8rem; }
+.spreadIcon {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: 12px;
+  filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.3));
+}
 .spreadName { font-size: 0.8rem; color: $text-primary; font-weight: 600; }
 .spreadCount { font-size: 0.65rem; color: $text-muted; }
 

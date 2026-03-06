@@ -1,0 +1,40 @@
+---
+description: Railway deployment safety rules to prevent deploying to the wrong service
+alwaysApply: true
+---
+
+# Railway Deployment Safety
+
+This project has TWO Railway services — deploying to the wrong one will break the database.
+
+## Service Map
+
+| Service name | Service ID | Role |
+|---|---|---|
+| **app** | `4f0ce83b-856e-4b69-9e5e-e0c8b1782a12` | Node.js server + client (Dockerfile) |
+| **Postgres** | `3d7121f3-fcc2-45fa-8dac-b074a769c187` | PostgreSQL database (image: `ghcr.io/railwayapp-templates/postgres-ssl:17`) |
+
+## Before ANY Railway Deploy
+
+1. **Always run `railway status`** and verify `Service: app` is shown
+2. If it shows `Service: Postgres` — run `railway service app` first
+3. **Never use `railway up` or MCP deploy without confirming the linked service**
+4. The Postgres service must NEVER receive a Dockerfile deploy — it uses an image-based deploy
+
+## If Postgres Gets Corrupted
+
+Use the Railway GraphQL API to rollback:
+
+```bash
+curl -s -X POST https://backboard.railway.app/graphql/v2 \
+  -H "Authorization: Bearer $RAILWAY_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"mutation { deploymentRollback(id: \"ORIGINAL_DEPLOYMENT_ID\") }"}'
+```
+
+`serviceInstanceRedeploy` will NOT fix it because it reuses the broken deployment's cached config. Only `deploymentRollback` to a known-good deployment works.
+
+## Project IDs
+
+- Project: `42a56b4b-21f0-477f-84eb-a332ceba3a9a`
+- Environment: `9f8391bb-b347-407f-bf22-b04f111b3ad0` (production)

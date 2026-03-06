@@ -89,26 +89,16 @@ export default function JournalPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className={styles.emptyIllustration}>
-            <motion.svg
-              width="64" height="64" viewBox="0 0 64 64" fill="none"
-              animate={{ y: [0, -4, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <rect x="16" y="8" width="24" height="36" rx="4" stroke="rgba(212,175,55,0.4)" strokeWidth="1.5" />
-              <rect x="24" y="16" width="24" height="36" rx="4" stroke="rgba(139,92,246,0.3)" strokeWidth="1.5" />
-              <circle cx="32" cy="52" r="3" fill="rgba(212,175,55,0.3)" />
-              <circle cx="20" cy="5" r="1.5" fill="rgba(212,175,55,0.4)">
-                <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite" />
-              </circle>
-              <circle cx="48" cy="12" r="1" fill="rgba(139,92,246,0.5)">
-                <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" />
-              </circle>
-              <circle cx="40" cy="4" r="1.5" fill="rgba(255,215,0,0.4)">
-                <animate attributeName="opacity" values="0.2;0.8;0.2" dur="2.5s" repeatCount="indefinite" />
-              </circle>
-            </motion.svg>
-          </div>
+          <motion.img
+            className={styles.emptyIllustration}
+            src="/icons/icon_journal_empty.webp"
+            alt=""
+            width={140}
+            height={140}
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            style={{ filter: 'drop-shadow(0 0 16px rgba(139,92,246,0.3))' }}
+          />
           <p className={styles.emptyText}>
             {readings.length === 0 ? 'Ваш дневник пока пуст' : 'Нет записей в этой категории'}
           </p>

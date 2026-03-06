@@ -142,43 +142,13 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
           <div className={styles.glowOrb} />
 
           <div className={styles.logoContainer}>
-            <svg className={styles.logoSvg} viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              {/* Outer eye shape */}
-              <path
-                className={styles.logoPath}
-                d="M10 50 Q30 20 50 20 Q70 20 90 50 Q70 80 50 80 Q30 80 10 50 Z"
-              />
-              {/* Inner iris */}
-              <circle
-                className={styles.logoPath}
-                cx="50" cy="50" r="15"
-                style={{ animationDelay: '0.5s' }}
-              />
-              {/* Pupil */}
-              <circle
-                className={`${styles.logoFill}`}
-                cx="50" cy="50" r="7"
-                fill="#D4AF37"
-              />
-              {/* Light reflection */}
-              <circle
-                className={styles.logoFill}
-                cx="44" cy="45" r="2.5"
-                fill="rgba(255,255,255,0.8)"
-                style={{ animationDelay: '1.6s' }}
-              />
-              {/* Decorative rays */}
-              <path
-                className={styles.logoPath}
-                d="M50 5 L50 15 M50 85 L50 95 M5 50 L15 50 M85 50 L95 50"
-                style={{ animationDelay: '0.8s' }}
-              />
-              <path
-                className={styles.logoPath}
-                d="M18 18 L25 25 M75 75 L82 82 M82 18 L75 25 M25 75 L18 82"
-                style={{ animationDelay: '1s' }}
-              />
-            </svg>
+            <img
+              className={styles.logoImg}
+              src="/icons/icon_splash_logo.webp"
+              alt="Зеркало Судьбы"
+              width={160}
+              height={160}
+            />
           </div>
 
           <div className={styles.titleContainer}>

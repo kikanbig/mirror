@@ -213,13 +213,15 @@ export default function SynthesisPage() {
         {phase === 'intro' && (
           <motion.div key="intro" className={styles.intro} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className={styles.header}>
-              <motion.span
+              <motion.img
                 className={styles.icon}
+                src="/icons/icon_synthesis.webp"
+                alt=""
+                width={48}
+                height={48}
                 animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 3, repeat: Infinity }}
-              >
-                &#10024;
-              </motion.span>
+              />
               <h1 className={styles.title}>Синтез Судьбы</h1>
             </div>
             <p className={styles.description}>

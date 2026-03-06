@@ -60,14 +60,15 @@ export default function HomePage() {
           className={styles.streak}
           variants={fadeUp}
         >
-          <span className={styles.streakFire}>
-            <motion.span
-              animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
-            >
-              &#128293;
-            </motion.span>
-          </span>
+          <motion.img
+            className={styles.streakFire}
+            src="/icons/icon_streak_fire.webp"
+            alt=""
+            width={28}
+            height={28}
+            animate={{ scale: [1, 1.15, 1], rotate: [0, 5, -5, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
           <span>
             Серия: {profile.streak} {profile.streak === 1 ? 'день' : profile.streak < 5 ? 'дня' : 'дней'}
           </span>

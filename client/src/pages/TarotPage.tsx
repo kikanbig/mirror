@@ -200,7 +200,7 @@ export default function TarotPage() {
                   whileTap={{ scale: 0.96 }}
                   onClick={() => handleSelectSpread(s.id)}
                 >
-                  <span className={styles.spreadIcon}>{s.icon}</span>
+                  <img className={styles.spreadIcon} src={s.icon} alt={s.name} />
                   <span className={styles.spreadName}>{s.name}</span>
                   <span className={styles.spreadCount}>
                     {s.cardCount} {s.cardCount === 1 ? 'карта' : s.cardCount < 5 ? 'карты' : 'карт'}
