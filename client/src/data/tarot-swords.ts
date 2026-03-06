@@ -103,7 +103,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_page', name: 'Page of Swords', nameRu: 'Паж Мечей', number: 11, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_page.webp', element: 'air', zodiac: 'Близнецы/Весы/Водолей',
+    image: '/cards/swords_11.webp', element: 'air', zodiac: 'Близнецы/Весы/Водолей',
     keywords: { upright: ['любопытство', 'острый ум', 'наблюдательность', 'правда'], reversed: ['сплетни', 'жестокость', 'манипуляция', 'цинизм'] },
     meanings: { upright: 'Паж Мечей — юный мыслитель с острым умом и ненасытным любопытством. Он жаждет истины и не боится задавать неудобные вопросы.', reversed: 'Острый язык используется для сплетен и манипуляций. Жестокость слов может ранить.' },
     love: { upright: 'Интеллектуальная связь и стимулирующие беседы с партнёром.', reversed: 'Злые слова и сплетни отравляют отношения.' },
@@ -113,7 +113,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_knight', name: 'Knight of Swords', nameRu: 'Рыцарь Мечей', number: 12, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_knight.webp', element: 'air', zodiac: 'Близнецы',
+    image: '/cards/swords_12.webp', element: 'air', zodiac: 'Близнецы',
     keywords: { upright: ['решительность', 'скорость', 'интеллект', 'амбиции'], reversed: ['агрессия', 'бестактность', 'поспешность', 'грубость'] },
     meanings: { upright: 'Рыцарь Мечей мчится в атаку с непоколебимой решимостью. Быстрый ум и дерзкие действия прокладывают путь к цели.', reversed: 'Безрассудная спешка и грубость губят хорошие начинания. Думайте, прежде чем говорить и действовать.' },
     love: { upright: 'Стремительное развитие отношений. Интеллектуально сильный партнёр.', reversed: 'Жёсткие слова и грубость ранят близкого человека.' },
@@ -123,7 +123,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_queen', name: 'Queen of Swords', nameRu: 'Королева Мечей', number: 13, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_queen.webp', element: 'air', zodiac: 'Весы',
+    image: '/cards/swords_13.webp', element: 'air', zodiac: 'Весы',
     keywords: { upright: ['проницательность', 'независимость', 'честность', 'ясность'], reversed: ['холодность', 'жестокость', 'манипуляция', 'злопамятность'] },
     meanings: { upright: 'Королева Мечей — воплощение ментальной ясности и независимости. Она видит истину и не боится произнести её вслух.', reversed: 'Острый ум обернулся жестокостью и холодностью. Способность видеть истину используется для манипуляций.' },
     love: { upright: 'Честность и независимость в отношениях. Чёткие границы.', reversed: 'Холодность и критичность отталкивают партнёра.' },
@@ -133,7 +133,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_king', name: 'King of Swords', nameRu: 'Король Мечей', number: 14, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_king.webp', element: 'air', zodiac: 'Водолей',
+    image: '/cards/swords_14.webp', element: 'air', zodiac: 'Водолей',
     keywords: { upright: ['авторитет', 'логика', 'справедливость', 'дисциплина'], reversed: ['тирания', 'холодный расчёт', 'злоупотребление властью', 'манипулятор'] },
     meanings: { upright: 'Король Мечей правит с помощью разума и справедливости. Его решения основаны на логике и неукоснительном следовании истине.', reversed: 'Интеллект без сердца — опасное оружие. Власть используется для подавления и контроля.' },
     love: { upright: 'Интеллектуально сильный партнёр, ценящий честность и логику.', reversed: 'Эмоциональная отстранённость и контроль в отношениях.' },

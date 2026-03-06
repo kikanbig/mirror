@@ -103,7 +103,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_page', name: 'Page of Pentacles', nameRu: 'Паж Пентаклей', number: 11, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_page.webp', element: 'earth', zodiac: 'Телец/Дева/Козерог',
+    image: '/cards/pentacles_11.webp', element: 'earth', zodiac: 'Телец/Дева/Козерог',
     keywords: { upright: ['обучение', 'возможность', 'усердие', 'практичность'], reversed: ['лень', 'упущенные шансы', 'прокрастинация', 'безответственность'] },
     meanings: { upright: 'Паж Пентаклей изучает монету в своих руках — он стремится к знаниям и готов вложить усилия. Новая финансовая возможность требует внимания.', reversed: 'Лень и прокрастинация мешают воспользоваться возможностями. Учёба заброшена.' },
     love: { upright: 'Серьёзный и надёжный подход к новым отношениям.', reversed: 'Нежелание вкладываться в отношения или нереалистичные ожидания.' },
@@ -113,7 +113,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_knight', name: 'Knight of Pentacles', nameRu: 'Рыцарь Пентаклей', number: 12, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_knight.webp', element: 'earth', zodiac: 'Дева',
+    image: '/cards/pentacles_12.webp', element: 'earth', zodiac: 'Дева',
     keywords: { upright: ['надёжность', 'трудолюбие', 'терпение', 'методичность'], reversed: ['рутина', 'занудство', 'застой', 'лень'] },
     meanings: { upright: 'Рыцарь Пентаклей — самый надёжный и терпеливый из всех рыцарей. Он медлен, но неотвратим. Методичная работа приведёт к результату.', reversed: 'Застой и рутина убивают мотивацию. Вы застряли в комфортной, но бесперспективной ситуации.' },
     love: { upright: 'Надёжный и преданный партнёр. Медленное, но верное развитие отношений.', reversed: 'Скука и рутина в отношениях. Партнёр слишком предсказуем.' },
@@ -123,7 +123,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_queen', name: 'Queen of Pentacles', nameRu: 'Королева Пентаклей', number: 13, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_queen.webp', element: 'earth', zodiac: 'Козерог',
+    image: '/cards/pentacles_13.webp', element: 'earth', zodiac: 'Козерог',
     keywords: { upright: ['изобилие', 'практичность', 'забота', 'домашний уют'], reversed: ['гиперопека', 'материализм', 'пренебрежение собой', 'финансовая зависимость'] },
     meanings: { upright: 'Королева Пентаклей создаёт изобилие и уют вокруг себя. Она практична, заботлива и умеет наслаждаться земными радостями.', reversed: 'Гиперопека или зацикленность на материальном мире истощают вас. Не забывайте о духовных потребностях.' },
     love: { upright: 'Тёплый, заботливый и надёжный партнёр. Домашний уют.', reversed: 'Чрезмерная забота или финансовые вопросы омрачают отношения.' },
@@ -133,7 +133,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_king', name: 'King of Pentacles', nameRu: 'Король Пентаклей', number: 14, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_king.webp', element: 'earth', zodiac: 'Телец',
+    image: '/cards/pentacles_14.webp', element: 'earth', zodiac: 'Телец',
     keywords: { upright: ['богатство', 'бизнес', 'стабильность', 'щедрость'], reversed: ['жадность', 'коррупция', 'нестабильность', 'одержимость деньгами'] },
     meanings: { upright: 'Король Пентаклей — воплощение материального успеха и финансовой мудрости. Его империя построена на дисциплине и стратегическом мышлении.', reversed: 'Жадность и одержимость деньгами разрушают всё, что было создано. Богатство без морали — путь к краху.' },
     love: { upright: 'Щедрый и финансово стабильный партнёр. Материальная забота.', reversed: 'Партнёр, одержимый деньгами или использующий финансы для контроля.' },
