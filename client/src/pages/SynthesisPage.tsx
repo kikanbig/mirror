@@ -5,6 +5,7 @@ import { elderFuthark } from '../data/runes';
 import { getMoonPhase } from '../data/moon-phases';
 import { hashSeed, seededShuffle } from '../utils/shuffle';
 import { useUserStore, UserProfile } from '../stores/userStore';
+import { useHistoryStore } from '../stores/historyStore';
 import { useHaptic } from '../hooks/useHaptic';
 import { api } from '../services/api';
 import { moonPhases } from '../data/moon-phases';
@@ -133,6 +134,7 @@ export default function SynthesisPage() {
   const [interpretation, setInterpretation] = useState('');
   const [error, setError] = useState('');
   const { profile, addExperience } = useUserStore();
+  const { addReading } = useHistoryStore();
   const { impact, notification } = useHaptic();
 
   const userId = String(profile.telegramId || 'guest');
@@ -153,6 +155,23 @@ export default function SynthesisPage() {
     return { card, rune, moon, personalYear };
   }, [userId, today, profile.birthDate]);
 
+  const saveSynthesisToHistory = useCallback((interp: string) => {
+    addReading({
+      type: 'synthesis',
+      title: 'Синтез Судьбы',
+      cards: [
+        {
+          cardId: synthesis.card.id,
+          cardName: synthesis.card.nameRu,
+          cardImage: synthesis.card.image,
+          reversed: false,
+          positionName: 'Карта таро',
+        },
+      ],
+      interpretation: interp,
+    });
+  }, [addReading, synthesis]);
+
   const handleSynthesize = useCallback(async () => {
     impact('heavy');
     setPhase('loading');
@@ -169,12 +188,14 @@ export default function SynthesisPage() {
       });
 
       setInterpretation(result.interpretation);
+      saveSynthesisToHistory(result.interpretation);
       addExperience(50);
       notification('success');
       setPhase('result');
     } catch {
       const fallback = buildLocalSynthesis(synthesis, profile);
       setInterpretation(fallback);
+      saveSynthesisToHistory(fallback);
       addExperience(30);
       notification('success');
       setPhase('result');

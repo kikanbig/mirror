@@ -1,7 +1,7 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
 }
 
 .title {
@@ -9,6 +9,32 @@
   font-size: 1.2rem;
   color: $accent-gold;
   text-align: center;
+}
+
+.filters {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+.filterBtn {
+  white-space: nowrap;
+  padding: 6px 14px;
+  border-radius: $radius-full;
+  font-size: 0.75rem;
+  background: rgba(26, 26, 62, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: $text-secondary;
+  transition: all 0.2s;
+
+  &.filterActive {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: $accent-purple;
+    color: $text-primary;
+  }
 }
 
 .empty {
@@ -22,3 +48,165 @@
 .emptyIcon { font-size: 3rem; opacity: 0.4; }
 .emptyText { font-size: 0.95rem; color: $text-secondary; }
 .emptyHint { font-size: 0.8rem; color: $text-muted; text-align: center; }
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card {
+  padding: 14px;
+  background: rgba(26, 26, 62, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: border-color 0.2s;
+
+  &.cardExpanded {
+    border-color: rgba(212, 175, 55, 0.2);
+  }
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.cardMeta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.cardType { font-size: 1.4rem; }
+
+.cardTitle {
+  display: block;
+  font-size: 0.85rem;
+  color: $text-primary;
+  font-weight: 600;
+}
+
+.cardDate {
+  display: block;
+  font-size: 0.65rem;
+  color: $text-muted;
+  margin-top: 2px;
+}
+
+.cardActions {
+  display: flex;
+  gap: 4px;
+}
+
+.actionBtn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: $radius-sm;
+  font-size: 0.8rem;
+  border: none;
+  cursor: pointer;
+}
+
+.cardCards {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+.miniCard {
+  width: 40px;
+  height: 62px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.miniCardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.miniReversed {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  background: rgba(236, 72, 153, 0.85);
+  color: white;
+  font-size: 0.45rem;
+  font-weight: 700;
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+}
+
+.cardQuestion {
+  font-size: 0.75rem;
+  color: $text-muted;
+  font-style: italic;
+  margin-top: 8px;
+}
+
+.cardInterpretation {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.interpCard {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.interpPos {
+  font-size: 0.65rem;
+  color: $accent-purple;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  flex-shrink: 0;
+}
+
+.interpName {
+  font-size: 0.8rem;
+  color: $accent-gold;
+}
+
+.interpText {
+  margin-top: 10px;
+
+  p {
+    font-size: 0.78rem;
+    color: $text-secondary;
+    line-height: 1.6;
+    margin-bottom: 8px;
+
+    &:last-child { margin-bottom: 0; }
+  }
+}
+
+.count {
+  text-align: center;
+  font-size: 0.7rem;
+  color: $text-muted;
+  padding-bottom: 8px;
+}

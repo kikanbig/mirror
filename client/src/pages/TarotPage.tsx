@@ -5,6 +5,7 @@ import { fullDeck } from '../data/tarot-deck';
 import { fisherYatesShuffle } from '../utils/shuffle';
 import { useReadingStore, DrawnCard } from '../stores/readingStore';
 import { useUserStore } from '../stores/userStore';
+import { useHistoryStore } from '../stores/historyStore';
 import CardReveal from '../components/CardReveal/CardReveal';
 import { useHaptic } from '../hooks/useHaptic';
 import { api } from '../services/api';
@@ -20,6 +21,7 @@ export default function TarotPage() {
     setIsInterpreting, reset,
   } = useReadingStore();
   const { profile, addExperience } = useUserStore();
+  const { addReading } = useHistoryStore();
   const { impact, notification } = useHaptic();
 
   const spread = spreads.find((s) => s.id === spreadType);
@@ -66,8 +68,27 @@ export default function TarotPage() {
     return lines.join('\n');
   }, []);
 
+  const saveToHistory = useCallback((cards: DrawnCard[], spreadName: string, interp: string) => {
+    addReading({
+      type: 'tarot',
+      title: spreadName,
+      cards: cards.map((dc) => ({
+        cardId: dc.card.id,
+        cardName: dc.card.nameRu,
+        cardImage: dc.card.image,
+        reversed: dc.reversed,
+        positionName: dc.positionName,
+      })),
+      spreadName,
+      area,
+      question: question || undefined,
+      interpretation: interp,
+    });
+  }, [addReading, area, question]);
+
   const requestInterpretation = useCallback(async (cards: DrawnCard[], spreadName: string) => {
     setIsInterpreting(true);
+    let interp: string;
     try {
       const result = await api.post<{ interpretation: string }>('/interpret', {
         spreadType: spreadName,
@@ -83,12 +104,14 @@ export default function TarotPage() {
           lifePathNumber: profile.lifePathNumber,
         },
       });
-      setInterpretation(result.interpretation);
+      interp = result.interpretation;
     } catch {
-      setInterpretation(buildLocalInterpretation(cards));
+      interp = buildLocalInterpretation(cards);
     }
+    setInterpretation(interp);
+    saveToHistory(cards, spreadName, interp);
     setIsInterpreting(false);
-  }, [question, area, profile, setInterpretation, setIsInterpreting, buildLocalInterpretation]);
+  }, [question, area, profile, setInterpretation, setIsInterpreting, buildLocalInterpretation, saveToHistory]);
 
   const handleDrawCard = useCallback(() => {
     if (!spread || drawIndex >= spread.cardCount) return;
