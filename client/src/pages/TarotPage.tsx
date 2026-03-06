@@ -13,8 +13,6 @@ import styles from './TarotPage.module.scss';
 
 type Phase = 'choose' | 'question' | 'shuffle' | 'draw' | 'result';
 
-const FAN_COUNT = 9;
-
 const staggerContainer = {
   animate: { transition: { staggerChildren: 0.06 } },
 };
@@ -57,7 +55,9 @@ export default function TarotPage() {
     const deck = fisherYatesShuffle(fullDeck);
     setShuffledDeck(deck);
     setDrawIndex(0);
-    setFanCards(Array.from({ length: FAN_COUNT }, (_, i) => i));
+    const selected = spreads.find((s) => s.id === spreadType);
+    const fanSize = Math.max(9, (selected?.cardCount ?? 1) + 3);
+    setFanCards(Array.from({ length: fanSize }, (_, i) => i));
     setShuffleStep(0);
     setPhase('shuffle');
 
