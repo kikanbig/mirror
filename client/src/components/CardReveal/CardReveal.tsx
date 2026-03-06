@@ -43,8 +43,9 @@ export default function CardReveal({ card, reversed, positionName, delay = 0, on
           transition={{ duration: 0.6, type: 'spring', stiffness: 200, damping: 25 }}
           style={{ transformStyle: 'preserve-3d' }}
         >
-          <div className={styles.front} style={{ transform: reversed ? 'rotate(180deg)' : undefined }}>
+          <div className={styles.front}>
             <img src={card.image} alt={card.nameRu} className={styles.cardImg} />
+            {reversed && <div className={styles.reversedBadge}>Перевёрнута</div>}
           </div>
           <div className={styles.back}>
             <img src="/cards/card_back.webp" alt="Card back" className={styles.cardImg} />

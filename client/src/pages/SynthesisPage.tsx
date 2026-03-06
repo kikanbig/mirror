@@ -7,35 +7,111 @@ import { hashSeed, seededShuffle } from '../utils/shuffle';
 import { useUserStore, UserProfile } from '../stores/userStore';
 import { useHaptic } from '../hooks/useHaptic';
 import { api } from '../services/api';
+import { moonPhases } from '../data/moon-phases';
 import type { TarotCard } from '../data/tarot-types';
 import type { Rune } from '../data/runes';
 import styles from './SynthesisPage.module.scss';
 
+const YEAR_THEMES: Record<number, string> = {
+  1: 'новых начинаний, посева семян будущего и смелых первых шагов',
+  2: 'партнёрства, терпения и внутренней гармонии',
+  3: 'творчества, самовыражения и расцвета талантов',
+  4: 'строительства фундамента, дисциплины и упорного труда',
+  5: 'перемен, свободы и неожиданных поворотов судьбы',
+  6: 'любви, семьи, ответственности и заботы о близких',
+  7: 'духовного поиска, уединения и глубокой мудрости',
+  8: 'власти, достижений, материального успеха и кармических уроков',
+  9: 'завершения великого цикла, отпускания и подготовки к новому витку',
+};
+
+const ELEMENT_SYNERGY: Record<string, Record<string, string>> = {
+  fire: {
+    fire: 'Двойной огонь разжигает невероятную силу действия — время дерзких поступков.',
+    water: 'Огонь и вода создают пар трансформации — эмоции направляют вашу волю.',
+    air: 'Огонь и воздух раздувают пламя идей — мысли обретают силу действия.',
+    earth: 'Огонь и земля куют нечто прочное — ваша страсть обретает форму.',
+    ice: 'Огонь растапливает лёд — старые блоки и страхи уступают место смелости.',
+  },
+  water: {
+    fire: 'Вода и огонь создают алхимию чувств — интуиция направляет действие.',
+    water: 'Двойная вода углубляет эмоциональное понимание до самых глубин подсознания.',
+    air: 'Вода и воздух несут ясность чувств — интуиция получает голос разума.',
+    earth: 'Вода и земля питают рост — ваши чувства укореняются в реальности.',
+    ice: 'Вода и лёд обращают к глубинным, замороженным чувствам — время их растопить.',
+  },
+  air: {
+    fire: 'Воздух и огонь разносят искру вдохновения — идеи превращаются в действия.',
+    water: 'Воздух и вода соединяют разум и чувства в единый поток осознанности.',
+    air: 'Двойной воздух даёт кристальную ясность мысли и интеллектуальный прорыв.',
+    earth: 'Воздух и земля — идеи обретают практическое воплощение.',
+    ice: 'Воздух и лёд — холодная ясность ума помогает увидеть скрытое.',
+  },
+  earth: {
+    fire: 'Земля и огонь — практическая сила трансформирует материальный мир.',
+    water: 'Земля и вода — плодородное сочетание для роста и процветания.',
+    air: 'Земля и воздух — практичность соединяется с видением будущего.',
+    earth: 'Двойная земля укрепляет фундамент — время собирать урожай стабильности.',
+    ice: 'Земля и лёд — застывшая мудрость прошлого раскрывает свои сокровища.',
+  },
+  spirit: {
+    fire: 'Дух и огонь — высшая воля направляет вашу страсть к цели.',
+    water: 'Дух и вода — духовная интуиция достигает невероятной глубины.',
+    air: 'Дух и воздух — высшее знание нисходит через ясность ума.',
+    earth: 'Дух и земля — духовное проявляется в материальном мире.',
+    ice: 'Дух и лёд — медитативная тишина открывает врата к высшему знанию.',
+  },
+};
+
 function buildLocalSynthesis(
-  synth: { card: TarotCard; rune: Rune; moon: { phaseRu: string }; personalYear: number },
+  synth: { card: TarotCard; rune: Rune; moon: { phaseRu: string; phase: string }; personalYear: number },
   profile: UserProfile,
 ): string {
-  const cardMeaning = synth.card.meanings.upright;
-  const runeMeaning = synth.rune.meaning.upright;
-  const advice = synth.card.advice;
-  const runeAdvice = synth.rune.advice;
-  const zodiac = profile.zodiacSign || 'Вселенная';
+  const moonInfo = moonPhases.find((m) => m.phase === synth.moon.phase);
+  const yearTheme = YEAR_THEMES[synth.personalYear] || YEAR_THEMES[1];
 
-  return [
-    `🃏 Карта таро «${synth.card.nameRu}» несёт вам следующее послание:`,
-    cardMeaning,
-    ``,
-    `ᚱ Руна «${synth.rune.nameRu}» (${synth.rune.symbol}) дополняет этот посыл:`,
-    runeMeaning,
-    ``,
-    `🌙 Текущая фаза луны — ${synth.moon.phaseRu} — усиливает энергию трансформации и интуиции. Персональный год ${synth.personalYear} указывает на цикл ${synth.personalYear <= 3 ? 'нового начала и роста' : synth.personalYear <= 6 ? 'труда и строительства' : 'завершения и мудрости'}.`,
-    ``,
-    `💫 Совет карты: ${advice}`,
-    ``,
-    `✨ Совет руны: ${runeAdvice}`,
-    ``,
-    `${zodiac}, доверьтесь потоку судьбы — все знаки указывают в одном направлении. «${synth.card.affirmation}»`,
-  ].join('\n');
+  const cardElement = synth.card.element;
+  const runeElement = synth.rune.element;
+  const synergy = ELEMENT_SYNERGY[cardElement]?.[runeElement]
+    || 'Стихии ваших знаков переплетаются, создавая уникальный узор энергий.';
+
+  const lines: string[] = [];
+
+  lines.push(`Сегодня Зеркало Судьбы раскрывает перед вами уникальное сочетание космических сил. Четыре древних системы знания сплетаются воедино, чтобы показать ваш путь.`);
+  lines.push('');
+
+  lines.push(`Карта «${synth.card.nameRu}» и руна «${synth.rune.nameRu}» (${synth.rune.symbol}) выпали вам не случайно. ${synergy}`);
+  lines.push('');
+
+  lines.push(`${synth.card.nameRu} говорит: ${synth.card.meanings.upright}`);
+  lines.push('');
+
+  lines.push(`Руна ${synth.rune.symbol} ${synth.rune.nameRu} усиливает этот посыл: ${synth.rune.meaning.upright}`);
+  lines.push('');
+
+  if (moonInfo) {
+    lines.push(`${moonInfo.emoji} ${moonInfo.phaseRu} наполняет этот день особой энергией. ${moonInfo.energy} ${moonInfo.tarotConnection}`);
+    lines.push('');
+  }
+
+  lines.push(`Ваш персональный год — ${synth.personalYear}. Это год ${yearTheme}. В сочетании с картой ${synth.card.nameRu} и руной ${synth.rune.nameRu} это указывает на глубокую внутреннюю работу, плоды которой не заставят себя ждать.`);
+  lines.push('');
+
+  lines.push(`💫 ${synth.card.advice}`);
+  lines.push('');
+  lines.push(`✨ ${synth.rune.advice}`);
+  lines.push('');
+
+  if (moonInfo && moonInfo.recommendations.length > 0) {
+    lines.push(`🌙 Совет луны: ${moonInfo.recommendations[0]}`);
+    lines.push('');
+  }
+
+  const name = profile.firstName || 'Путник';
+  lines.push(`${name}, все знаки сегодня указывают в одном направлении. Доверьтесь этому потоку.`);
+  lines.push('');
+  lines.push(`«${synth.card.affirmation}»`);
+
+  return lines.join('\n');
 }
 
 function getPersonalYear(birthDate?: string): number {

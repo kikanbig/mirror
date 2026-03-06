@@ -60,7 +60,7 @@ export default function DailyCard() {
               animate={{ rotateY: 0, opacity: 1 }}
               transition={{ duration: 0.5, type: 'spring', stiffness: 200 }}
             >
-              <div className={styles.frontInner} style={dailyResult.reversed ? { transform: 'rotate(180deg)' } : undefined}>
+              <div className={styles.frontInner}>
                 <img src={dailyResult.card.image} alt={dailyResult.card.nameRu} className={styles.cardImg} />
               </div>
               {dailyResult.reversed && (

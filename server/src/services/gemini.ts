@@ -2,9 +2,11 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
-const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'];
+const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite'];
 
 async function callWithRetry(prompt: string, maxRetries = 3): Promise<string> {
+  let lastError: Error | null = null;
+
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     for (const modelName of MODELS) {
       try {
@@ -12,20 +14,23 @@ async function callWithRetry(prompt: string, maxRetries = 3): Promise<string> {
         const result = await model.generateContent(prompt);
         return result.response.text();
       } catch (err: any) {
-        const is429 = err?.status === 429 || err?.message?.includes('429');
-        console.warn(`[Gemini] ${modelName} attempt ${attempt + 1} failed:`, is429 ? '429 rate limit' : err?.message);
+        lastError = err;
+        const status = err?.status;
+        const isRetryable = status === 429 || status === 503 || status === 500;
+        console.warn(`[Gemini] ${modelName} attempt ${attempt + 1}: ${status || err?.message}`);
 
-        if (is429 && modelName === MODELS[MODELS.length - 1] && attempt < maxRetries - 1) {
-          const delay = Math.min(5000 * (attempt + 1), 20000);
-          console.log(`[Gemini] Waiting ${delay}ms before retry...`);
-          await new Promise((r) => setTimeout(r, delay));
-        }
-
-        if (!is429) throw err;
+        if (!isRetryable) continue;
       }
     }
+
+    if (attempt < maxRetries - 1) {
+      const delay = Math.min(5000 * (attempt + 1), 20000);
+      console.log(`[Gemini] Waiting ${delay}ms before retry ${attempt + 2}...`);
+      await new Promise((r) => setTimeout(r, delay));
+    }
   }
-  throw new Error('All Gemini models exhausted after retries');
+
+  throw lastError || new Error('All Gemini attempts failed');
 }
 
 const TAROT_SYSTEM_PROMPT = `Ты — мудрый и проницательный таролог с 30-летним опытом. Ты интерпретируешь расклады таро глубоко, эмпатично и с практической мудростью.
