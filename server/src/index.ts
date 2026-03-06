@@ -8,6 +8,7 @@ import { readingsRouter } from './routes/readings';
 import { dailyRouter } from './routes/daily';
 import { profileRouter } from './routes/profile';
 import { interpretRouter } from './routes/interpret';
+import { startBot } from './bot';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use((_req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  startBot();
 });
 
 export default app;
