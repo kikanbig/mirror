@@ -140,29 +140,32 @@
 .deckCard {
   width: 140px;
   height: 210px;
-  background: linear-gradient(145deg, #1a1a4e, #2d1b69);
-  border: 2px solid $accent-gold;
   border-radius: $radius-lg;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  overflow: hidden;
+  position: relative;
   box-shadow: $shadow-glow-gold;
 }
 
-.deckInner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  color: $accent-gold;
-  font-size: 1.5rem;
+.deckImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: $radius-lg;
 }
 
 .deckLabel {
-  font-size: 0.65rem;
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.6rem;
   color: $text-secondary;
   text-align: center;
-  max-width: 90px;
+  max-width: 110px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 4px 8px;
+  border-radius: $radius-sm;
+  white-space: nowrap;
 }
 
 .drawnCards {
@@ -192,21 +195,37 @@
 }
 
 .resultCard {
-  padding: 16px;
+  padding: 12px;
   background: rgba(26, 26, 62, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: $radius-lg;
 }
 
-.resultCardHeader {
+.resultCardRow {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.resultCardImg {
+  width: 60px;
+  height: 92px;
+  border-radius: $radius-sm;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.resultCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
 }
 
 .resultPos {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   color: $accent-purple;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -219,17 +238,47 @@
 }
 
 .resultMeaning {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: $text-secondary;
   line-height: 1.5;
 }
 
-.resultExtra {
-  font-size: 0.75rem;
-  color: $text-secondary;
+.aiSection {
   margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  background: rgba(139, 92, 246, 0.06);
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  border-radius: $radius-lg;
+}
+
+.aiTitle {
+  font-family: $font-display;
+  font-size: 0.95rem;
+  color: $accent-gold;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.aiLoading {
+  text-align: center;
+  padding: 20px;
+
+  p {
+    font-size: 0.85rem;
+    color: $text-secondary;
+    font-style: italic;
+  }
+}
+
+.aiText {
+  p {
+    font-size: 0.8rem;
+    color: $text-secondary;
+    line-height: 1.7;
+    margin-bottom: 10px;
+
+    &:last-child { margin-bottom: 0; }
+  }
 }
 
 .resetBtn {

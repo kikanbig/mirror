@@ -3,7 +3,7 @@ import { TarotCard } from './tarot-types';
 export const pentacles: TarotCard[] = [
   {
     id: 'pentacles_1', name: 'Ace of Pentacles', nameRu: 'Туз Пентаклей', number: 1, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_1.webp', element: 'earth',
+    image: '/cards/pentacles_01.webp', element: 'earth',
     keywords: { upright: ['возможность', 'процветание', 'новое начало', 'изобилие'], reversed: ['упущенный шанс', 'финансовые потери', 'неудачное вложение', 'жадность'] },
     meanings: { upright: 'Золотая монета спускается с небес — материальная возможность стучится в вашу дверь. Время для новых финансовых начинаний.', reversed: 'Финансовая возможность упущена или вложение не оправдывает ожиданий. Пересмотрите своё отношение к деньгам.' },
     love: { upright: 'Стабильное начало отношений с надёжным материальным фундаментом.', reversed: 'Материальные проблемы создают напряжение в отношениях.' },
@@ -13,7 +13,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_2', name: 'Two of Pentacles', nameRu: 'Двойка Пентаклей', number: 2, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_2.webp', element: 'earth', planet: 'Юпитер', zodiac: 'Козерог',
+    image: '/cards/pentacles_02.webp', element: 'earth', planet: 'Юпитер', zodiac: 'Козерог',
     keywords: { upright: ['баланс', 'адаптация', 'жонглирование', 'гибкость'], reversed: ['перегрузка', 'дисбаланс', 'хаос', 'неорганизованность'] },
     meanings: { upright: 'Вы жонглируете несколькими задачами одновременно. Гибкость и адаптация — ваши главные союзники в этом танце.', reversed: 'Вы взяли на себя слишком много и не справляетесь. Хаос и дисбаланс нарастают.' },
     love: { upright: 'Балансирование между отношениями и другими аспектами жизни.', reversed: 'Неспособность уделить время отношениям из-за перегрузки.' },
@@ -23,7 +23,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_3', name: 'Three of Pentacles', nameRu: 'Тройка Пентаклей', number: 3, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_3.webp', element: 'earth', planet: 'Марс', zodiac: 'Козерог',
+    image: '/cards/pentacles_03.webp', element: 'earth', planet: 'Марс', zodiac: 'Козерог',
     keywords: { upright: ['мастерство', 'сотрудничество', 'обучение', 'качество'], reversed: ['халтура', 'отсутствие команды', 'посредственность', 'конфликт'] },
     meanings: { upright: 'Мастерство растёт через практику и сотрудничество. Командная работа и профессионализм создают нечто выдающееся.', reversed: 'Низкое качество работы, отсутствие командного духа или конфликты с коллегами.' },
     love: { upright: 'Совместная работа над отношениями приносит плоды.', reversed: 'Отсутствие усилий с одной или обеих сторон ослабляет связь.' },
@@ -33,7 +33,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_4', name: 'Four of Pentacles', nameRu: 'Четвёрка Пентаклей', number: 4, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_4.webp', element: 'earth', planet: 'Солнце', zodiac: 'Козерог',
+    image: '/cards/pentacles_04.webp', element: 'earth', planet: 'Солнце', zodiac: 'Козерог',
     keywords: { upright: ['накопление', 'стабильность', 'контроль', 'бережливость'], reversed: ['жадность', 'скупость', 'потеря контроля', 'расточительство'] },
     meanings: { upright: 'Вы крепко держите то, что имеете. Финансовая стабильность и бережливость важны, но не переходите грань скупости.', reversed: 'Жадность душит или, наоборот, вы теряете контроль над финансами. Найдите баланс.' },
     love: { upright: 'Стабильные, но эмоционально закрытые отношения. Страх потери.', reversed: 'Освобождение от страха потери или, наоборот, расточительность в чувствах.' },
@@ -43,7 +43,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_5', name: 'Five of Pentacles', nameRu: 'Пятёрка Пентаклей', number: 5, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_5.webp', element: 'earth', planet: 'Меркурий', zodiac: 'Телец',
+    image: '/cards/pentacles_05.webp', element: 'earth', planet: 'Меркурий', zodiac: 'Телец',
     keywords: { upright: ['бедность', 'изоляция', 'нужда', 'испытание'], reversed: ['восстановление', 'помощь', 'выход из кризиса', 'надежда'] },
     meanings: { upright: 'Материальные трудности и ощущение покинутости. Но помощь ближе, чем кажется — не бойтесь попросить.', reversed: 'Худшее позади. Кризис отступает, и финансовая ситуация начинает улучшаться.' },
     love: { upright: 'Одиночество и чувство отверженности в любви.', reversed: 'Возвращение тепла и поддержки в отношения.' },
@@ -53,7 +53,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_6', name: 'Six of Pentacles', nameRu: 'Шестёрка Пентаклей', number: 6, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_6.webp', element: 'earth', planet: 'Луна', zodiac: 'Телец',
+    image: '/cards/pentacles_06.webp', element: 'earth', planet: 'Луна', zodiac: 'Телец',
     keywords: { upright: ['щедрость', 'благотворительность', 'обмен', 'справедливость'], reversed: ['неравенство', 'долги', 'эксплуатация', 'скупость'] },
     meanings: { upright: 'Щедрость и справедливый обмен ресурсами создают гармонию. Вы можете быть как дарителем, так и получателем.', reversed: 'Неравенство в отношениях: один даёт, другой только берёт. Долги и обязательства давят.' },
     love: { upright: 'Щедрость и забота укрепляют отношения. Взаимный обмен.', reversed: 'Один партнёр отдаёт слишком много, другой — слишком мало.' },
@@ -63,7 +63,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_7', name: 'Seven of Pentacles', nameRu: 'Семёрка Пентаклей', number: 7, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_7.webp', element: 'earth', planet: 'Сатурн', zodiac: 'Телец',
+    image: '/cards/pentacles_07.webp', element: 'earth', planet: 'Сатурн', zodiac: 'Телец',
     keywords: { upright: ['терпение', 'ожидание', 'инвестиция', 'оценка'], reversed: ['нетерпение', 'плохие вложения', 'разочарование', 'лень'] },
     meanings: { upright: 'Семена посажены, и теперь нужно время. Оглянитесь на пройденный путь и оцените свои вложения — урожай скоро созреет.', reversed: 'Нетерпение или разочарование результатами. Возможно, вы вложили силы не туда.' },
     love: { upright: 'Оценка отношений: стоит ли продолжать вкладывать усилия?', reversed: 'Разочарование в отношениях. Вложенные усилия не окупаются.' },
@@ -73,7 +73,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_8', name: 'Eight of Pentacles', nameRu: 'Восьмёрка Пентаклей', number: 8, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_8.webp', element: 'earth', planet: 'Солнце', zodiac: 'Дева',
+    image: '/cards/pentacles_08.webp', element: 'earth', planet: 'Солнце', zodiac: 'Дева',
     keywords: { upright: ['мастерство', 'трудолюбие', 'обучение', 'усердие'], reversed: ['халтура', 'перфекционизм', 'скука', 'бессмысленная работа'] },
     meanings: { upright: 'Упорный труд и оттачивание мастерства. Каждое изделие лучше предыдущего — вы на пути к совершенству.', reversed: 'Работа без смысла или одержимость совершенством парализуют. Не путайте усердие с перфекционизмом.' },
     love: { upright: 'Вложение усилий в построение крепких отношений.', reversed: 'Скука в отношениях или чрезмерная концентрация на работе в ущерб любви.' },
@@ -83,7 +83,7 @@ export const pentacles: TarotCard[] = [
   },
   {
     id: 'pentacles_9', name: 'Nine of Pentacles', nameRu: 'Девятка Пентаклей', number: 9, arcana: 'minor', suit: 'pentacles',
-    image: '/cards/pentacles_9.webp', element: 'earth', planet: 'Венера', zodiac: 'Дева',
+    image: '/cards/pentacles_09.webp', element: 'earth', planet: 'Венера', zodiac: 'Дева',
     keywords: { upright: ['достаток', 'самодостаточность', 'роскошь', 'достижение'], reversed: ['одиночество', 'материализм', 'зависимость', 'незащищённость'] },
     meanings: { upright: 'Вы достигли материального благополучия и наслаждаетесь плодами своего труда. Самодостаточность и независимость — ваше богатство.', reversed: 'Материальный успех не заменяет эмоциональной полноты. Богатство без тепла — холодный сад.' },
     love: { upright: 'Самодостаточность и уверенность делают вас привлекательным.', reversed: 'Одиночество за красивым фасадом. Деньги не заменяют любви.' },

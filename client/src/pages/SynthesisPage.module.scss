@@ -4,6 +4,15 @@
   align-items: center;
   gap: 20px;
   text-align: center;
+  min-height: 100%;
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
 }
 
 .header {
@@ -28,25 +37,85 @@
   max-width: 320px;
 }
 
-.features {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+.elements {
+  display: flex;
+  flex-direction: column;
   gap: 10px;
   width: 100%;
 }
 
-.feature {
+.element {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 14px;
+  gap: 12px;
+  padding: 12px;
   background: rgba(26, 26, 62, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: $radius-lg;
-  font-size: 0.8rem;
-  color: $text-primary;
+}
 
-  span:first-child { font-size: 1.3rem; }
+.elementImg {
+  width: 48px;
+  height: 72px;
+  border-radius: $radius-sm;
+  object-fit: cover;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.runeSymbol, .moonSymbol, .numberSymbol {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: $radius-md;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.runeSymbol {
+  font-size: 1.6rem;
+  color: $accent-gold;
+  font-weight: 700;
+}
+
+.moonSymbol { font-size: 1.8rem; }
+
+.numberSymbol {
+  font-family: $font-display;
+  font-size: 1.4rem;
+  color: $accent-gold;
+  font-weight: 700;
+}
+
+.elementInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.elementLabel {
+  font-size: 0.65rem;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.elementValue {
+  font-size: 0.9rem;
+  color: $text-primary;
+  font-weight: 600;
+}
+
+.error {
+  color: #f87171;
+  font-size: 0.8rem;
+  padding: 8px 16px;
+  background: rgba(248, 113, 113, 0.1);
+  border-radius: $radius-md;
+  border: 1px solid rgba(248, 113, 113, 0.2);
 }
 
 .btn {
@@ -64,4 +133,86 @@
 .hint {
   font-size: 0.7rem;
   color: $text-muted;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  min-height: 60vh;
+}
+
+.loadingOrb {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.3), rgba(212, 175, 55, 0.1));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+
+.loadingText {
+  font-family: $font-display;
+  font-size: 1rem;
+  color: $accent-gold;
+}
+
+.loadingHint {
+  font-size: 0.75rem;
+  color: $text-muted;
+  max-width: 250px;
+}
+
+.resultContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.resultTitle {
+  font-family: $font-display;
+  font-size: 1.2rem;
+  color: $accent-gold;
+  text-align: center;
+}
+
+.resultSymbols {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 1.5rem;
+  padding: 8px 0;
+}
+
+.resultText {
+  background: rgba(26, 26, 62, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: $radius-lg;
+  padding: 20px;
+  text-align: left;
+
+  p {
+    font-size: 0.85rem;
+    color: $text-secondary;
+    line-height: 1.7;
+    margin-bottom: 12px;
+
+    &:last-child { margin-bottom: 0; }
+  }
+}
+
+.resetBtn {
+  width: 100%;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid $accent-gold;
+  color: $accent-gold;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border-radius: $radius-lg;
 }

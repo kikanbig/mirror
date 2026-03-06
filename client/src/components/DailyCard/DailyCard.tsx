@@ -45,16 +45,12 @@ export default function DailyCard() {
               key="back"
               className={styles.cardBack}
               onClick={handleReveal}
-              whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.96 }}
               exit={{ rotateY: 90, opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <div className={styles.backInner}>
-                <span className={styles.backStar}>✦</span>
-                <span className={styles.backLabel}>Нажмите, чтобы открыть</span>
-                <span className={styles.backStar}>✦</span>
-              </div>
+              <img src="/cards/card_back.webp" alt="Card back" className={styles.cardImg} />
+              <span className={styles.backLabel}>Нажмите, чтобы открыть</span>
             </motion.div>
           ) : (
             <motion.div
@@ -64,17 +60,8 @@ export default function DailyCard() {
               animate={{ rotateY: 0, opacity: 1 }}
               transition={{ duration: 0.5, type: 'spring', stiffness: 200 }}
             >
-              <div
-                className={styles.frontInner}
-                style={dailyResult.reversed ? { transform: 'rotate(180deg)' } : undefined}
-              >
-                <span className={styles.cardNumber}>{dailyResult.card.number}</span>
-                <span className={styles.cardNameRu}>{dailyResult.card.nameRu}</span>
-                {dailyResult.card.suit && (
-                  <span className={styles.suitIcon}>
-                    {dailyResult.card.suit === 'wands' ? '🔥' : dailyResult.card.suit === 'cups' ? '💧' : dailyResult.card.suit === 'swords' ? '💨' : '🌍'}
-                  </span>
-                )}
+              <div className={styles.frontInner} style={dailyResult.reversed ? { transform: 'rotate(180deg)' } : undefined}>
+                <img src={dailyResult.card.image} alt={dailyResult.card.nameRu} className={styles.cardImg} />
               </div>
               {dailyResult.reversed && (
                 <div className={styles.reversedLabel}>Перевёрнута</div>
@@ -92,6 +79,7 @@ export default function DailyCard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
+            <h3 className={styles.cardName}>{dailyResult.card.nameRu}</h3>
             <div className={styles.keywords}>
               {(dailyResult.reversed
                 ? dailyResult.card.keywords.reversed

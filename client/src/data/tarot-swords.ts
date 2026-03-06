@@ -3,7 +3,7 @@ import { TarotCard } from './tarot-types';
 export const swords: TarotCard[] = [
   {
     id: 'swords_1', name: 'Ace of Swords', nameRu: 'Туз Мечей', number: 1, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_1.webp', element: 'air',
+    image: '/cards/swords_01.webp', element: 'air',
     keywords: { upright: ['ясность', 'истина', 'прорыв', 'интеллект'], reversed: ['хаос', 'заблуждение', 'жестокость', 'несправедливость'] },
     meanings: { upright: 'Меч истины рассекает туман иллюзий. Наступает момент ментальной ясности и интеллектуального прорыва.', reversed: 'Мысли запутаны, и истина ускользает. Будьте осторожны — ваш интеллект может обернуться против вас.' },
     love: { upright: 'Честный разговор приносит ясность в отношения.', reversed: 'Жёсткие слова или обманчивые мысли разрушают близость.' },
@@ -13,7 +13,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_2', name: 'Two of Swords', nameRu: 'Двойка Мечей', number: 2, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_2.webp', element: 'air', planet: 'Луна', zodiac: 'Весы',
+    image: '/cards/swords_02.webp', element: 'air', planet: 'Луна', zodiac: 'Весы',
     keywords: { upright: ['тупик', 'нерешительность', 'баланс', 'блокировка'], reversed: ['прозрение', 'информация', 'решение', 'перегрузка'] },
     meanings: { upright: 'Два меча скрещены — вы стоите перед трудным выбором и закрываете глаза на правду. Нерешительность парализует.', reversed: 'Повязка с глаз упала — вы видите ситуацию как есть и готовы принять решение.' },
     love: { upright: 'Нерешительность в отношениях. Вы избегаете трудного разговора.', reversed: 'Правда выходит наружу. Пора открыто обсудить проблемы.' },
@@ -23,7 +23,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_3', name: 'Three of Swords', nameRu: 'Тройка Мечей', number: 3, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_3.webp', element: 'air', planet: 'Сатурн', zodiac: 'Весы',
+    image: '/cards/swords_03.webp', element: 'air', planet: 'Сатурн', zodiac: 'Весы',
     keywords: { upright: ['сердечная боль', 'разлука', 'горе', 'предательство'], reversed: ['исцеление', 'прощение', 'отпускание', 'принятие'] },
     meanings: { upright: 'Три меча пронзают сердце — предательство, разлука или глубокая эмоциональная боль. Позвольте себе горевать.', reversed: 'Исцеление начинается. Боль ослабевает, и вы находите силы простить.' },
     love: { upright: 'Предательство, разлука или болезненный разрыв.', reversed: 'Исцеление после измены или расставания. Путь к прощению.' },
@@ -33,7 +33,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_4', name: 'Four of Swords', nameRu: 'Четвёрка Мечей', number: 4, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_4.webp', element: 'air', planet: 'Юпитер', zodiac: 'Весы',
+    image: '/cards/swords_04.webp', element: 'air', planet: 'Юпитер', zodiac: 'Весы',
     keywords: { upright: ['отдых', 'восстановление', 'медитация', 'пауза'], reversed: ['беспокойство', 'бессонница', 'выгорание', 'преждевременный старт'] },
     meanings: { upright: 'Ваше тело и разум нуждаются в отдыхе. Четвёрка Мечей — сигнал остановиться, помедитировать и восстановить силы.', reversed: 'Беспокойство не даёт отдохнуть. Вы возвращаетесь к действиям раньше времени.' },
     love: { upright: 'Пауза в отношениях для переосмысления и восстановления.', reversed: 'Тревога об отношениях не даёт покоя. Нужен честный разговор.' },
@@ -43,7 +43,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_5', name: 'Five of Swords', nameRu: 'Пятёрка Мечей', number: 5, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_5.webp', element: 'air', planet: 'Венера', zodiac: 'Водолей',
+    image: '/cards/swords_05.webp', element: 'air', planet: 'Венера', zodiac: 'Водолей',
     keywords: { upright: ['поражение', 'конфликт', 'обман', 'пиррова победа'], reversed: ['примирение', 'раскаяние', 'уход от конфликта', 'прощение'] },
     meanings: { upright: 'Победа, которая досталась слишком дорогой ценой, или поражение в конфликте. Подумайте, стоила ли игра свеч.', reversed: 'Пора положить мечи. Примирение и признание ошибок открывают путь к восстановлению.' },
     love: { upright: 'Конфликт и взаимные обвинения разрушают отношения.', reversed: 'Попытка примирения после серьёзной ссоры.' },
@@ -53,7 +53,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_6', name: 'Six of Swords', nameRu: 'Шестёрка Мечей', number: 6, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_6.webp', element: 'air', planet: 'Меркурий', zodiac: 'Водолей',
+    image: '/cards/swords_06.webp', element: 'air', planet: 'Меркурий', zodiac: 'Водолей',
     keywords: { upright: ['переход', 'исцеление', 'путешествие', 'движение вперёд'], reversed: ['застревание', 'незавершённые дела', 'возврат к прошлому', 'сопротивление'] },
     meanings: { upright: 'Вы оставляете бурные воды позади и движетесь к спокойному берегу. Это переходный период — трудный, но необходимый.', reversed: 'Вы не можете оставить прошлое и движетесь по кругу. Незавершённые дела тянут назад.' },
     love: { upright: 'Переход от трудного периода к более спокойному. Исцеление отношений.', reversed: 'Неспособность оставить прошлые обиды и двигаться дальше.' },
@@ -63,7 +63,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_7', name: 'Seven of Swords', nameRu: 'Семёрка Мечей', number: 7, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_7.webp', element: 'air', planet: 'Луна', zodiac: 'Водолей',
+    image: '/cards/swords_07.webp', element: 'air', planet: 'Луна', zodiac: 'Водолей',
     keywords: { upright: ['хитрость', 'обман', 'стратегия', 'уклонение'], reversed: ['разоблачение', 'совесть', 'признание', 'честность'] },
     meanings: { upright: 'Кто-то действует нечестно — возможно, вы, а возможно, другие. Хитрость и тайные планы окутывают ситуацию.', reversed: 'Обман раскрыт. Совесть берёт верх, и истина выходит наружу.' },
     love: { upright: 'Обман или скрытность в отношениях. Кто-то играет нечестно.', reversed: 'Тайны в отношениях раскрываются. Время для полной честности.' },
@@ -73,7 +73,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_8', name: 'Eight of Swords', nameRu: 'Восьмёрка Мечей', number: 8, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_8.webp', element: 'air', planet: 'Юпитер', zodiac: 'Близнецы',
+    image: '/cards/swords_08.webp', element: 'air', planet: 'Юпитер', zodiac: 'Близнецы',
     keywords: { upright: ['заточение', 'ограничение', 'бессилие', 'ментальная ловушка'], reversed: ['освобождение', 'новый взгляд', 'самовольство', 'прорыв'] },
     meanings: { upright: 'Вы чувствуете себя в ловушке, но ваши оковы — ментальные. Ограничения, которые вы видите, существуют лишь в вашем разуме.', reversed: 'Вы осознаёте, что можете освободиться. Ментальные оковы ослабевают, и выход найден.' },
     love: { upright: 'Ощущение ловушки в отношениях. Чувство бессилия.', reversed: 'Осознание своей свободы и выход из токсичных отношений.' },
@@ -83,7 +83,7 @@ export const swords: TarotCard[] = [
   },
   {
     id: 'swords_9', name: 'Nine of Swords', nameRu: 'Девятка Мечей', number: 9, arcana: 'minor', suit: 'swords',
-    image: '/cards/swords_9.webp', element: 'air', planet: 'Марс', zodiac: 'Близнецы',
+    image: '/cards/swords_09.webp', element: 'air', planet: 'Марс', zodiac: 'Близнецы',
     keywords: { upright: ['кошмары', 'тревога', 'бессонница', 'отчаяние'], reversed: ['надежда', 'преодоление страхов', 'помощь', 'облегчение'] },
     meanings: { upright: 'Ночные кошмары и тревога терзают вас. Страхи кажутся непреодолимыми, но многие из них существуют лишь в вашем воображении.', reversed: 'Самый тёмный час — перед рассветом. Тревоги начинают отступать, и надежда возвращается.' },
     love: { upright: 'Мучительные мысли об отношениях. Ревность, тревога, бессонница.', reversed: 'Облегчение после мучительного периода в отношениях.' },
