@@ -213,7 +213,13 @@ export default function SynthesisPage() {
         {phase === 'intro' && (
           <motion.div key="intro" className={styles.intro} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className={styles.header}>
-              <span className={styles.icon}>✨</span>
+              <motion.span
+                className={styles.icon}
+                animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                &#10024;
+              </motion.span>
               <h1 className={styles.title}>Синтез Судьбы</h1>
             </div>
             <p className={styles.description}>
@@ -221,37 +227,62 @@ export default function SynthesisPage() {
             </p>
 
             <div className={styles.elements}>
-              <div className={styles.element}>
-                <img src={synthesis.card.image} alt={synthesis.card.nameRu} className={styles.elementImg} />
-                <div className={styles.elementInfo}>
-                  <span className={styles.elementLabel}>Карта таро</span>
-                  <span className={styles.elementValue}>{synthesis.card.nameRu}</span>
-                </div>
-              </div>
-
-              <div className={styles.element}>
-                <div className={styles.runeSymbol}>{synthesis.rune.symbol}</div>
-                <div className={styles.elementInfo}>
-                  <span className={styles.elementLabel}>Руна дня</span>
-                  <span className={styles.elementValue}>{synthesis.rune.nameRu}</span>
-                </div>
-              </div>
-
-              <div className={styles.element}>
-                <div className={styles.moonSymbol}>{synthesis.moon.emoji}</div>
-                <div className={styles.elementInfo}>
-                  <span className={styles.elementLabel}>Фаза луны</span>
-                  <span className={styles.elementValue}>{synthesis.moon.phaseRu}</span>
-                </div>
-              </div>
-
-              <div className={styles.element}>
-                <div className={styles.numberSymbol}>{synthesis.personalYear}</div>
-                <div className={styles.elementInfo}>
-                  <span className={styles.elementLabel}>Персональный год</span>
-                  <span className={styles.elementValue}>Число {synthesis.personalYear}</span>
-                </div>
-              </div>
+              {[
+                {
+                  content: (
+                    <>
+                      <img src={synthesis.card.image} alt={synthesis.card.nameRu} className={styles.elementImg} />
+                      <div className={styles.elementInfo}>
+                        <span className={styles.elementLabel}>Карта таро</span>
+                        <span className={styles.elementValue}>{synthesis.card.nameRu}</span>
+                      </div>
+                    </>
+                  ),
+                },
+                {
+                  content: (
+                    <>
+                      <div className={styles.runeSymbol}>{synthesis.rune.symbol}</div>
+                      <div className={styles.elementInfo}>
+                        <span className={styles.elementLabel}>Руна дня</span>
+                        <span className={styles.elementValue}>{synthesis.rune.nameRu}</span>
+                      </div>
+                    </>
+                  ),
+                },
+                {
+                  content: (
+                    <>
+                      <div className={styles.moonSymbol}>{synthesis.moon.emoji}</div>
+                      <div className={styles.elementInfo}>
+                        <span className={styles.elementLabel}>Фаза луны</span>
+                        <span className={styles.elementValue}>{synthesis.moon.phaseRu}</span>
+                      </div>
+                    </>
+                  ),
+                },
+                {
+                  content: (
+                    <>
+                      <div className={styles.numberSymbol}>{synthesis.personalYear}</div>
+                      <div className={styles.elementInfo}>
+                        <span className={styles.elementLabel}>Персональный год</span>
+                        <span className={styles.elementValue}>Число {synthesis.personalYear}</span>
+                      </div>
+                    </>
+                  ),
+                },
+              ].map((el, i) => (
+                <motion.div
+                  key={i}
+                  className={styles.element}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.1 + i * 0.1 }}
+                >
+                  {el.content}
+                </motion.div>
+              ))}
             </div>
 
             {error && (
@@ -260,7 +291,12 @@ export default function SynthesisPage() {
               </motion.p>
             )}
 
-            <motion.button className={styles.btn} whileTap={{ scale: 0.96 }} onClick={handleSynthesize}>
+            <motion.button
+              className={styles.btn}
+              whileTap={{ scale: 0.96 }}
+              onClick={handleSynthesize}
+              whileHover={{ boxShadow: '0 0 40px rgba(139,92,246,0.4)' }}
+            >
               Получить Синтез
             </motion.button>
             <p className={styles.hint}>Доступно 1 раз в неделю бесплатно</p>
@@ -304,15 +340,36 @@ export default function SynthesisPage() {
             <h2 className={styles.resultTitle}>Ваш Синтез Судьбы</h2>
 
             <div className={styles.resultSymbols}>
-              <span title={synthesis.card.nameRu}>🃏</span>
-              <span title={synthesis.rune.nameRu}>{synthesis.rune.symbol}</span>
-              <span title={synthesis.moon.phaseRu}>{synthesis.moon.emoji}</span>
-              <span title={`Число ${synthesis.personalYear}`}>{synthesis.personalYear}</span>
+              {[
+                { text: '\u{1F0CF}', title: synthesis.card.nameRu },
+                { text: synthesis.rune.symbol, title: synthesis.rune.nameRu },
+                { text: synthesis.moon.emoji, title: synthesis.moon.phaseRu },
+                { text: String(synthesis.personalYear), title: `Число ${synthesis.personalYear}` },
+              ].map((s, i) => (
+                <motion.span
+                  key={i}
+                  title={s.title}
+                  initial={{ opacity: 0, scale: 0.5 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: i * 0.1, type: 'spring', stiffness: 300 }}
+                >
+                  {s.text}
+                </motion.span>
+              ))}
             </div>
 
             <div className={styles.resultText}>
               {interpretation.split('\n').map((paragraph, i) => (
-                paragraph.trim() ? <p key={i}>{paragraph}</p> : null
+                paragraph.trim() ? (
+                  <motion.p
+                    key={i}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + i * 0.06 }}
+                  >
+                    {paragraph}
+                  </motion.p>
+                ) : null
               ))}
             </div>
 

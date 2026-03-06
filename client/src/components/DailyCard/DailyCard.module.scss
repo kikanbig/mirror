@@ -7,8 +7,9 @@
 
 .title {
   font-family: $font-display;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   color: $accent-gold;
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
 .date {
@@ -37,9 +38,10 @@
 
 .cardBack {
   background: linear-gradient(145deg, #1a1a4e, #2d1b69);
-  border: 2px solid $accent-gold;
-  box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+  border: 2px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
   gap: 8px;
+  animation: glowPulse 3s ease-in-out infinite;
 }
 
 .backLabel {
@@ -47,20 +49,22 @@
   font-size: 0.7rem;
   color: $text-secondary;
   text-align: center;
-  max-width: 100px;
+  max-width: 120px;
   position: absolute;
   bottom: 12px;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   padding: 4px 10px;
   border-radius: $radius-sm;
+  white-space: nowrap;
 }
 
 .cardFront {
   background: $gradient-card;
   border: 1px solid rgba(212, 175, 55, 0.4);
-  box-shadow: 0 0 40px rgba(212, 175, 55, 0.25);
+  box-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
 }
 
 .frontInner {
@@ -75,23 +79,33 @@
   border-radius: $radius-lg;
 }
 
+.revealGlow {
+  position: absolute;
+  inset: -20px;
+  border-radius: calc(#{$radius-lg} + 20px);
+  background: radial-gradient(ellipse, rgba(212, 175, 55, 0.2) 0%, transparent 65%);
+  pointer-events: none;
+}
+
 .cardName {
   font-family: $font-display;
   font-size: 1.1rem;
   color: $accent-gold;
   text-align: center;
+  text-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
 }
 
 .reversedLabel {
   position: absolute;
   top: 8px;
   right: 8px;
-  background: rgba(236, 72, 153, 0.8);
+  background: rgba(236, 72, 153, 0.85);
   color: white;
   font-size: 0.6rem;
   padding: 2px 8px;
   border-radius: $radius-sm;
   font-weight: 600;
+  backdrop-filter: blur(4px);
 }
 
 .reading {
@@ -109,7 +123,7 @@
 }
 
 .keyword {
-  background: rgba(139, 92, 246, 0.15);
+  background: rgba(139, 92, 246, 0.12);
   color: $accent-purple;
   font-size: 0.7rem;
   padding: 4px 10px;
@@ -129,7 +143,7 @@
   align-items: flex-start;
   gap: 8px;
   padding: 12px;
-  background: rgba(212, 175, 55, 0.08);
+  @include glass(0.1);
   border-radius: $radius-md;
   border-left: 3px solid $accent-gold;
 
@@ -138,11 +152,6 @@
     color: $text-primary;
     line-height: 1.5;
   }
-}
-
-.adviceIcon {
-  font-size: 1.1rem;
-  flex-shrink: 0;
 }
 
 .affirmation {

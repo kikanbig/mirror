@@ -7,7 +7,7 @@
 
 .position {
   font-family: $font-accent;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: $text-secondary;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -19,6 +19,26 @@
   perspective: 1000px;
   cursor: pointer;
   border-radius: $radius-lg;
+  position: relative;
+}
+
+.cardRevealed {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: calc(#{$radius-lg} + 4px);
+    background: radial-gradient(ellipse, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
+    z-index: -1;
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+}
+
+.cardReversed {
+  &::after {
+    background: radial-gradient(ellipse, rgba(236, 72, 153, 0.15) 0%, transparent 70%);
+    animation-name: glowPulseReversed;
+  }
 }
 
 .inner {
@@ -38,11 +58,13 @@
 
 .front {
   border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
 .back {
-  border: 2px solid $accent-gold;
+  border: 2px solid rgba(212, 175, 55, 0.4);
   transform: rotateY(180deg);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
 }
 
 .cardImg {
@@ -56,13 +78,35 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  background: rgba(236, 72, 153, 0.8);
+  background: rgba(236, 72, 153, 0.85);
   color: white;
   font-size: 0.55rem;
   padding: 2px 6px;
   border-radius: $radius-sm;
   font-weight: 600;
   transform: rotate(180deg);
+  backdrop-filter: blur(4px);
+}
+
+.glow {
+  position: absolute;
+  inset: -10px;
+  border-radius: calc(#{$radius-lg} + 10px);
+  background: radial-gradient(ellipse, rgba(212, 175, 55, 0.12) 0%, transparent 65%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.burstContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.spark {
+  position: absolute;
 }
 
 .info {
@@ -73,13 +117,24 @@
 
 .cardTitle {
   font-family: $font-display;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: $accent-gold;
   margin-bottom: 4px;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
 }
 
 .meaning {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: $text-secondary;
   line-height: 1.4;
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); opacity: 0.6; }
+  50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.4); opacity: 1; }
+}
+
+@keyframes glowPulseReversed {
+  0%, 100% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.2); opacity: 0.6; }
+  50% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.4); opacity: 1; }
 }

@@ -1,5 +1,11 @@
 @use 'variables' as *;
 
+@property --border-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -51,6 +57,7 @@ button {
   outline: none;
   background: none;
   color: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
 
 input, textarea {
@@ -62,10 +69,11 @@ input, textarea {
   padding: 12px 16px;
   font-size: 1rem;
   outline: none;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s;
 
   &:focus {
     border-color: $accent-purple;
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.15);
   }
 
   &::placeholder {
@@ -133,4 +141,14 @@ input, textarea {
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+  50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.4); }
 }

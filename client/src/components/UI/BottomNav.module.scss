@@ -7,9 +7,11 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  background: rgba(10, 10, 26, 0.95);
-  backdrop-filter: blur(20px);
+  background: rgba(10, 10, 26, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
   z-index: 100;
   padding-bottom: env(safe-area-inset-bottom, 0);
 }
@@ -19,7 +21,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  gap: 4px;
   flex: 1;
   height: 100%;
   position: relative;
@@ -31,15 +33,10 @@
   }
 }
 
-.icon {
-  font-size: 1.3rem;
-  line-height: 1;
-}
-
 .label {
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.03em;
 }
 
 .indicator {
@@ -47,10 +44,11 @@
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 24px;
+  width: 20px;
   height: 2px;
   background: $accent-gold;
   border-radius: 0 0 4px 4px;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
 }
 
 .center {
@@ -58,17 +56,39 @@
 }
 
 .centerBtn {
-  width: 52px;
-  height: 52px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
-  background: linear-gradient(135deg, $accent-gold, #b8860b);
+  background: linear-gradient(135deg, $accent-gold 0%, #b8860b 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: -20px;
-  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
-}
+  margin-top: -22px;
+  position: relative;
 
-.centerIcon {
-  font-size: 1.4rem;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    background: conic-gradient(
+      from var(--border-angle, 0deg),
+      transparent 30%,
+      $accent-gold 50%,
+      $accent-purple 70%,
+      transparent 90%
+    );
+    z-index: -1;
+    animation: rotateBorder 3s linear infinite;
+    opacity: 0.6;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212, 175, 55, 0.15), transparent 70%);
+    z-index: -2;
+  }
 }

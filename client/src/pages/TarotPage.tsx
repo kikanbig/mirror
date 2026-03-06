@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { spreads } from '../data/spreads';
 import { fullDeck } from '../data/tarot-deck';
@@ -11,7 +11,17 @@ import { useHaptic } from '../hooks/useHaptic';
 import { api } from '../services/api';
 import styles from './TarotPage.module.scss';
 
-type Phase = 'choose' | 'question' | 'draw' | 'result';
+type Phase = 'choose' | 'question' | 'shuffle' | 'draw' | 'result';
+
+const FAN_COUNT = 9;
+
+const staggerContainer = {
+  animate: { transition: { staggerChildren: 0.06 } },
+};
+const staggerItem = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+};
 
 export default function TarotPage() {
   const [phase, setPhase] = useState<Phase>('choose');
@@ -27,6 +37,8 @@ export default function TarotPage() {
   const spread = spreads.find((s) => s.id === spreadType);
   const [shuffledDeck, setShuffledDeck] = useState(fullDeck);
   const [drawIndex, setDrawIndex] = useState(0);
+  const [fanCards, setFanCards] = useState<number[]>([]);
+  const [shuffleStep, setShuffleStep] = useState(0);
 
   const handleSelectSpread = useCallback((id: string) => {
     impact('light');
@@ -34,36 +46,42 @@ export default function TarotPage() {
     setSpreadType(id);
     const selected = spreads.find((s) => s.id === id);
     if (selected) {
-      const categoryToArea: Record<string, typeof area> = {
-        love: 'love',
-        career: 'career',
-      };
-      if (categoryToArea[selected.category]) {
-        setArea(categoryToArea[selected.category]);
-      }
+      const categoryToArea: Record<string, typeof area> = { love: 'love', career: 'career' };
+      if (categoryToArea[selected.category]) setArea(categoryToArea[selected.category]);
     }
     setPhase('question');
   }, [impact, reset, setSpreadType, setArea]);
 
   const handleStartDraw = useCallback(() => {
     impact('medium');
-    setShuffledDeck(fisherYatesShuffle(fullDeck));
+    const deck = fisherYatesShuffle(fullDeck);
+    setShuffledDeck(deck);
     setDrawIndex(0);
-    setPhase('draw');
+    setFanCards(Array.from({ length: FAN_COUNT }, (_, i) => i));
+    setShuffleStep(0);
+    setPhase('shuffle');
+
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      setShuffleStep(step);
+      if (step >= 3) {
+        clearInterval(interval);
+        setTimeout(() => setPhase('draw'), 400);
+      }
+    }, 500);
   }, [impact]);
 
   const buildLocalInterpretation = useCallback((cards: DrawnCard[]): string => {
     const lines: string[] = [];
-    lines.push(`✨ Ваш расклад раскрывает следующие энергии:\n`);
+    lines.push('Ваш расклад раскрывает следующие энергии:\n');
     cards.forEach((dc) => {
       const meaning = dc.reversed ? dc.card.meanings.reversed : dc.card.meanings.upright;
-      lines.push(`📍 ${dc.positionName} — ${dc.card.nameRu}${dc.reversed ? ' (перевёрнута)' : ''}`);
+      lines.push(`${dc.positionName} — ${dc.card.nameRu}${dc.reversed ? ' (перевёрнута)' : ''}`);
       lines.push(meaning);
       lines.push('');
     });
-    if (cards.length > 1) {
-      lines.push(`💫 Совет: ${cards[0].card.advice}`);
-    }
+    if (cards.length > 1) lines.push(`Совет: ${cards[0].card.advice}`);
     lines.push(`\n«${cards[cards.length - 1].card.affirmation}»`);
     return lines.join('\n');
   }, []);
@@ -113,11 +131,11 @@ export default function TarotPage() {
     setIsInterpreting(false);
   }, [question, area, profile, setInterpretation, setIsInterpreting, buildLocalInterpretation, saveToHistory]);
 
-  const handleDrawCard = useCallback(() => {
+  const handleFanCardSelect = useCallback((fanIndex: number) => {
     if (!spread || drawIndex >= spread.cardCount) return;
     impact('heavy');
 
-    const card = shuffledDeck[drawIndex];
+    const card = shuffledDeck[drawIndex + fanIndex];
     const reversed = Math.random() < 0.3;
     const position = spread.positions[drawIndex];
 
@@ -129,6 +147,7 @@ export default function TarotPage() {
     };
 
     addDrawnCard(drawn);
+    setFanCards((prev) => prev.filter((_, i) => i !== fanIndex));
     const newIndex = drawIndex + 1;
     setDrawIndex(newIndex);
 
@@ -139,7 +158,7 @@ export default function TarotPage() {
         setPhase('result');
         const allCards = [...useReadingStore.getState().drawnCards];
         requestInterpretation(allCards, spread.name);
-      }, 600);
+      }, 800);
     }
   }, [spread, drawIndex, shuffledDeck, impact, notification, addDrawnCard, addExperience, requestInterpretation]);
 
@@ -148,33 +167,60 @@ export default function TarotPage() {
     setPhase('choose');
   };
 
+  const spreadLayout = useMemo(() => {
+    if (!spread) return 'default';
+    if (spread.cardCount === 1) return 'single';
+    if (spread.cardCount === 3) return 'three';
+    if (spread.id === 'celtic_cross') return 'celtic';
+    return 'default';
+  }, [spread]);
+
   return (
     <motion.div className={styles.page} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <h1 className={styles.title}>Гадание на Таро</h1>
 
       <AnimatePresence mode="wait">
+        {/* CHOOSE SPREAD */}
         {phase === 'choose' && (
-          <motion.div key="choose" className={styles.spreads} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.div
+            key="choose"
+            className={styles.spreads}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            variants={staggerContainer}
+          >
             <p className={styles.subtitle}>Выберите расклад</p>
-            <div className={styles.spreadGrid}>
+            <motion.div className={styles.spreadGrid} variants={staggerContainer} initial="initial" animate="animate">
               {spreads.map((s) => (
                 <motion.button
                   key={s.id}
                   className={styles.spreadCard}
+                  variants={staggerItem}
                   whileTap={{ scale: 0.96 }}
                   onClick={() => handleSelectSpread(s.id)}
                 >
                   <span className={styles.spreadIcon}>{s.icon}</span>
                   <span className={styles.spreadName}>{s.name}</span>
-                  <span className={styles.spreadCount}>{s.cardCount} {s.cardCount === 1 ? 'карта' : s.cardCount < 5 ? 'карты' : 'карт'}</span>
+                  <span className={styles.spreadCount}>
+                    {s.cardCount} {s.cardCount === 1 ? 'карта' : s.cardCount < 5 ? 'карты' : 'карт'}
+                  </span>
+                  {s.isPremium && <span className={styles.premiumBadge}>PRO</span>}
                 </motion.button>
               ))}
-            </div>
+            </motion.div>
           </motion.div>
         )}
 
+        {/* QUESTION PHASE */}
         {phase === 'question' && spread && (
-          <motion.div key="question" className={styles.questionPhase} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -30 }}>
+          <motion.div
+            key="question"
+            className={styles.questionPhase}
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -30 }}
+          >
             <h2 className={styles.spreadTitle}>{spread.name}</h2>
             <p className={styles.spreadDesc}>{spread.description}</p>
 
@@ -188,16 +234,13 @@ export default function TarotPage() {
                       className={`${styles.areaBtn} ${area === a ? styles.areaActive : ''}`}
                       onClick={() => { setArea(a); impact('light'); }}
                     >
-                      {a === 'general' ? '🌟 Общее' : a === 'love' ? '❤️ Любовь' : a === 'career' ? '💼 Карьера' : '🌿 Здоровье'}
+                      {a === 'general' ? 'Общее' : a === 'love' ? 'Любовь' : a === 'career' ? 'Карьера' : 'Здоровье'}
                     </button>
                   ))}
                 </div>
               </div>
             ) : (
               <div className={styles.areaFixed}>
-                <span className={styles.areaFixedIcon}>
-                  {spread.category === 'love' ? '❤️' : spread.category === 'career' ? '💼' : '🌟'}
-                </span>
                 <span className={styles.areaFixedText}>
                   {spread.category === 'love' ? 'Любовь и отношения' : spread.category === 'career' ? 'Карьера и финансы' : 'Общее'}
                 </span>
@@ -212,32 +255,69 @@ export default function TarotPage() {
               rows={3}
             />
 
-            <motion.button className={styles.startBtn} whileTap={{ scale: 0.96 }} onClick={handleStartDraw}>
+            <motion.button
+              className={styles.startBtn}
+              whileTap={{ scale: 0.96 }}
+              onClick={handleStartDraw}
+              whileHover={{ boxShadow: '0 0 30px rgba(212,175,55,0.4)' }}
+            >
               Начать расклад
             </motion.button>
           </motion.div>
         )}
 
+        {/* SHUFFLE ANIMATION */}
+        {phase === 'shuffle' && (
+          <motion.div
+            key="shuffle"
+            className={styles.shufflePhase}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <p className={styles.shuffleText}>Перетасовка колоды...</p>
+            <div className={styles.shuffleDeck}>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <motion.div
+                  key={i}
+                  className={styles.shuffleCard}
+                  animate={{
+                    x: shuffleStep % 2 === 0
+                      ? (i % 2 === 0 ? -30 : 30)
+                      : 0,
+                    y: shuffleStep % 2 === 1 ? (i % 2 === 0 ? -15 : 15) : 0,
+                    rotate: shuffleStep % 2 === 0 ? (i - 2) * 5 : (i - 2) * 2,
+                    scale: shuffleStep === 3 ? 0.95 : 1,
+                  }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 300,
+                    damping: 20,
+                    delay: i * 0.05,
+                  }}
+                >
+                  <img src="/cards/card_back.webp" alt="" className={styles.shuffleCardImg} />
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* DRAW PHASE — FAN */}
         {phase === 'draw' && spread && (
-          <motion.div key="draw" className={styles.drawPhase} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.div
+            key="draw"
+            className={styles.drawPhase}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
             <p className={styles.drawProgress}>
-              Вытянуто: {drawnCards.length} / {spread.cardCount}
+              {spread.positions[drawIndex]?.name || 'Готово'} — {drawnCards.length} / {spread.cardCount}
             </p>
 
-            <motion.div className={styles.deckArea} onClick={handleDrawCard} whileTap={{ scale: 0.96 }}>
-              {drawIndex < spread.cardCount && (
-                <motion.div
-                  className={styles.deckCard}
-                  animate={{ y: [0, -4, 0] }}
-                  transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
-                >
-                  <img src="/cards/card_back.webp" alt="Deck" className={styles.deckImg} />
-                  <span className={styles.deckLabel}>Нажмите для вытягивания</span>
-                </motion.div>
-              )}
-            </motion.div>
-
-            <div className={styles.drawnCards}>
+            {/* Drawn cards area */}
+            <div className={`${styles.drawnCards} ${styles[`layout_${spreadLayout}`]}`}>
               {drawnCards.map((dc, i) => (
                 <CardReveal
                   key={dc.card.id}
@@ -248,16 +328,64 @@ export default function TarotPage() {
                 />
               ))}
             </div>
+
+            {/* Fan of cards to choose from */}
+            {drawIndex < spread.cardCount && (
+              <div className={styles.fanContainer}>
+                <p className={styles.fanHint}>Выберите карту</p>
+                <div className={styles.fan}>
+                  {fanCards.map((_, i) => {
+                    const total = fanCards.length;
+                    const middle = (total - 1) / 2;
+                    const angle = (i - middle) * 8;
+                    const yOffset = Math.abs(i - middle) * 4;
+                    return (
+                      <motion.div
+                        key={i}
+                        className={styles.fanCard}
+                        style={{
+                          rotate: `${angle}deg`,
+                          y: yOffset,
+                          zIndex: total - Math.abs(Math.round(middle) - i),
+                        }}
+                        initial={{ opacity: 0, y: 60 }}
+                        animate={{ opacity: 1, y: yOffset }}
+                        exit={{ opacity: 0, scale: 0.5, y: -100 }}
+                        whileHover={{ y: yOffset - 12, scale: 1.05, zIndex: 20 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => handleFanCardSelect(i)}
+                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                        layout
+                      >
+                        <img src="/cards/card_back.webp" alt="Card" className={styles.fanCardImg} />
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </motion.div>
         )}
 
+        {/* RESULT PHASE */}
         {phase === 'result' && (
-          <motion.div key="result" className={styles.resultPhase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <motion.div
+            key="result"
+            className={styles.resultPhase}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
             <h2 className={styles.resultTitle}>Ваш расклад</h2>
 
             <div className={styles.resultCards}>
-              {drawnCards.map((dc) => (
-                <div key={dc.card.id} className={styles.resultCard}>
+              {drawnCards.map((dc, i) => (
+                <motion.div
+                  key={dc.card.id}
+                  className={styles.resultCard}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                >
                   <div className={styles.resultCardRow}>
                     <img src={dc.card.image} alt={dc.card.nameRu} className={styles.resultCardImg} />
                     <div className={styles.resultCardBody}>
@@ -270,30 +398,53 @@ export default function TarotPage() {
                       </p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
 
             <div className={styles.aiSection}>
-              <h3 className={styles.aiTitle}>✨ AI-Интерпретация</h3>
+              <h3 className={styles.aiTitle}>Интерпретация</h3>
               {isInterpreting ? (
-                <motion.div
-                  className={styles.aiLoading}
-                  animate={{ opacity: [0.5, 1, 0.5] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
-                >
+                <div className={styles.aiLoading}>
+                  <motion.div
+                    className={styles.thinkingDots}
+                    animate={{ opacity: [0.3, 1, 0.3] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    <span className={styles.thinkingDot} />
+                    <span className={styles.thinkingDot} />
+                    <span className={styles.thinkingDot} />
+                  </motion.div>
                   <p>Оракул читает карты...</p>
-                </motion.div>
-              ) : interpretation ? (
-                <div className={styles.aiText}>
-                  {interpretation.split('\n').map((paragraph, i) => (
-                    paragraph.trim() ? <p key={i}>{paragraph}</p> : null
-                  ))}
                 </div>
+              ) : interpretation ? (
+                <motion.div
+                  className={styles.aiText}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {interpretation.split('\n').map((paragraph, i) => (
+                    paragraph.trim() ? (
+                      <motion.p
+                        key={i}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.08 }}
+                      >
+                        {paragraph}
+                      </motion.p>
+                    ) : null
+                  ))}
+                </motion.div>
               ) : null}
             </div>
 
-            <motion.button className={styles.resetBtn} whileTap={{ scale: 0.96 }} onClick={handleReset}>
+            <motion.button
+              className={styles.resetBtn}
+              whileTap={{ scale: 0.96 }}
+              onClick={handleReset}
+            >
               Новый расклад
             </motion.button>
           </motion.div>

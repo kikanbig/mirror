@@ -9,6 +9,7 @@
   font-size: 1.3rem;
   color: $accent-gold;
   text-align: center;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
 }
 
 .subtitle {
@@ -17,6 +18,7 @@
   text-align: center;
 }
 
+// --- Spread Selection ---
 .spreadGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -30,14 +32,15 @@
   align-items: center;
   gap: 6px;
   padding: 16px 12px;
-  background: rgba(26, 26, 62, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  @include glass(0.15);
   border-radius: $radius-lg;
   position: relative;
-  transition: border-color 0.3s;
+  transition: border-color 0.3s, box-shadow 0.3s;
 
-  &:active { border-color: $accent-gold; }
-  &.premium { border-color: rgba(139, 92, 246, 0.2); }
+  &:active {
+    border-color: $accent-gold;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+  }
 }
 
 .spreadIcon { font-size: 1.8rem; }
@@ -48,14 +51,16 @@
   position: absolute;
   top: 6px;
   right: 6px;
-  background: $accent-purple;
+  background: linear-gradient(135deg, $accent-purple, #6d28d9);
   color: white;
   font-size: 0.5rem;
-  padding: 1px 5px;
+  padding: 1px 6px;
   border-radius: $radius-sm;
   font-weight: 700;
+  letter-spacing: 0.05em;
 }
 
+// --- Question Phase ---
 .questionPhase {
   display: flex;
   flex-direction: column;
@@ -67,6 +72,7 @@
   font-size: 1.1rem;
   color: $accent-gold;
   text-align: center;
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
 .spreadDesc {
@@ -92,8 +98,7 @@
   padding: 10px;
   border-radius: $radius-md;
   font-size: 0.75rem;
-  background: rgba(26, 26, 62, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  @include glass(0.1);
   color: $text-secondary;
   transition: all 0.3s;
 
@@ -101,6 +106,7 @@
     background: rgba(139, 92, 246, 0.15);
     border-color: $accent-purple;
     color: $text-primary;
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.15);
   }
 }
 
@@ -114,8 +120,6 @@
   border: 1px solid rgba(139, 92, 246, 0.2);
   border-radius: $radius-lg;
 }
-
-.areaFixedIcon { font-size: 1.2rem; }
 
 .areaFixedText {
   font-size: 0.85rem;
@@ -138,8 +142,54 @@
   font-size: 0.95rem;
   border-radius: $radius-lg;
   letter-spacing: 0.03em;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+  transition: box-shadow 0.3s;
 }
 
+// --- Shuffle Phase ---
+.shufflePhase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  min-height: 50vh;
+  justify-content: center;
+}
+
+.shuffleText {
+  font-family: $font-display;
+  font-size: 1rem;
+  color: $accent-gold;
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+.shuffleDeck {
+  position: relative;
+  width: 140px;
+  height: 200px;
+}
+
+.shuffleCard {
+  position: absolute;
+  width: 100px;
+  height: 155px;
+  left: 50%;
+  top: 50%;
+  margin-left: -50px;
+  margin-top: -77px;
+  border-radius: $radius-md;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.shuffleCardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: $radius-md;
+}
+
+// --- Draw Phase ---
 .drawPhase {
   display: flex;
   flex-direction: column;
@@ -150,41 +200,12 @@
 .drawProgress {
   font-size: 0.85rem;
   color: $text-secondary;
-}
-
-.deckArea {
-  cursor: pointer;
-}
-
-.deckCard {
-  width: 140px;
-  height: 210px;
-  border-radius: $radius-lg;
-  overflow: hidden;
-  position: relative;
-  box-shadow: $shadow-glow-gold;
-}
-
-.deckImg {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: $radius-lg;
-}
-
-.deckLabel {
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.6rem;
-  color: $text-secondary;
   text-align: center;
-  max-width: 110px;
-  background: rgba(0, 0, 0, 0.7);
-  padding: 4px 8px;
-  border-radius: $radius-sm;
-  white-space: nowrap;
+
+  &::first-line {
+    color: $accent-gold;
+    font-weight: 600;
+  }
 }
 
 .drawnCards {
@@ -192,8 +213,76 @@
   flex-wrap: wrap;
   gap: 16px;
   justify-content: center;
+  min-height: 60px;
 }
 
+.layout_single {
+  .container { transform: scale(1.1); }
+}
+
+.layout_three {
+  display: flex;
+  gap: 12px;
+}
+
+.layout_celtic {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  max-width: 360px;
+}
+
+// --- Fan ---
+.fanContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.fanHint {
+  font-size: 0.75rem;
+  color: $text-muted;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.fan {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  height: 160px;
+  position: relative;
+  transform-origin: bottom center;
+}
+
+.fanCard {
+  width: 70px;
+  height: 108px;
+  border-radius: $radius-md;
+  overflow: hidden;
+  cursor: pointer;
+  margin: 0 -12px;
+  flex-shrink: 0;
+  transform-origin: bottom center;
+  border: 1.5px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s;
+
+  &:hover {
+    border-color: $accent-gold;
+  }
+}
+
+.fanCardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+// --- Result Phase ---
 .resultPhase {
   display: flex;
   flex-direction: column;
@@ -205,6 +294,7 @@
   font-size: 1.1rem;
   color: $accent-gold;
   text-align: center;
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
 .resultCards {
@@ -215,8 +305,7 @@
 
 .resultCard {
   padding: 12px;
-  background: rgba(26, 26, 62, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  @include glass(0.12);
   border-radius: $radius-lg;
 }
 
@@ -233,6 +322,7 @@
   object-fit: cover;
   flex-shrink: 0;
   border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.1);
 }
 
 .resultCardBody {
@@ -262,12 +352,26 @@
   line-height: 1.5;
 }
 
+// --- AI Section ---
 .aiSection {
   margin-top: 8px;
   padding: 16px;
-  background: rgba(139, 92, 246, 0.06);
-  border: 1px solid rgba(139, 92, 246, 0.15);
+  @include glass(0.1);
   border-radius: $radius-lg;
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 60%, rgba(212, 175, 55, 0.04) 0%, transparent 50%);
+    animation: meshDrift 15s ease-in-out infinite alternate;
+    pointer-events: none;
+    z-index: 0;
+  }
 }
 
 .aiTitle {
@@ -276,20 +380,45 @@
   color: $accent-gold;
   text-align: center;
   margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .aiLoading {
   text-align: center;
   padding: 20px;
+  position: relative;
+  z-index: 1;
 
   p {
     font-size: 0.85rem;
     color: $text-secondary;
     font-style: italic;
+    margin-top: 12px;
   }
 }
 
+.thinkingDots {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.thinkingDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, $accent-gold, $accent-purple);
+  display: block;
+
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.4s; }
+}
+
 .aiText {
+  position: relative;
+  z-index: 1;
+
   p {
     font-size: 0.8rem;
     color: $text-secondary;
@@ -304,9 +433,15 @@
   width: 100%;
   padding: 12px;
   background: transparent;
-  border: 1px solid $accent-gold;
+  border: 1px solid rgba(212, 175, 55, 0.4);
   color: $accent-gold;
   font-weight: 600;
   font-size: 0.85rem;
   border-radius: $radius-lg;
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+  &:active {
+    border-color: $accent-gold;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+  }
 }

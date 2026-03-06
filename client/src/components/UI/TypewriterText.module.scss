@@ -1,0 +1,53 @@
+.container {
+  position: relative;
+}
+
+.paragraph {
+  font-size: 0.82rem;
+  color: $text-secondary;
+  line-height: 1.7;
+  margin-bottom: 10px;
+
+  &:last-child { margin-bottom: 0; }
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: $accent-gold;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  animation: blink 0.8s step-end infinite;
+}
+
+.thinking {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.thinkingStar {
+  font-size: 1rem;
+  color: $accent-gold;
+}
+
+.thinkingBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+}
+
+.thinkingText {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  font-style: italic;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
+}

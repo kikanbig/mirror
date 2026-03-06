@@ -9,6 +9,15 @@ function formatDate(iso: string): string {
   return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
 }
 
+const stagger = {
+  animate: { transition: { staggerChildren: 0.05 } },
+};
+
+const cardVariant = {
+  initial: { opacity: 0, y: 16 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+};
+
 export default function JournalPage() {
   const { readings, toggleBookmark, deleteReading } = useHistoryStore();
   const { impact } = useHaptic();
@@ -40,31 +49,66 @@ export default function JournalPage() {
   };
 
   return (
-    <motion.div className={styles.page} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+    <motion.div
+      className={styles.page}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
       <h1 className={styles.title}>Дневник Предсказаний</h1>
 
       {readings.length > 0 && (
         <div className={styles.filters}>
           {([
             ['all', 'Все'],
-            ['tarot', '🃏 Таро'],
-            ['synthesis', '✨ Синтез'],
-            ['bookmarked', '⭐ Избранное'],
+            ['tarot', 'Таро'],
+            ['synthesis', 'Синтез'],
+            ['bookmarked', 'Избранное'],
           ] as const).map(([key, label]) => (
-            <button
+            <motion.button
               key={key}
               className={`${styles.filterBtn} ${filter === key ? styles.filterActive : ''}`}
               onClick={() => { setFilter(key); impact('light'); }}
+              whileTap={{ scale: 0.95 }}
             >
               {label}
-            </button>
+              {filter === key && (
+                <motion.div
+                  className={styles.filterIndicator}
+                  layoutId="filter-indicator"
+                  transition={{ type: 'spring', stiffness: 400, damping: 30 }}
+                />
+              )}
+            </motion.button>
           ))}
         </div>
       )}
 
       {filtered.length === 0 ? (
-        <div className={styles.empty}>
-          <span className={styles.emptyIcon}>📔</span>
+        <motion.div
+          className={styles.empty}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className={styles.emptyIllustration}>
+            <motion.svg
+              width="64" height="64" viewBox="0 0 64 64" fill="none"
+              animate={{ y: [0, -4, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <rect x="16" y="8" width="24" height="36" rx="4" stroke="rgba(212,175,55,0.4)" strokeWidth="1.5" />
+              <rect x="24" y="16" width="24" height="36" rx="4" stroke="rgba(139,92,246,0.3)" strokeWidth="1.5" />
+              <circle cx="32" cy="52" r="3" fill="rgba(212,175,55,0.3)" />
+              <circle cx="20" cy="5" r="1.5" fill="rgba(212,175,55,0.4)">
+                <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="48" cy="12" r="1" fill="rgba(139,92,246,0.5)">
+                <animate attributeName="opacity" values="0.3;1;0.3" dur="1.5s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="40" cy="4" r="1.5" fill="rgba(255,215,0,0.4)">
+                <animate attributeName="opacity" values="0.2;0.8;0.2" dur="2.5s" repeatCount="indefinite" />
+              </circle>
+            </motion.svg>
+          </div>
           <p className={styles.emptyText}>
             {readings.length === 0 ? 'Ваш дневник пока пуст' : 'Нет записей в этой категории'}
           </p>
@@ -73,9 +117,9 @@ export default function JournalPage() {
               ? 'Сделайте расклад или синтез, и он появится здесь'
               : 'Попробуйте другой фильтр'}
           </p>
-        </div>
+        </motion.div>
       ) : (
-        <div className={styles.list}>
+        <motion.div className={styles.list} variants={stagger} initial="initial" animate="animate">
           {filtered.map((reading) => (
             <ReadingCard
               key={reading.id}
@@ -86,11 +130,13 @@ export default function JournalPage() {
               onDelete={(e) => handleDelete(e, reading.id)}
             />
           ))}
-        </div>
+        </motion.div>
       )}
 
       {readings.length > 0 && (
-        <p className={styles.count}>{readings.length} {readings.length === 1 ? 'запись' : readings.length < 5 ? 'записи' : 'записей'}</p>
+        <p className={styles.count}>
+          {readings.length} {readings.length === 1 ? 'запись' : readings.length < 5 ? 'записи' : 'записей'}
+        </p>
       )}
     </motion.div>
   );
@@ -113,12 +159,22 @@ function ReadingCard({
     <motion.div
       className={`${styles.card} ${isExpanded ? styles.cardExpanded : ''}`}
       onClick={onExpand}
+      variants={cardVariant}
       layout
     >
       <div className={styles.cardHeader}>
         <div className={styles.cardMeta}>
           <span className={styles.cardType}>
-            {reading.type === 'tarot' ? '🃏' : '✨'}
+            {reading.type === 'tarot' ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M12 7l-2 3 2 3M10 7l2 3-2 3" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+              </svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M12 2l2.5 7.5H22l-6 4.5 2.5 7.5L12 17l-6.5 4.5 2.5-7.5-6-4.5h7.5L12 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+              </svg>
+            )}
           </span>
           <div>
             <span className={styles.cardTitle}>{reading.title}</span>
@@ -126,26 +182,47 @@ function ReadingCard({
           </div>
         </div>
         <div className={styles.cardActions}>
-          <button className={styles.actionBtn} onClick={onBookmark}>
-            {reading.isBookmarked ? '⭐' : '☆'}
-          </button>
-          <button className={styles.actionBtn} onClick={onDelete}>
-            🗑
-          </button>
+          <motion.button
+            className={`${styles.actionBtn} ${reading.isBookmarked ? styles.bookmarked : ''}`}
+            onClick={onBookmark}
+            whileTap={{ scale: 0.8 }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill={reading.isBookmarked ? 'currentColor' : 'none'}>
+              <path
+                d="M12 2l3 6.5L22 10l-5 5 1.5 7L12 18.5 5.5 22 7 15 2 10l7-1.5L12 2z"
+                stroke="currentColor" strokeWidth="2" strokeLinejoin="round"
+              />
+            </svg>
+          </motion.button>
+          <motion.button
+            className={styles.actionBtn}
+            onClick={onDelete}
+            whileTap={{ scale: 0.8 }}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+              <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M5 6v14a2 2 0 002 2h10a2 2 0 002-2V6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+          </motion.button>
         </div>
       </div>
 
       <div className={styles.cardCards}>
         {reading.cards.map((c, i) => (
-          <div key={i} className={styles.miniCard}>
+          <motion.div
+            key={i}
+            className={styles.miniCard}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.05 }}
+          >
             <img src={c.cardImage} alt={c.cardName} className={styles.miniCardImg} />
             {c.reversed && <span className={styles.miniReversed}>R</span>}
-          </div>
+          </motion.div>
         ))}
       </div>
 
       {reading.question && (
-        <p className={styles.cardQuestion}>«{reading.question}»</p>
+        <p className={styles.cardQuestion}>&#171;{reading.question}&#187;</p>
       )}
 
       <AnimatePresence>
@@ -155,6 +232,7 @@ function ReadingCard({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
           >
             {reading.cards.map((c, i) => (
               <div key={i} className={styles.interpCard}>

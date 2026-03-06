@@ -9,6 +9,7 @@
   font-size: 1.2rem;
   color: $accent-gold;
   text-align: center;
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
 .filters {
@@ -21,20 +22,27 @@
 }
 
 .filterBtn {
+  position: relative;
   white-space: nowrap;
   padding: 6px 14px;
   border-radius: $radius-full;
   font-size: 0.75rem;
-  background: rgba(26, 26, 62, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  @include glass(0.1);
   color: $text-secondary;
-  transition: all 0.2s;
+  transition: all 0.3s;
+}
 
-  &.filterActive {
-    background: rgba(139, 92, 246, 0.15);
-    border-color: $accent-purple;
-    color: $text-primary;
-  }
+.filterActive {
+  color: $text-primary;
+}
+
+.filterIndicator {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(139, 92, 246, 0.4);
+  background: rgba(139, 92, 246, 0.1);
+  pointer-events: none;
 }
 
 .empty {
@@ -45,7 +53,10 @@
   padding: 48px 24px;
 }
 
-.emptyIcon { font-size: 3rem; opacity: 0.4; }
+.emptyIllustration {
+  opacity: 0.7;
+}
+
 .emptyText { font-size: 0.95rem; color: $text-secondary; }
 .emptyHint { font-size: 0.8rem; color: $text-muted; text-align: center; }
 
@@ -57,14 +68,14 @@
 
 .card {
   padding: 14px;
-  background: rgba(26, 26, 62, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  @include glass(0.1);
   border-radius: $radius-lg;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 
   &.cardExpanded {
     border-color: rgba(212, 175, 55, 0.2);
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.08);
   }
 }
 
@@ -81,7 +92,10 @@
   align-items: center;
 }
 
-.cardType { font-size: 1.4rem; }
+.cardType {
+  color: $accent-gold;
+  line-height: 1;
+}
 
 .cardTitle {
   display: block;
@@ -110,9 +124,14 @@
   justify-content: center;
   background: rgba(255, 255, 255, 0.04);
   border-radius: $radius-sm;
-  font-size: 0.8rem;
-  border: none;
-  cursor: pointer;
+  color: $text-muted;
+  transition: color 0.2s;
+
+  &:active { color: $accent-gold; }
+}
+
+.bookmarked {
+  color: $accent-gold;
 }
 
 .cardCards {

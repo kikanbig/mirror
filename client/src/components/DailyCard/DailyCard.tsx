@@ -36,7 +36,9 @@ export default function DailyCard() {
       animate={{ opacity: 1, y: 0 }}
     >
       <h2 className={styles.title}>Карта Дня</h2>
-      <p className={styles.date}>{new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
+      <p className={styles.date}>
+        {new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })}
+      </p>
 
       <div className={styles.cardArea}>
         <AnimatePresence mode="wait">
@@ -46,26 +48,38 @@ export default function DailyCard() {
               className={styles.cardBack}
               onClick={handleReveal}
               whileTap={{ scale: 0.96 }}
-              exit={{ rotateY: 90, opacity: 0 }}
+              exit={{ rotateY: 90, opacity: 0, scale: 0.95 }}
               transition={{ duration: 0.3 }}
             >
               <img src="/cards/card_back.webp" alt="Card back" className={styles.cardImg} />
-              <span className={styles.backLabel}>Нажмите, чтобы открыть</span>
+              <motion.span
+                className={styles.backLabel}
+                animate={{ opacity: [0.5, 1, 0.5] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                Нажмите, чтобы открыть
+              </motion.span>
             </motion.div>
           ) : (
             <motion.div
               key="front"
               className={styles.cardFront}
-              initial={{ rotateY: -90, opacity: 0 }}
-              animate={{ rotateY: 0, opacity: 1 }}
-              transition={{ duration: 0.5, type: 'spring', stiffness: 200 }}
+              initial={{ rotateY: -90, opacity: 0, scale: 0.9 }}
+              animate={{ rotateY: 0, opacity: 1, scale: [0.9, 1.05, 1] }}
+              transition={{ duration: 0.6, type: 'spring', stiffness: 200, times: [0, 0.6, 1] }}
             >
               <div className={styles.frontInner}>
                 <img src={dailyResult.card.image} alt={dailyResult.card.nameRu} className={styles.cardImg} />
               </div>
               {dailyResult.reversed && (
-                <div className={styles.reversedLabel}>Перевёрнута</div>
+                <div className={styles.reversedLabel}>&#8593; Перевёрнута</div>
               )}
+              <motion.div
+                className={styles.revealGlow}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.6, 0.3] }}
+                transition={{ duration: 1 }}
+              />
             </motion.div>
           )}
         </AnimatePresence>
@@ -77,29 +91,51 @@ export default function DailyCard() {
             className={styles.reading}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.4, duration: 0.4 }}
           >
             <h3 className={styles.cardName}>{dailyResult.card.nameRu}</h3>
             <div className={styles.keywords}>
               {(dailyResult.reversed
                 ? dailyResult.card.keywords.reversed
                 : dailyResult.card.keywords.upright
-              ).map((kw) => (
-                <span key={kw} className={styles.keyword}>{kw}</span>
+              ).map((kw, i) => (
+                <motion.span
+                  key={kw}
+                  className={styles.keyword}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.5 + i * 0.08 }}
+                >
+                  {kw}
+                </motion.span>
               ))}
             </div>
-            <p className={styles.meaning}>
+            <motion.p
+              className={styles.meaning}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7 }}
+            >
               {dailyResult.reversed
                 ? dailyResult.card.meanings.reversed
                 : dailyResult.card.meanings.upright}
-            </p>
-            <div className={styles.advice}>
-              <span className={styles.adviceIcon}>💫</span>
+            </motion.p>
+            <motion.div
+              className={styles.advice}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.9 }}
+            >
               <p>{dailyResult.card.advice}</p>
-            </div>
-            <div className={styles.affirmation}>
-              «{dailyResult.card.affirmation}»
-            </div>
+            </motion.div>
+            <motion.div
+              className={styles.affirmation}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1.1 }}
+            >
+              &#171;{dailyResult.card.affirmation}&#187;
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
