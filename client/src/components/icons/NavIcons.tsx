@@ -5,7 +5,7 @@ interface IconProps {
   size?: number;
 }
 
-function NavIcon({ src, active, size = 28 }: IconProps & { src: string }) {
+function NavIcon({ src, active, size = 36 }: IconProps & { src: string }) {
   return (
     <motion.div
       style={{ width: size, height: size, position: 'relative' }}
@@ -26,22 +26,22 @@ function NavIcon({ src, active, size = 28 }: IconProps & { src: string }) {
   );
 }
 
-export function HomeIcon({ active, size = 28 }: IconProps) {
+export function HomeIcon({ active, size = 36 }: IconProps) {
   return <NavIcon src="/icons/icon_nav_home.webp" active={active} size={size} />;
 }
 
-export function TarotIcon({ active, size = 28 }: IconProps) {
+export function TarotIcon({ active, size = 36 }: IconProps) {
   return <NavIcon src="/icons/icon_nav_tarot.webp" active={active} size={size} />;
 }
 
-export function SynthesisIcon({ active, size = 32 }: IconProps) {
+export function SynthesisIcon({ active, size = 40 }: IconProps) {
   return <NavIcon src="/icons/icon_nav_synthesis.webp" active={active} size={size} />;
 }
 
-export function JournalIcon({ active, size = 28 }: IconProps) {
+export function JournalIcon({ active, size = 36 }: IconProps) {
   return <NavIcon src="/icons/icon_nav_journal.webp" active={active} size={size} />;
 }
 
-export function ProfileIcon({ active, size = 28 }: IconProps) {
+export function ProfileIcon({ active, size = 36 }: IconProps) {
   return <NavIcon src="/icons/icon_nav_profile.webp" active={active} size={size} />;
 }

@@ -67,12 +67,12 @@
 
 .name {
   font-family: $font-display;
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: $text-primary;
 }
 
 .zodiac {
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   color: $accent-purple;
 }
 
@@ -90,14 +90,14 @@
 }
 
 .levelLabel {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: $text-secondary;
   font-weight: 600;
 }
 
 .levelName {
   font-family: $font-accent;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: $accent-gold;
 }
 
@@ -127,7 +127,7 @@
 }
 
 .xpText {
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   color: $text-muted;
   text-align: right;
   margin-top: 4px;
@@ -158,7 +158,7 @@
 }
 
 .statLabel {
-  font-size: 0.6rem;
+  font-size: 0.75rem;
   color: $text-muted;
   text-align: center;
 }
@@ -172,7 +172,7 @@
 
 .sectionTitle {
   font-family: $font-accent;
-  font-size: 0.9rem;
+  font-size: 1.02rem;
   color: $accent-gold;
   margin-bottom: 12px;
 }
@@ -188,7 +188,7 @@
 }
 
 .numLabel {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: $text-secondary;
 }
 

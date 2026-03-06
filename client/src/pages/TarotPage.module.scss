@@ -6,14 +6,14 @@
 
 .title {
   font-family: $font-display;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   color: $accent-gold;
   text-align: center;
   text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
 }
 
 .subtitle {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: $text-secondary;
   text-align: center;
 }
@@ -50,8 +50,8 @@
   border-radius: 12px;
   filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.3));
 }
-.spreadName { font-size: 0.8rem; color: $text-primary; font-weight: 600; }
-.spreadCount { font-size: 0.65rem; color: $text-muted; }
+.spreadName { font-size: 0.92rem; color: $text-primary; font-weight: 600; }
+.spreadCount { font-size: 0.78rem; color: $text-muted; }
 
 .premiumBadge {
   position: absolute;
@@ -59,8 +59,8 @@
   right: 6px;
   background: linear-gradient(135deg, $accent-purple, #6d28d9);
   color: white;
-  font-size: 0.5rem;
-  padding: 1px 6px;
+  font-size: 0.6rem;
+  padding: 2px 8px;
   border-radius: $radius-sm;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -75,21 +75,21 @@
 
 .spreadTitle {
   font-family: $font-display;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   color: $accent-gold;
   text-align: center;
   text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
 .spreadDesc {
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   color: $text-secondary;
   text-align: center;
   line-height: 1.5;
 }
 
 .areaLabel {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: $text-muted;
   margin-bottom: 8px;
 }
@@ -103,7 +103,7 @@
 .areaBtn {
   padding: 10px;
   border-radius: $radius-md;
-  font-size: 0.75rem;
+  font-size: 0.88rem;
   @include glass(0.1);
   color: $text-secondary;
   transition: all 0.3s;
@@ -128,7 +128,7 @@
 }
 
 .areaFixedText {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: $text-primary;
   font-weight: 600;
 }
@@ -136,7 +136,7 @@
 .questionInput {
   width: 100%;
   resize: none;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
 
 .startBtn {
@@ -145,7 +145,7 @@
   background: linear-gradient(135deg, $accent-gold, #b8860b);
   color: #0a0a1a;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   border-radius: $radius-lg;
   letter-spacing: 0.03em;
   box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
@@ -164,7 +164,7 @@
 
 .shuffleText {
   font-family: $font-display;
-  font-size: 1rem;
+  font-size: 1.15rem;
   color: $accent-gold;
   text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
 }
@@ -204,7 +204,7 @@
 }
 
 .drawProgress {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: $text-secondary;
   text-align: center;
 
@@ -248,7 +248,7 @@
 }
 
 .fanHint {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: $text-muted;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -299,7 +299,7 @@
 
 .resultTitle {
   font-family: $font-display;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   color: $accent-gold;
   text-align: center;
   text-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
@@ -342,7 +342,7 @@
 }
 
 .resultPos {
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   color: $accent-purple;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -350,12 +350,12 @@
 
 .resultName {
   font-family: $font-accent;
-  font-size: 0.85rem;
+  font-size: 0.98rem;
   color: $accent-gold;
 }
 
 .resultMeaning {
-  font-size: 0.75rem;
+  font-size: 0.88rem;
   color: $text-secondary;
   line-height: 1.5;
 }
@@ -384,7 +384,7 @@
 
 .aiTitle {
   font-family: $font-display;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   color: $accent-gold;
   text-align: center;
   margin-bottom: 12px;
@@ -399,7 +399,7 @@
   z-index: 1;
 
   p {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: $text-secondary;
     font-style: italic;
     margin-top: 12px;
@@ -428,7 +428,7 @@
   z-index: 1;
 
   p {
-    font-size: 0.8rem;
+    font-size: 0.92rem;
     color: $text-secondary;
     line-height: 1.7;
     margin-bottom: 10px;
@@ -439,12 +439,12 @@
 
 .resetBtn {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   background: transparent;
   border: 1px solid rgba(212, 175, 55, 0.4);
   color: $accent-gold;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   border-radius: $radius-lg;
   transition: border-color 0.3s, box-shadow 0.3s;
 

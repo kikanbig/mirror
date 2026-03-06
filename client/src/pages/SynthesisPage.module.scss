@@ -32,7 +32,7 @@
 }
 
 .description {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: $text-secondary;
   line-height: 1.6;
   max-width: 320px;
@@ -98,14 +98,14 @@
 }
 
 .elementLabel {
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   color: $text-muted;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
 .elementValue {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: $text-primary;
   font-weight: 600;
 }
@@ -137,7 +137,7 @@
 }
 
 .hint {
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   color: $text-muted;
 }
 
@@ -185,13 +185,13 @@
 
 .loadingText {
   font-family: $font-display;
-  font-size: 1rem;
+  font-size: 1.15rem;
   color: $accent-gold;
   text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
 }
 
 .loadingHint {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: $text-muted;
   max-width: 250px;
 }
@@ -240,7 +240,7 @@
   }
 
   p {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: $text-secondary;
     line-height: 1.7;
     margin-bottom: 12px;
@@ -253,12 +253,12 @@
 
 .resetBtn {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   background: transparent;
   border: 1px solid rgba(212, 175, 55, 0.4);
   color: $accent-gold;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   border-radius: $radius-lg;
   transition: border-color 0.3s, box-shadow 0.3s;
 

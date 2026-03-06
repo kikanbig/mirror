@@ -26,7 +26,7 @@
   white-space: nowrap;
   padding: 6px 14px;
   border-radius: $radius-full;
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   @include glass(0.1);
   color: $text-secondary;
   transition: all 0.3s;
@@ -57,8 +57,8 @@
   opacity: 0.7;
 }
 
-.emptyText { font-size: 0.95rem; color: $text-secondary; }
-.emptyHint { font-size: 0.8rem; color: $text-muted; text-align: center; }
+.emptyText { font-size: 1.05rem; color: $text-secondary; }
+.emptyHint { font-size: 0.9rem; color: $text-muted; text-align: center; }
 
 .list {
   display: flex;
@@ -99,14 +99,14 @@
 
 .cardTitle {
   display: block;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   color: $text-primary;
   font-weight: 600;
 }
 
 .cardDate {
   display: block;
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   color: $text-muted;
   margin-top: 2px;
 }
@@ -177,7 +177,7 @@
 }
 
 .cardQuestion {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   color: $text-muted;
   font-style: italic;
   margin-top: 8px;
@@ -198,7 +198,7 @@
 }
 
 .interpPos {
-  font-size: 0.65rem;
+  font-size: 0.78rem;
   color: $accent-purple;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -206,7 +206,7 @@
 }
 
 .interpName {
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   color: $accent-gold;
 }
 
@@ -214,7 +214,7 @@
   margin-top: 10px;
 
   p {
-    font-size: 0.78rem;
+    font-size: 0.9rem;
     color: $text-secondary;
     line-height: 1.6;
     margin-bottom: 8px;
@@ -225,7 +225,7 @@
 
 .count {
   text-align: center;
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   color: $text-muted;
   padding-bottom: 8px;
 }
