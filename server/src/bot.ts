@@ -1,17 +1,17 @@
 import { Telegraf, Markup } from 'telegraf';
+import type { Express } from 'express';
 
-export function startBot() {
-  try {
-    const BOT_TOKEN = process.env.BOT_TOKEN;
-    console.log(`[Bot] BOT_TOKEN present: ${!!BOT_TOKEN}`);
-    if (!BOT_TOKEN) {
-      console.warn('[Bot] BOT_TOKEN not set, skipping');
-      return;
-    }
+export function setupBot(app: Express) {
+  const BOT_TOKEN = process.env.BOT_TOKEN;
+  if (!BOT_TOKEN) {
+    console.warn('[Bot] BOT_TOKEN not set, skipping');
+    return;
+  }
 
-    const bot = new Telegraf(BOT_TOKEN);
-    const WEBAPP_URL = process.env.WEBAPP_URL || `https://${process.env.RAILWAY_PUBLIC_DOMAIN || 'localhost:3000'}`;
-    console.log(`[Bot] WEBAPP_URL: ${WEBAPP_URL}`);
+  const bot = new Telegraf(BOT_TOKEN);
+  const WEBAPP_URL = process.env.WEBAPP_URL || `https://${process.env.RAILWAY_PUBLIC_DOMAIN || 'localhost:3000'}`;
+  const WEBHOOK_DOMAIN = process.env.RAILWAY_PUBLIC_DOMAIN || process.env.WEBAPP_URL?.replace('https://', '');
+  const WEBHOOK_PATH = `/bot${BOT_TOKEN}`;
 
   bot.start(async (ctx) => {
     await ctx.reply(
@@ -71,14 +71,17 @@ export function startBot() {
     );
   });
 
-  console.log('[Bot] Launching...');
+  if (WEBHOOK_DOMAIN && process.env.NODE_ENV === 'production') {
+    const webhookUrl = `https://${WEBHOOK_DOMAIN}${WEBHOOK_PATH}`;
+    app.use(WEBHOOK_PATH, (req, res) => bot.handleUpdate(req.body, res));
+    bot.telegram.setWebhook(webhookUrl)
+      .then(() => console.log(`[Bot] Webhook set: ${webhookUrl}`))
+      .catch((err: Error) => console.error('[Bot] Webhook failed:', err.message));
+  } else {
     bot.launch()
-      .then(() => console.log('[Bot] Telegram bot started successfully'))
+      .then(() => console.log('[Bot] Long-polling started'))
       .catch((err: Error) => console.error('[Bot] Launch failed:', err.message));
-
     process.once('SIGINT', () => bot.stop('SIGINT'));
     process.once('SIGTERM', () => bot.stop('SIGTERM'));
-  } catch (err) {
-    console.error('[Bot] Fatal error:', err);
   }
 }

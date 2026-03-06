@@ -8,7 +8,7 @@ import { readingsRouter } from './routes/readings';
 import { dailyRouter } from './routes/daily';
 import { profileRouter } from './routes/profile';
 import { interpretRouter } from './routes/interpret';
-import { startBot } from './bot';
+import { setupBot } from './bot';
 
 dotenv.config();
 
@@ -32,6 +32,8 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+setupBot(app);
+
 const clientPath = path.join(__dirname, '..', 'public');
 app.use(express.static(clientPath));
 app.use((_req, res) => {
@@ -40,7 +42,6 @@ app.use((_req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  startBot();
 });
 
 export default app;
