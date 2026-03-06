@@ -33,7 +33,7 @@ app.get('/api/health', (_req, res) => {
 
 const clientPath = path.join(__dirname, '..', 'public');
 app.use(express.static(clientPath));
-app.get('*', (_req, res) => {
+app.use((_req, res) => {
   res.sendFile(path.join(clientPath, 'index.html'));
 });
 
