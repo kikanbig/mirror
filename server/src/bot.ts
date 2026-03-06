@@ -1,14 +1,17 @@
 import { Telegraf, Markup } from 'telegraf';
 
 export function startBot() {
-  const BOT_TOKEN = process.env.BOT_TOKEN;
-  if (!BOT_TOKEN) {
-    console.warn('BOT_TOKEN not set, skipping bot startup');
-    return;
-  }
+  try {
+    const BOT_TOKEN = process.env.BOT_TOKEN;
+    console.log(`[Bot] BOT_TOKEN present: ${!!BOT_TOKEN}`);
+    if (!BOT_TOKEN) {
+      console.warn('[Bot] BOT_TOKEN not set, skipping');
+      return;
+    }
 
-  const bot = new Telegraf(BOT_TOKEN);
-  const WEBAPP_URL = process.env.WEBAPP_URL || `https://${process.env.RAILWAY_PUBLIC_DOMAIN || 'localhost:3000'}`;
+    const bot = new Telegraf(BOT_TOKEN);
+    const WEBAPP_URL = process.env.WEBAPP_URL || `https://${process.env.RAILWAY_PUBLIC_DOMAIN || 'localhost:3000'}`;
+    console.log(`[Bot] WEBAPP_URL: ${WEBAPP_URL}`);
 
   bot.start(async (ctx) => {
     await ctx.reply(
@@ -68,10 +71,14 @@ export function startBot() {
     );
   });
 
-  bot.launch()
-    .then(() => console.log('Telegram bot started'))
-    .catch((err) => console.error('Bot launch failed:', err));
+  console.log('[Bot] Launching...');
+    bot.launch()
+      .then(() => console.log('[Bot] Telegram bot started successfully'))
+      .catch((err: Error) => console.error('[Bot] Launch failed:', err.message));
 
-  process.once('SIGINT', () => bot.stop('SIGINT'));
-  process.once('SIGTERM', () => bot.stop('SIGTERM'));
+    process.once('SIGINT', () => bot.stop('SIGINT'));
+    process.once('SIGTERM', () => bot.stop('SIGTERM'));
+  } catch (err) {
+    console.error('[Bot] Fatal error:', err);
+  }
 }
