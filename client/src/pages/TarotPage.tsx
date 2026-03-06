@@ -55,7 +55,8 @@ export default function TarotPage() {
     const deck = fisherYatesShuffle(fullDeck);
     setShuffledDeck(deck);
     setDrawIndex(0);
-    const selected = spreads.find((s) => s.id === spreadType);
+    const currentSpreadType = useReadingStore.getState().spreadType;
+    const selected = spreads.find((s) => s.id === currentSpreadType);
     const fanSize = Math.max(9, (selected?.cardCount ?? 1) + 3);
     setFanCards(Array.from({ length: fanSize }, (_, i) => i));
     setShuffleStep(0);
@@ -337,8 +338,9 @@ export default function TarotPage() {
                   {fanCards.map((_, i) => {
                     const total = fanCards.length;
                     const middle = (total - 1) / 2;
-                    const angle = (i - middle) * 8;
-                    const yOffset = Math.abs(i - middle) * 4;
+                    const step = total > 10 ? 6 : 8;
+                    const angle = (i - middle) * step;
+                    const yOffset = Math.abs(i - middle) * 3;
                     return (
                       <motion.div
                         key={i}
