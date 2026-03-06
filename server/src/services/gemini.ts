@@ -1,36 +1,55 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import Groq from 'groq-sdk';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
 
-const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite'];
+const GEMINI_MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite'];
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
-async function callWithRetry(prompt: string, maxRetries = 3): Promise<string> {
-  let lastError: Error | null = null;
-
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    for (const modelName of MODELS) {
-      try {
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const result = await model.generateContent(prompt);
-        return result.response.text();
-      } catch (err: any) {
-        lastError = err;
-        const status = err?.status;
-        const isRetryable = status === 429 || status === 503 || status === 500;
-        console.warn(`[Gemini] ${modelName} attempt ${attempt + 1}: ${status || err?.message}`);
-
-        if (!isRetryable) continue;
-      }
+async function callGemini(prompt: string): Promise<string> {
+  for (const modelName of GEMINI_MODELS) {
+    try {
+      const model = genAI.getGenerativeModel({ model: modelName });
+      const result = await model.generateContent(prompt);
+      console.log(`[AI] Gemini ${modelName} succeeded`);
+      return result.response.text();
+    } catch (err: any) {
+      const status = err?.status;
+      console.warn(`[AI] Gemini ${modelName}: ${status || err?.message}`);
+      if (status !== 429 && status !== 503 && status !== 500) continue;
     }
+  }
+  throw new Error('All Gemini models failed');
+}
 
-    if (attempt < maxRetries - 1) {
-      const delay = Math.min(5000 * (attempt + 1), 20000);
-      console.log(`[Gemini] Waiting ${delay}ms before retry ${attempt + 2}...`);
-      await new Promise((r) => setTimeout(r, delay));
+async function callGroq(prompt: string): Promise<string> {
+  const result = await groq.chat.completions.create({
+    model: GROQ_MODEL,
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.8,
+    max_tokens: 2048,
+  });
+  console.log('[AI] Groq succeeded');
+  return result.choices[0]?.message?.content || '';
+}
+
+async function generateWithFallback(prompt: string): Promise<string> {
+  try {
+    return await callGemini(prompt);
+  } catch (geminiErr: any) {
+    console.warn(`[AI] Gemini failed, switching to Groq: ${geminiErr.message}`);
+  }
+
+  if (process.env.GROQ_API_KEY) {
+    try {
+      return await callGroq(prompt);
+    } catch (groqErr: any) {
+      console.warn(`[AI] Groq failed: ${groqErr.message}`);
     }
   }
 
-  throw lastError || new Error('All Gemini attempts failed');
+  throw new Error('All AI providers failed');
 }
 
 const TAROT_SYSTEM_PROMPT = `Ты — мудрый и проницательный таролог с 30-летним опытом. Ты интерпретируешь расклады таро глубоко, эмпатично и с практической мудростью.
@@ -79,7 +98,7 @@ export async function generateTarotInterpretation(req: TarotInterpretationReques
   if (req.userProfile?.lifePathNumber) prompt += `\n\nЧисло Жизненного Пути: ${req.userProfile.lifePathNumber}`;
   if (req.userProfile?.moonPhase) prompt += `\n\nТекущая фаза луны: ${req.userProfile.moonPhase}`;
 
-  return callWithRetry(prompt);
+  return generateWithFallback(prompt);
 }
 
 export async function generateSynthesis(data: {
@@ -102,5 +121,5 @@ export async function generateSynthesis(data: {
 
 Создай ЕДИНУЮ интерпретацию, объединяющую все системы. Покажи, как они перекликаются и дополняют друг друга. Дай практический совет и вдохновляющее послание. Отвечай на русском. 300-500 слов.`;
 
-  return callWithRetry(prompt);
+  return generateWithFallback(prompt);
 }
