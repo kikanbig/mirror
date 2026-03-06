@@ -101,8 +101,9 @@ router.get('/', async (req: AuthRequest, res) => {
 
 router.get('/:id', async (req: AuthRequest, res) => {
   try {
+    const id = req.params.id as string;
     const reading = await prisma.reading.findUnique({
-      where: { id: req.params.id },
+      where: { id },
     });
 
     if (!reading) {
@@ -118,8 +119,9 @@ router.get('/:id', async (req: AuthRequest, res) => {
 
 router.put('/:id/bookmark', async (req: AuthRequest, res) => {
   try {
+    const id = req.params.id as string;
     const reading = await prisma.reading.update({
-      where: { id: req.params.id },
+      where: { id },
       data: { isBookmarked: req.body.isBookmarked ?? true },
     });
 
@@ -131,8 +133,9 @@ router.put('/:id/bookmark', async (req: AuthRequest, res) => {
 
 router.put('/:id/note', async (req: AuthRequest, res) => {
   try {
+    const id = req.params.id as string;
     const reading = await prisma.reading.update({
-      where: { id: req.params.id },
+      where: { id },
       data: { userNotes: req.body.note },
     });
 
