@@ -2,6 +2,32 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
+const MODELS = ['gemini-2.0-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash'];
+
+async function callWithRetry(prompt: string, maxRetries = 3): Promise<string> {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    for (const modelName of MODELS) {
+      try {
+        const model = genAI.getGenerativeModel({ model: modelName });
+        const result = await model.generateContent(prompt);
+        return result.response.text();
+      } catch (err: any) {
+        const is429 = err?.status === 429 || err?.message?.includes('429');
+        console.warn(`[Gemini] ${modelName} attempt ${attempt + 1} failed:`, is429 ? '429 rate limit' : err?.message);
+
+        if (is429 && modelName === MODELS[MODELS.length - 1] && attempt < maxRetries - 1) {
+          const delay = Math.min(5000 * (attempt + 1), 20000);
+          console.log(`[Gemini] Waiting ${delay}ms before retry...`);
+          await new Promise((r) => setTimeout(r, delay));
+        }
+
+        if (!is429) throw err;
+      }
+    }
+  }
+  throw new Error('All Gemini models exhausted after retries');
+}
+
 const TAROT_SYSTEM_PROMPT = `Ты — мудрый и проницательный таролог с 30-летним опытом. Ты интерпретируешь расклады таро глубоко, эмпатично и с практической мудростью.
 
 Правила:
@@ -36,8 +62,6 @@ interface TarotInterpretationRequest {
 }
 
 export async function generateTarotInterpretation(req: TarotInterpretationRequest): Promise<string> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
   const cardsDescription = req.cards
     .map((c) => `- Позиция "${c.position}": ${c.cardName}${c.reversed ? ' (перевёрнута)' : ''}`)
     .join('\n');
@@ -50,8 +74,7 @@ export async function generateTarotInterpretation(req: TarotInterpretationReques
   if (req.userProfile?.lifePathNumber) prompt += `\n\nЧисло Жизненного Пути: ${req.userProfile.lifePathNumber}`;
   if (req.userProfile?.moonPhase) prompt += `\n\nТекущая фаза луны: ${req.userProfile.moonPhase}`;
 
-  const result = await model.generateContent(prompt);
-  return result.response.text();
+  return callWithRetry(prompt);
 }
 
 export async function generateSynthesis(data: {
@@ -62,8 +85,6 @@ export async function generateSynthesis(data: {
   moonPhase: string;
   personalYear: number;
 }): Promise<string> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-
   const prompt = `Ты — мудрый оракул, объединяющий знания таро, рун, нумерологии и астрологии. Создай единое глубокое предсказание на основе всех данных.
 
 Данные:
@@ -76,6 +97,5 @@ export async function generateSynthesis(data: {
 
 Создай ЕДИНУЮ интерпретацию, объединяющую все системы. Покажи, как они перекликаются и дополняют друг друга. Дай практический совет и вдохновляющее послание. Отвечай на русском. 300-500 слов.`;
 
-  const result = await model.generateContent(prompt);
-  return result.response.text();
+  return callWithRetry(prompt);
 }

@@ -50,6 +50,22 @@ export default function TarotPage() {
     setPhase('draw');
   }, [impact]);
 
+  const buildLocalInterpretation = useCallback((cards: DrawnCard[]): string => {
+    const lines: string[] = [];
+    lines.push(`✨ Ваш расклад раскрывает следующие энергии:\n`);
+    cards.forEach((dc) => {
+      const meaning = dc.reversed ? dc.card.meanings.reversed : dc.card.meanings.upright;
+      lines.push(`📍 ${dc.positionName} — ${dc.card.nameRu}${dc.reversed ? ' (перевёрнута)' : ''}`);
+      lines.push(meaning);
+      lines.push('');
+    });
+    if (cards.length > 1) {
+      lines.push(`💫 Совет: ${cards[0].card.advice}`);
+    }
+    lines.push(`\n«${cards[cards.length - 1].card.affirmation}»`);
+    return lines.join('\n');
+  }, []);
+
   const requestInterpretation = useCallback(async (cards: DrawnCard[], spreadName: string) => {
     setIsInterpreting(true);
     try {
@@ -68,12 +84,11 @@ export default function TarotPage() {
         },
       });
       setInterpretation(result.interpretation);
-    } catch (err) {
-      console.error('Interpretation failed:', err);
-      setInterpretation('Не удалось получить интерпретацию. Попробуйте позже.');
+    } catch {
+      setInterpretation(buildLocalInterpretation(cards));
     }
     setIsInterpreting(false);
-  }, [question, area, profile, setInterpretation, setIsInterpreting]);
+  }, [question, area, profile, setInterpretation, setIsInterpreting, buildLocalInterpretation]);
 
   const handleDrawCard = useCallback(() => {
     if (!spread || drawIndex >= spread.cardCount) return;

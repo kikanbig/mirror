@@ -4,10 +4,39 @@ import { fullDeck } from '../data/tarot-deck';
 import { elderFuthark } from '../data/runes';
 import { getMoonPhase } from '../data/moon-phases';
 import { hashSeed, seededShuffle } from '../utils/shuffle';
-import { useUserStore } from '../stores/userStore';
+import { useUserStore, UserProfile } from '../stores/userStore';
 import { useHaptic } from '../hooks/useHaptic';
 import { api } from '../services/api';
+import type { TarotCard } from '../data/tarot-types';
+import type { Rune } from '../data/runes';
 import styles from './SynthesisPage.module.scss';
+
+function buildLocalSynthesis(
+  synth: { card: TarotCard; rune: Rune; moon: { phaseRu: string }; personalYear: number },
+  profile: UserProfile,
+): string {
+  const cardMeaning = synth.card.meanings.upright;
+  const runeMeaning = synth.rune.meaning.upright;
+  const advice = synth.card.advice;
+  const runeAdvice = synth.rune.advice;
+  const zodiac = profile.zodiacSign || 'Вселенная';
+
+  return [
+    `🃏 Карта таро «${synth.card.nameRu}» несёт вам следующее послание:`,
+    cardMeaning,
+    ``,
+    `ᚱ Руна «${synth.rune.nameRu}» (${synth.rune.symbol}) дополняет этот посыл:`,
+    runeMeaning,
+    ``,
+    `🌙 Текущая фаза луны — ${synth.moon.phaseRu} — усиливает энергию трансформации и интуиции. Персональный год ${synth.personalYear} указывает на цикл ${synth.personalYear <= 3 ? 'нового начала и роста' : synth.personalYear <= 6 ? 'труда и строительства' : 'завершения и мудрости'}.`,
+    ``,
+    `💫 Совет карты: ${advice}`,
+    ``,
+    `✨ Совет руны: ${runeAdvice}`,
+    ``,
+    `${zodiac}, доверьтесь потоку судьбы — все знаки указывают в одном направлении. «${synth.card.affirmation}»`,
+  ].join('\n');
+}
 
 function getPersonalYear(birthDate?: string): number {
   if (!birthDate) return new Date().getFullYear() % 9 || 9;
@@ -67,10 +96,12 @@ export default function SynthesisPage() {
       addExperience(50);
       notification('success');
       setPhase('result');
-    } catch (err: any) {
-      setError(err.message || 'Ошибка при получении синтеза');
-      notification('error');
-      setPhase('intro');
+    } catch {
+      const fallback = buildLocalSynthesis(synthesis, profile);
+      setInterpretation(fallback);
+      addExperience(30);
+      notification('success');
+      setPhase('result');
     }
   }, [impact, notification, synthesis, profile, addExperience]);
 
