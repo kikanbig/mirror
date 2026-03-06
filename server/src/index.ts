@@ -8,6 +8,7 @@ import { readingsRouter } from './routes/readings';
 import { dailyRouter } from './routes/daily';
 import { profileRouter } from './routes/profile';
 import { interpretRouter } from './routes/interpret';
+import { statsRouter } from './routes/stats';
 import { setupBot } from './bot';
 
 dotenv.config();
@@ -27,6 +28,8 @@ app.use('/api/readings', readingsRouter);
 app.use('/api/daily', dailyRouter);
 app.use('/api/profile', profileRouter);
 app.use('/api/interpret', interpretRouter);
+
+app.use('/api/stats', statsRouter);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

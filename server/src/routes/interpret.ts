@@ -17,6 +17,7 @@ router.post('/', rateLimit(5, 60 * 60 * 1000), async (req: AuthRequest, res) => 
       question,
       area,
       userProfile,
+      telegramId: req.telegramUser?.id,
     });
 
     res.json({ interpretation });
@@ -37,6 +38,7 @@ router.post('/synthesis', rateLimit(1, 7 * 24 * 60 * 60 * 1000), async (req: Aut
       lifePathNumber,
       moonPhase,
       personalYear,
+      telegramId: req.telegramUser?.id,
     });
 
     res.json({ interpretation });

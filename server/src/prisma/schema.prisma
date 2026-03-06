@@ -73,6 +73,23 @@ model JournalEntry {
   createdAt DateTime @default(now())
 }
 
+model ApiLog {
+  id          String   @id @default(uuid())
+  provider    String
+  model       String
+  endpoint    String
+  success     Boolean
+  latencyMs   Int
+  promptLen   Int
+  responseLen Int      @default(0)
+  error       String?
+  telegramId  BigInt?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([provider])
+}
+
 enum ReadingType {
   TAROT
   RUNES
