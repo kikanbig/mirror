@@ -57,7 +57,8 @@ export default function TarotPage() {
     setDrawIndex(0);
     const currentSpreadType = useReadingStore.getState().spreadType;
     const selected = spreads.find((s) => s.id === currentSpreadType);
-    const fanSize = Math.max(9, (selected?.cardCount ?? 1) + 3);
+    const cardCount = selected?.cardCount ?? 1;
+    const fanSize = cardCount <= 1 ? 15 : cardCount <= 3 ? 18 : 22;
     setFanCards(Array.from({ length: fanSize }, (_, i) => i));
     setShuffleStep(0);
     setPhase('shuffle');
@@ -338,9 +339,11 @@ export default function TarotPage() {
                   {fanCards.map((_, i) => {
                     const total = fanCards.length;
                     const middle = (total - 1) / 2;
-                    const step = total > 10 ? 6 : 8;
+                    const maxArc = 70;
+                    const step = total > 1 ? maxArc / (total - 1) : 0;
                     const angle = (i - middle) * step;
-                    const yOffset = Math.abs(i - middle) * 3;
+                    const dist = Math.abs(i - middle) / (middle || 1);
+                    const yOffset = dist * dist * 20;
                     return (
                       <motion.div
                         key={i}
@@ -350,13 +353,13 @@ export default function TarotPage() {
                           y: yOffset,
                           zIndex: total - Math.abs(Math.round(middle) - i),
                         }}
-                        initial={{ opacity: 0, y: 60 }}
-                        animate={{ opacity: 1, y: yOffset }}
+                        initial={{ opacity: 0, y: 80, rotate: 0 }}
+                        animate={{ opacity: 1, y: yOffset, rotate: angle }}
                         exit={{ opacity: 0, scale: 0.5, y: -100 }}
-                        whileHover={{ y: yOffset - 12, scale: 1.05, zIndex: 20 }}
+                        whileHover={{ y: yOffset - 16, scale: 1.08, zIndex: 30 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleFanCardSelect(i)}
-                        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 22 }}
                         layout
                       >
                         <img src="/cards/card_back.webp" alt="Card" className={styles.fanCardImg} />

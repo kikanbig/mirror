@@ -258,28 +258,28 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  height: 200px;
+  height: 220px;
   position: relative;
   transform-origin: bottom center;
-  padding: 0 8px;
+  padding: 0 4px;
 }
 
 .fanCard {
-  width: 88px;
-  height: 136px;
+  width: 64px;
+  height: 100px;
   border-radius: $radius-md;
   overflow: hidden;
   cursor: pointer;
-  margin: 0 -14px;
+  margin: 0 -22px;
   flex-shrink: 0;
   transform-origin: bottom center;
-  border: 1.5px solid rgba(212, 175, 55, 0.25);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 8px rgba(212, 175, 55, 0.1);
+  border: 1.5px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5), 0 0 6px rgba(212, 175, 55, 0.08);
   transition: border-color 0.2s, box-shadow 0.2s;
 
   &:hover {
     border-color: $accent-gold;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), 0 0 16px rgba(212, 175, 55, 0.25);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 175, 55, 0.3);
   }
 }
 
