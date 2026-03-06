@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { spreads } from '../data/spreads';
 import { fullDeck } from '../data/tarot-deck';
@@ -37,6 +37,7 @@ export default function TarotPage() {
   const [drawIndex, setDrawIndex] = useState(0);
   const [fanCards, setFanCards] = useState<number[]>([]);
   const [shuffleStep, setShuffleStep] = useState(0);
+  const fanRef = useRef<HTMLDivElement>(null);
 
   const handleSelectSpread = useCallback((id: string) => {
     impact('light');
@@ -152,6 +153,10 @@ export default function TarotPage() {
     setFanCards((prev) => prev.filter((_, i) => i !== fanIndex));
     const newIndex = drawIndex + 1;
     setDrawIndex(newIndex);
+
+    setTimeout(() => {
+      fanRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 150);
 
     if (newIndex >= spread.cardCount) {
       setTimeout(() => {
@@ -333,7 +338,7 @@ export default function TarotPage() {
 
             {/* Fan of cards to choose from */}
             {drawIndex < spread.cardCount && (
-              <div className={styles.fanContainer}>
+              <div ref={fanRef} className={styles.fanContainer}>
                 <p className={styles.fanHint}>Выберите карту</p>
                 <div className={styles.fan}>
                   {fanCards.map((_, i) => {
