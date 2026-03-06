@@ -104,6 +104,25 @@
   }
 }
 
+.areaFixed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: $radius-lg;
+}
+
+.areaFixedIcon { font-size: 1.2rem; }
+
+.areaFixedText {
+  font-size: 0.85rem;
+  color: $text-primary;
+  font-weight: 600;
+}
+
 .questionInput {
   width: 100%;
   resize: none;

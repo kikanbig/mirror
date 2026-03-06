@@ -30,8 +30,18 @@ export default function TarotPage() {
     impact('light');
     reset();
     setSpreadType(id);
+    const selected = spreads.find((s) => s.id === id);
+    if (selected) {
+      const categoryToArea: Record<string, typeof area> = {
+        love: 'love',
+        career: 'career',
+      };
+      if (categoryToArea[selected.category]) {
+        setArea(categoryToArea[selected.category]);
+      }
+    }
     setPhase('question');
-  }, [impact, reset, setSpreadType]);
+  }, [impact, reset, setSpreadType, setArea]);
 
   const handleStartDraw = useCallback(() => {
     impact('medium');
@@ -130,20 +140,31 @@ export default function TarotPage() {
             <h2 className={styles.spreadTitle}>{spread.name}</h2>
             <p className={styles.spreadDesc}>{spread.description}</p>
 
-            <div className={styles.areaSelect}>
-              <p className={styles.areaLabel}>Область вопроса:</p>
-              <div className={styles.areaOptions}>
-                {(['general', 'love', 'career', 'health'] as const).map((a) => (
-                  <button
-                    key={a}
-                    className={`${styles.areaBtn} ${area === a ? styles.areaActive : ''}`}
-                    onClick={() => { setArea(a); impact('light'); }}
-                  >
-                    {a === 'general' ? '🌟 Общее' : a === 'love' ? '❤️ Любовь' : a === 'career' ? '💼 Карьера' : '🌿 Здоровье'}
-                  </button>
-                ))}
+            {spread.category === 'general' ? (
+              <div className={styles.areaSelect}>
+                <p className={styles.areaLabel}>Область вопроса:</p>
+                <div className={styles.areaOptions}>
+                  {(['general', 'love', 'career', 'health'] as const).map((a) => (
+                    <button
+                      key={a}
+                      className={`${styles.areaBtn} ${area === a ? styles.areaActive : ''}`}
+                      onClick={() => { setArea(a); impact('light'); }}
+                    >
+                      {a === 'general' ? '🌟 Общее' : a === 'love' ? '❤️ Любовь' : a === 'career' ? '💼 Карьера' : '🌿 Здоровье'}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <div className={styles.areaFixed}>
+                <span className={styles.areaFixedIcon}>
+                  {spread.category === 'love' ? '❤️' : spread.category === 'career' ? '💼' : '🌟'}
+                </span>
+                <span className={styles.areaFixedText}>
+                  {spread.category === 'love' ? 'Любовь и отношения' : spread.category === 'career' ? 'Карьера и финансы' : 'Общее'}
+                </span>
+              </div>
+            )}
 
             <textarea
               className={styles.questionInput}
