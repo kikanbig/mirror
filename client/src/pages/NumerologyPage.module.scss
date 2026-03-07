@@ -161,6 +161,112 @@
   line-height: 1.55;
 }
 
+// Fate Matrix
+.fateSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.fateVisual {
+  display: flex;
+  justify-content: center;
+  padding: 8px;
+}
+
+.fateSvg {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+}
+
+.fateCard {
+  padding: 12px;
+  @include glass(0.1);
+  border-radius: $radius-lg;
+  border-left: 3px solid $accent-gold;
+}
+
+.fateCardHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.fateCardNum {
+  font-family: $font-display;
+  font-size: 1.8rem;
+  color: $accent-gold;
+  width: 44px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.fateCardPos {
+  display: block;
+  font-size: 0.7rem;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.fateCardName {
+  display: block;
+  font-family: $font-accent;
+  font-size: 0.88rem;
+  color: $accent-gold;
+  font-weight: 600;
+}
+
+.fateCardBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fateCardPlus {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+
+  p {
+    font-size: 0.78rem;
+    color: $text-secondary;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.fatePlusLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #22c55e;
+  flex-shrink: 0;
+  width: 16px;
+}
+
+.fateCardMinus {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+
+  p {
+    font-size: 0.78rem;
+    color: $text-muted;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.fateMinusLabel {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #ef4444;
+  flex-shrink: 0;
+  width: 16px;
+}
+
 // Karmic debts
 .karmicSection {
   display: flex;
