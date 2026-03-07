@@ -58,10 +58,9 @@
 .elementImg {
   width: 48px;
   height: 86px;
-  border-radius: $radius-sm;
-  object-fit: contain;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.1);
+  border-radius: 4px;
+  object-fit: fill;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .runeSymbol, .moonSymbol, .numberSymbol {
