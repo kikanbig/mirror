@@ -61,19 +61,98 @@ router.get('/', async (_req, res) => {
       }),
     ]);
 
-    const uniqueUsers = await prisma.apiLog.groupBy({
+    const uniqueApiUsers = await prisma.apiLog.groupBy({
       by: ['telegramId'],
       where: { telegramId: { not: null } },
     });
 
+    const monthStart = new Date(todayStart);
+    monthStart.setDate(monthStart.getDate() - 30);
+
+    const [
+      totalUsers,
+      usersToday,
+      usersThisWeek,
+      usersThisMonth,
+      totalReadings,
+      readingsToday,
+      readingsThisWeek,
+      totalDailyCards,
+      dailyCardsToday,
+      totalJournalEntries,
+      recentUsers,
+      topUsers,
+    ] = await Promise.all([
+      prisma.user.count(),
+      prisma.user.count({ where: { lastActiveDate: { gte: todayStart } } }),
+      prisma.user.count({ where: { lastActiveDate: { gte: weekStart } } }),
+      prisma.user.count({ where: { lastActiveDate: { gte: monthStart } } }),
+      prisma.reading.count(),
+      prisma.reading.count({ where: { createdAt: { gte: todayStart } } }),
+      prisma.reading.count({ where: { createdAt: { gte: weekStart } } }),
+      prisma.dailyCard.count(),
+      prisma.dailyCard.count({ where: { createdAt: { gte: todayStart } } }),
+      prisma.journalEntry.count(),
+      prisma.user.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 10,
+        select: {
+          telegramId: true,
+          username: true,
+          firstName: true,
+          level: true,
+          streak: true,
+          lastActiveDate: true,
+          createdAt: true,
+          _count: { select: { readings: true, dailyCards: true } },
+        },
+      }),
+      prisma.user.findMany({
+        orderBy: { experience: 'desc' },
+        take: 10,
+        select: {
+          telegramId: true,
+          username: true,
+          firstName: true,
+          level: true,
+          experience: true,
+          streak: true,
+          _count: { select: { readings: true, dailyCards: true } },
+        },
+      }),
+    ]);
+
+    const readingsByType = await prisma.reading.groupBy({
+      by: ['type'],
+      _count: true,
+    });
+
     res.json({
-      overview: {
+      users: {
+        total: totalUsers,
+        activeToday: usersToday,
+        activeThisWeek: usersThisWeek,
+        activeThisMonth: usersThisMonth,
+      },
+      content: {
+        totalReadings,
+        readingsToday,
+        readingsThisWeek,
+        readingsByType: readingsByType.map((r) => ({
+          type: r.type,
+          count: r._count,
+        })),
+        totalDailyCards,
+        dailyCardsToday,
+        totalJournalEntries,
+      },
+      api: {
         totalCalls,
         todayCalls,
         weekCalls,
         successRate: totalCalls > 0 ? `${((successCalls / totalCalls) * 100).toFixed(1)}%` : 'N/A',
         failedCalls,
-        uniqueUsers: uniqueUsers.length,
+        uniqueApiUsers: uniqueApiUsers.length,
         avgLatencyMs: Math.round(avgLatency._avg.latencyMs || 0),
       },
       today: {
@@ -95,6 +174,27 @@ router.get('/', async (_req, res) => {
           count: e._count,
         })),
       },
+      recentUsers: recentUsers.map((u) => ({
+        telegramId: u.telegramId.toString(),
+        username: u.username,
+        firstName: u.firstName,
+        level: u.level,
+        streak: u.streak,
+        lastActive: u.lastActiveDate,
+        joined: u.createdAt,
+        readings: u._count.readings,
+        dailyCards: u._count.dailyCards,
+      })),
+      topUsers: topUsers.map((u) => ({
+        telegramId: u.telegramId.toString(),
+        username: u.username,
+        firstName: u.firstName,
+        level: u.level,
+        experience: u.experience,
+        streak: u.streak,
+        readings: u._count.readings,
+        dailyCards: u._count.dailyCards,
+      })),
       recentErrors,
     });
   } catch (error) {
