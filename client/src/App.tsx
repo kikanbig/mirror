@@ -68,7 +68,7 @@ function PageRouter() {
 }
 
 export default function App() {
-  const { user, isReady } = useTelegram();
+  const { user, isReady, initData } = useTelegram();
   const { setProfile } = useUserStore();
   const [splashDone, setSplashDone] = useState(false);
 
@@ -81,6 +81,16 @@ export default function App() {
       });
     }
   }, [user, setProfile]);
+
+  useEffect(() => {
+    if (initData) {
+      fetch('/api/auth/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ initData }),
+      }).catch(() => {});
+    }
+  }, [initData]);
 
   const handleSplashComplete = useCallback(() => setSplashDone(true), []);
 
