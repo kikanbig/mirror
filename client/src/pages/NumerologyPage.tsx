@@ -7,7 +7,7 @@ import {
   calculateBirthdayNumber, calculateMaturityNumber, findKarmicDebts,
   calculatePinnacles, calculateChallenges, calculateKarmicLessons,
   calculatePsychomatrix, getArcana, getPsychomatrixCellDescription,
-  PSYCHOMATRIX_CELL_NAMES, PSYCHOMATRIX_LINE_NAMES, getLineStrength,
+  PSYCHOMATRIX_CELL_NAMES, PSYCHOMATRIX_LINE_NAMES, getLineStrength, getLineDescription,
   KARMIC_DEBT_DESCRIPTIONS, KARMIC_LESSON_DESCRIPTIONS,
   PINNACLE_DESCRIPTIONS, CHALLENGE_DESCRIPTIONS,
   type PinnacleInfo, type ChallengeInfo, type KarmicDebtInfo, type PsychomatrixResult,
@@ -179,7 +179,9 @@ export default function NumerologyPage() {
             <div className={styles.psychoSection}>
               <h2 className={styles.sectionTitle}>Психоматрица (Квадрат Пифагора)</h2>
               <div className={styles.psychoWorking}>
-                Рабочие числа: {result.psychomatrix.workingNumbers.join(' · ')}
+                <div>Рабочие числа: <strong>{result.psychomatrix.workingNumbers.join(' · ')}</strong></div>
+                <div className={styles.psychoDigits}>Все цифры: {result.psychomatrix.allDigits.split('').join(' ')}</div>
+                <div className={styles.psychoTotal}>Общее количество цифр: {result.psychomatrix.allDigits.length}</div>
               </div>
               <div className={styles.psychoGrid}>
                 {[1,4,7,2,5,8,3,6,9].map((d) => (
@@ -190,27 +192,31 @@ export default function NumerologyPage() {
                 ))}
               </div>
 
+              <h3 className={styles.subTitle}>Расшифровка ячеек</h3>
               {[1,2,3,4,5,6,7,8,9].map((d) => {
                 const count = result.psychomatrix.cells[d];
                 const desc = getPsychomatrixCellDescription(d, count);
                 if (!desc) return null;
                 return (
                   <div key={d} className={styles.psychoCellDesc}>
-                    <span className={styles.psychoCellLabel}>{PSYCHOMATRIX_CELL_NAMES[d]} ({count})</span>
+                    <span className={styles.psychoCellLabel}>
+                      {PSYCHOMATRIX_CELL_NAMES[d]} — {count > 0 ? String(d).repeat(count) : 'нет'}
+                    </span>
                     <p>{desc}</p>
                   </div>
                 );
               })}
 
               <h3 className={styles.subTitle}>Линии матрицы</h3>
-              <div className={styles.linesList}>
-                {Object.entries(result.psychomatrix.lines).map(([key, val]) => (
-                  <div key={key} className={styles.lineItem}>
+              {Object.entries(result.psychomatrix.lines).map(([key, val]) => (
+                <div key={key} className={styles.lineCard}>
+                  <div className={styles.lineHeader}>
                     <span className={styles.lineName}>{PSYCHOMATRIX_LINE_NAMES[key]}</span>
                     <span className={styles.lineVal}>{val} — {getLineStrength(val)}</span>
                   </div>
-                ))}
-              </div>
+                  <p className={styles.lineDesc}>{getLineDescription(key, val)}</p>
+                </div>
+              ))}
             </div>
 
             {/* Section 5: Pinnacles & Challenges */}

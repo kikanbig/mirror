@@ -232,9 +232,27 @@
   font-size: 0.78rem;
   color: $text-muted;
   text-align: center;
-  padding: 6px;
+  padding: 10px;
   @include glass(0.06);
   border-radius: $radius-sm;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  strong {
+    color: $accent-gold;
+  }
+}
+
+.psychoDigits {
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  color: $text-secondary;
+}
+
+.psychoTotal {
+  font-size: 0.7rem;
+  color: $accent-purple;
 }
 
 .psychoGrid {
@@ -296,19 +314,18 @@
 }
 
 // Lines
-.linesList {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+.lineCard {
+  padding: 10px 12px;
+  @include glass(0.06);
+  border-radius: $radius-md;
+  margin-bottom: 6px;
 }
 
-.lineItem {
+.lineHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
-  @include glass(0.06);
-  border-radius: $radius-md;
+  margin-bottom: 4px;
 }
 
 .lineName {
@@ -320,6 +337,13 @@
   font-size: 0.78rem;
   color: $accent-gold;
   font-weight: 600;
+}
+
+.lineDesc {
+  font-size: 0.76rem;
+  color: $text-muted;
+  line-height: 1.5;
+  margin: 0;
 }
 
 // Timeline (pinnacles + challenges)
