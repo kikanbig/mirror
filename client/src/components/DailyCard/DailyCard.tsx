@@ -4,6 +4,7 @@ import { fullDeck } from '../../data/tarot-deck';
 import { hashSeed, seededShuffle } from '../../utils/shuffle';
 import { useHaptic } from '../../hooks/useHaptic';
 import { useUserStore } from '../../stores/userStore';
+import CardZoom from '../CardZoom/CardZoom';
 import styles from './DailyCard.module.scss';
 
 export default function DailyCard() {
@@ -11,6 +12,7 @@ export default function DailyCard() {
   const today = new Date().toISOString().split('T')[0];
   const userId = String(profile.telegramId || 'guest');
   const [revealed, setRevealed] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
   const { impact, notification } = useHaptic();
 
   const dailyResult = useMemo(() => {
@@ -67,6 +69,8 @@ export default function DailyCard() {
               initial={{ rotateY: -90, opacity: 0, scale: 0.9 }}
               animate={{ rotateY: 0, opacity: 1, scale: [0.9, 1.05, 1] }}
               transition={{ duration: 0.6, type: 'spring', stiffness: 200, times: [0, 0.6, 1] }}
+              onClick={() => setZoomed(true)}
+              style={{ cursor: 'pointer' }}
             >
               <div className={styles.frontInner}>
                 <img src={dailyResult.card.image} alt={dailyResult.card.nameRu} className={styles.cardImg} />
@@ -137,6 +141,16 @@ export default function DailyCard() {
               &#171;{dailyResult.card.affirmation}&#187;
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {zoomed && (
+          <CardZoom
+            src={dailyResult.card.image}
+            name={dailyResult.card.nameRu}
+            reversed={dailyResult.reversed}
+            onClose={() => setZoomed(false)}
+          />
         )}
       </AnimatePresence>
     </motion.div>

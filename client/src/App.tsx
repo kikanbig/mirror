@@ -9,6 +9,9 @@ import TarotPage from './pages/TarotPage';
 import SynthesisPage from './pages/SynthesisPage';
 import JournalPage from './pages/JournalPage';
 import ProfilePage from './pages/ProfilePage';
+import RunesPage from './pages/RunesPage';
+import NumerologyPage from './pages/NumerologyPage';
+import LunarPage from './pages/LunarPage';
 import { useCallback, useEffect, useState } from 'react';
 import { useUserStore } from './stores/userStore';
 
@@ -28,23 +31,37 @@ const pageVariants = {
   },
 };
 
+const subPages: Record<string, React.FC> = {
+  runes: RunesPage,
+  numerology: NumerologyPage,
+  lunar: LunarPage,
+};
+
 function PageRouter() {
-  const { activeTab } = useAppStore();
+  const { activeTab, activeSubPage } = useAppStore();
+  const SubPage = activeSubPage ? subPages[activeSubPage] : null;
+  const pageKey = activeSubPage || activeTab;
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
-        key={activeTab}
+        key={pageKey}
         variants={pageVariants}
         initial="initial"
         animate="animate"
         exit="exit"
       >
-        {activeTab === 'home' && <HomePage />}
-        {activeTab === 'tarot' && <TarotPage />}
-        {activeTab === 'synthesis' && <SynthesisPage />}
-        {activeTab === 'journal' && <JournalPage />}
-        {activeTab === 'profile' && <ProfilePage />}
+        {SubPage ? (
+          <SubPage />
+        ) : (
+          <>
+            {activeTab === 'home' && <HomePage />}
+            {activeTab === 'tarot' && <TarotPage />}
+            {activeTab === 'synthesis' && <SynthesisPage />}
+            {activeTab === 'journal' && <JournalPage />}
+            {activeTab === 'profile' && <ProfilePage />}
+          </>
+        )}
       </motion.div>
     </AnimatePresence>
   );

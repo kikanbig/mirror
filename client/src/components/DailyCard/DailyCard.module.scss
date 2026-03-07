@@ -26,7 +26,7 @@
 .cardBack, .cardFront {
   width: 180px;
   aspect-ratio: 430 / 768;
-  border-radius: 6px;
+  border-radius: 0;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -73,8 +73,8 @@
 .cardImg {
   width: 100%;
   height: 100%;
-  object-fit: fill;
-  border-radius: 6px;
+  object-fit: contain;
+  border-radius: 0;
 }
 
 .revealGlow {

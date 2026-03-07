@@ -197,6 +197,40 @@ export async function generateTarotInterpretation(req: TarotInterpretationReques
   return generateWithFallback(prompt, 'tarot', req.telegramId);
 }
 
+const RUNES_SYSTEM_PROMPT = `Ты — древний рунический мудрец, знаток Старшего Футарка. Ты толкуешь расклады рун с глубокой мудростью, опираясь на скандинавскую традицию.
+
+Правила:
+1. Начни с общей энергии расклада
+2. Разбери каждую руну в контексте её позиции
+3. Перевёрнутые руны означают обратное или ослабленное значение
+4. Покажи взаимосвязи между рунами
+5. Дай конкретный практический совет
+6. Заверши мудрым напутствием в духе скандинавских преданий
+7. Используй образный, но не перегруженный язык
+8. НЕ давай медицинских, юридических или финансовых советов
+9. Отвечай на русском языке
+10. Длина ответа: 200-400 слов`;
+
+interface RuneInterpretationRequest {
+  spread: string;
+  runes: Array<{
+    name: string;
+    position: string;
+    reversed: boolean;
+  }>;
+  telegramId?: number | bigint;
+}
+
+export async function generateRuneInterpretation(req: RuneInterpretationRequest): Promise<string> {
+  const runesDescription = req.runes
+    .map((r) => `- Позиция "${r.position}": ${r.name}${r.reversed ? ' (перевёрнута)' : ''}`)
+    .join('\n');
+
+  const prompt = `${RUNES_SYSTEM_PROMPT}\n\nРасклад: ${req.spread}\n\nРуны:\n${runesDescription}`;
+
+  return generateWithFallback(prompt, 'runes', req.telegramId);
+}
+
 export async function generateSynthesis(data: {
   card: string;
   rune: string;

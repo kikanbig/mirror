@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export interface SavedReading {
   id: string;
-  type: 'tarot' | 'synthesis';
+  type: 'tarot' | 'synthesis' | 'rune';
   title: string;
   date: string;
   cards: Array<{

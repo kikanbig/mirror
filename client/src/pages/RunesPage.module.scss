@@ -1,0 +1,409 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 24px;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.backBtn {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  padding: 6px 12px;
+  border-radius: $radius-md;
+  @include glass(0.1);
+  white-space: nowrap;
+}
+
+.title {
+  font-family: $font-display;
+  font-size: 1.3rem;
+  color: $accent-gold;
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+}
+
+// --- Spread Selection ---
+.spreadList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.spreadCard {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px;
+  @include glass(0.12);
+  border-radius: $radius-lg;
+  cursor: pointer;
+  transition: border-color 0.3s;
+
+  &:active {
+    border-color: $accent-gold;
+  }
+}
+
+.spreadRune {
+  font-size: 2rem;
+  color: $accent-gold;
+  line-height: 1;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.spreadInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.spreadName {
+  font-family: $font-accent;
+  font-size: 1rem;
+  color: $text-primary;
+  font-weight: 600;
+}
+
+.spreadCount {
+  font-size: 0.75rem;
+  color: $accent-purple;
+}
+
+.spreadDesc {
+  font-size: 0.8rem;
+  color: $text-secondary;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+// --- Draw Phase ---
+.drawPhase {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.drawProgress {
+  font-size: 0.9rem;
+  color: $text-secondary;
+  text-align: center;
+}
+
+.drawnRow {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.drawnStone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.stoneSymbol {
+  width: 52px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  color: $accent-gold;
+  background: linear-gradient(145deg, rgba(100, 80, 60, 0.4), rgba(60, 50, 40, 0.6));
+  border-radius: 8px 8px 12px 12px;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.stoneName {
+  font-size: 0.6rem;
+  color: $text-muted;
+  text-align: center;
+  max-width: 60px;
+}
+
+.bag {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  @include glass(0.08);
+  border-radius: $radius-lg;
+}
+
+.bagHint {
+  font-size: 0.85rem;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bagStones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.bagStone {
+  width: 44px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, rgba(80, 65, 50, 0.5), rgba(50, 40, 30, 0.7));
+  border-radius: 6px 6px 10px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+
+  &:active {
+    transform: scale(0.92);
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.3);
+  }
+}
+
+.bagQ {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.2);
+  font-family: $font-display;
+}
+
+// --- Result Phase ---
+.resultPhase {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.resultTitle {
+  font-family: $font-display;
+  font-size: 1.2rem;
+  color: $accent-gold;
+  text-align: center;
+}
+
+.runeResults {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.runeCard {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  @include glass(0.12);
+  border-radius: $radius-lg;
+}
+
+.runeStone {
+  width: 60px;
+  height: 70px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(145deg, rgba(100, 80, 60, 0.4), rgba(60, 50, 40, 0.6));
+  border-radius: 8px 8px 14px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+  &.revealed {
+    border-color: rgba(212, 175, 55, 0.35);
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.1);
+  }
+}
+
+.runeSymbol {
+  font-size: 2rem;
+  color: $accent-gold;
+  text-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+
+  &.reversed { transform: rotate(180deg); }
+}
+
+.runeHidden {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.15);
+  font-family: $font-display;
+}
+
+.runeInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.runePos {
+  font-size: 0.75rem;
+  color: $accent-purple;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.runeName {
+  font-family: $font-accent;
+  font-size: 0.95rem;
+  color: $accent-gold;
+}
+
+.runeMeaning {
+  font-size: 0.82rem;
+  color: $text-secondary;
+  line-height: 1.5;
+}
+
+.runeTapHint {
+  font-size: 0.75rem;
+  color: $text-muted;
+  font-style: italic;
+}
+
+.interpreting {
+  text-align: center;
+  padding: 20px;
+
+  p {
+    font-size: 0.9rem;
+    color: $text-secondary;
+    font-style: italic;
+  }
+}
+
+.interpSection {
+  padding: 16px;
+  @include glass(0.1);
+  border-radius: $radius-lg;
+}
+
+.interpTitle {
+  font-family: $font-display;
+  font-size: 1.05rem;
+  color: $accent-gold;
+  margin-bottom: 10px;
+}
+
+.interpText {
+  font-size: 0.88rem;
+  color: $text-secondary;
+  line-height: 1.7;
+  margin-bottom: 8px;
+
+  &:last-child { margin-bottom: 0; }
+}
+
+.resetBtn {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: $accent-gold;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: $radius-lg;
+}
+
+// --- Zoom ---
+.zoomOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  cursor: pointer;
+  padding: 24px;
+}
+
+.zoomContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 340px;
+  width: 100%;
+  padding: 28px 20px;
+  @include glass(0.15);
+  border-radius: $radius-lg;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  cursor: default;
+}
+
+.zoomSymbol {
+  font-size: 5rem;
+  color: $accent-gold;
+  text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+  line-height: 1;
+
+  &.reversed { transform: rotate(180deg); }
+}
+
+.zoomName {
+  font-family: $font-display;
+  font-size: 1.2rem;
+  color: $accent-gold;
+  text-align: center;
+}
+
+.zoomReversed {
+  font-size: 0.75rem;
+  color: $accent-pink;
+  padding: 2px 10px;
+  border-radius: $radius-full;
+  background: rgba(236, 72, 153, 0.12);
+  border: 1px solid rgba(236, 72, 153, 0.25);
+}
+
+.zoomMeaning {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.zoomMeta {
+  display: flex;
+  gap: 12px;
+  font-size: 0.75rem;
+  color: $text-muted;
+}
+
+.zoomAdvice {
+  font-size: 0.82rem;
+  color: $accent-purple;
+  text-align: center;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.zoomClose {
+  padding: 10px 24px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: $accent-gold;
+  border-radius: $radius-md;
+  font-size: 0.85rem;
+  margin-top: 4px;
+}

@@ -57,9 +57,9 @@
 
 .elementImg {
   width: 48px;
-  height: 86px;
-  border-radius: 4px;
-  object-fit: fill;
+  aspect-ratio: 430 / 768;
+  border-radius: 0;
+  object-fit: contain;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 

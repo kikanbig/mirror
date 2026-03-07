@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { rateLimit } from '../middleware/rateLimit';
-import { generateTarotInterpretation, generateSynthesis } from '../services/gemini';
+import { generateTarotInterpretation, generateSynthesis, generateRuneInterpretation } from '../services/gemini';
 
 const router = Router();
 
@@ -45,6 +45,23 @@ router.post('/synthesis', rateLimit(1, 7 * 24 * 60 * 60 * 1000), async (req: Aut
   } catch (error) {
     console.error('Synthesis error:', error);
     res.status(500).json({ message: 'Ошибка генерации синтеза. Попробуйте позже.' });
+  }
+});
+
+router.post('/runes', rateLimit(5, 60 * 60 * 1000), async (req: AuthRequest, res) => {
+  try {
+    const { spread, runes } = req.body;
+
+    const interpretation = await generateRuneInterpretation({
+      spread,
+      runes,
+      telegramId: req.telegramUser?.id,
+    });
+
+    res.json({ interpretation });
+  } catch (error) {
+    console.error('Rune interpretation error:', error);
+    res.status(500).json({ message: 'Ошибка генерации рунического толкования. Попробуйте позже.' });
   }
 });
 

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TarotCard } from '../../data/tarot-types';
 import { useHaptic } from '../../hooks/useHaptic';
+import CardZoom from '../CardZoom/CardZoom';
 import styles from './CardReveal.module.scss';
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
   positionName?: string;
   delay?: number;
   onReveal?: () => void;
+  labelBelow?: boolean;
 }
 
 interface Spark {
@@ -76,18 +78,23 @@ function ParticleBurst({ active }: { active: boolean }) {
   );
 }
 
-export default function CardReveal({ card, reversed, positionName, delay = 0, onReveal }: Props) {
+export default function CardReveal({ card, reversed, positionName, delay = 0, onReveal, labelBelow }: Props) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showBurst, setShowBurst] = useState(false);
+  const [zoomed, setZoomed] = useState(false);
   const { impact, notification } = useHaptic();
 
-  const handleFlip = useCallback(() => {
-    if (isFlipped) return;
-    impact('medium');
-    setIsFlipped(true);
-    setShowBurst(true);
-    setTimeout(() => notification('success'), 400);
-    onReveal?.();
+  const handleTap = useCallback(() => {
+    if (!isFlipped) {
+      impact('medium');
+      setIsFlipped(true);
+      setShowBurst(true);
+      setTimeout(() => notification('success'), 400);
+      onReveal?.();
+    } else {
+      impact('light');
+      setZoomed(true);
+    }
   }, [isFlipped, impact, notification, onReveal]);
 
   return (
@@ -97,10 +104,10 @@ export default function CardReveal({ card, reversed, positionName, delay = 0, on
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, type: 'spring', stiffness: 200, damping: 20 }}
     >
-      {positionName && <div className={styles.position}>{positionName}</div>}
+      {positionName && !labelBelow && <div className={styles.position}>{positionName}</div>}
       <motion.div
         className={`${styles.card} ${isFlipped ? styles.cardRevealed : ''} ${isFlipped && reversed ? styles.cardReversed : ''}`}
-        onClick={handleFlip}
+        onClick={handleTap}
         whileTap={!isFlipped ? { scale: 0.95 } : {}}
         animate={isFlipped ? {
           scale: [1, 1.08, 1],
@@ -136,6 +143,7 @@ export default function CardReveal({ card, reversed, positionName, delay = 0, on
           />
         )}
       </motion.div>
+      {positionName && labelBelow && <div className={`${styles.position} ${styles.positionBelow}`}>{positionName}</div>}
       <AnimatePresence>
         {isFlipped && (
           <motion.div
@@ -151,6 +159,16 @@ export default function CardReveal({ card, reversed, positionName, delay = 0, on
               {reversed ? card.meanings.reversed : card.meanings.upright}
             </p>
           </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {zoomed && (
+          <CardZoom
+            src={card.image}
+            name={card.nameRu}
+            reversed={reversed}
+            onClose={() => setZoomed(false)}
+          />
         )}
       </AnimatePresence>
     </motion.div>

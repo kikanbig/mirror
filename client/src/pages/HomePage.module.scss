@@ -120,3 +120,46 @@
   margin-top: 8px;
   line-height: 1.5;
 }
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.featureCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 16px 8px;
+  @include glass(0.12);
+  border-radius: $radius-lg;
+  cursor: pointer;
+  border: 1px solid rgba(212, 175, 55, 0.08);
+  transition: border-color 0.3s, box-shadow 0.3s;
+
+  &:active {
+    border-color: rgba(212, 175, 55, 0.3);
+    box-shadow: 0 0 16px rgba(212, 175, 55, 0.08);
+  }
+}
+
+.featureIcon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.featureTitle {
+  font-family: $font-accent;
+  font-size: 0.85rem;
+  color: $accent-gold;
+  font-weight: 600;
+}
+
+.featureSub {
+  font-size: 0.6rem;
+  color: $text-muted;
+  text-align: center;
+  line-height: 1.3;
+}

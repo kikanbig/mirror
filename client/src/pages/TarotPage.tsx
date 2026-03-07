@@ -1,12 +1,14 @@
-import { useState, useCallback, useMemo, useRef } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { spreads } from '../data/spreads';
 import { fullDeck } from '../data/tarot-deck';
 import { fisherYatesShuffle } from '../utils/shuffle';
 import { useReadingStore, DrawnCard } from '../stores/readingStore';
+import { useAppStore } from '../stores/appStore';
 import { useUserStore } from '../stores/userStore';
 import { useHistoryStore } from '../stores/historyStore';
 import CardReveal from '../components/CardReveal/CardReveal';
+import CardZoom from '../components/CardZoom/CardZoom';
 import { useHaptic } from '../hooks/useHaptic';
 import { api } from '../services/api';
 import styles from './TarotPage.module.scss';
@@ -37,7 +39,20 @@ export default function TarotPage() {
   const [drawIndex, setDrawIndex] = useState(0);
   const [fanCards, setFanCards] = useState<number[]>([]);
   const [shuffleStep, setShuffleStep] = useState(0);
+  const [zoomCard, setZoomCard] = useState<{ src: string; name: string; reversed: boolean } | null>(null);
   const fanRef = useRef<HTMLDivElement>(null);
+
+  const tabResetSignal = useAppStore((s) => s.tabResetSignal);
+  useEffect(() => {
+    if (tabResetSignal > 0) {
+      reset();
+      setPhase('choose');
+      setDrawIndex(0);
+      setFanCards([]);
+      setShuffleStep(0);
+      setZoomCard(null);
+    }
+  }, [tabResetSignal, reset]);
 
   const handleSelectSpread = useCallback((id: string) => {
     impact('light');
@@ -332,6 +347,7 @@ export default function TarotPage() {
                   reversed={dc.reversed}
                   positionName={dc.positionName}
                   delay={i * 0.1}
+                  labelBelow={spreadLayout === 'celtic'}
                 />
               ))}
             </div>
@@ -341,7 +357,7 @@ export default function TarotPage() {
               <div ref={fanRef} className={styles.fanContainer}>
                 <p className={styles.fanHint}>Выберите карту</p>
                 <div className={styles.fan}>
-                  {fanCards.map((_, i) => {
+                  {fanCards.map((cardId, i) => {
                     const total = fanCards.length;
                     const middle = (total - 1) / 2;
                     const maxArc = 70;
@@ -350,25 +366,17 @@ export default function TarotPage() {
                     const dist = Math.abs(i - middle) / (middle || 1);
                     const yOffset = dist * dist * 20;
                     return (
-                      <motion.div
-                        key={i}
+                      <div
+                        key={cardId}
                         className={styles.fanCard}
                         style={{
-                          rotate: `${angle}deg`,
-                          y: yOffset,
+                          transform: `rotate(${angle}deg) translateY(${yOffset}px)`,
                           zIndex: total - Math.abs(Math.round(middle) - i),
                         }}
-                        initial={{ opacity: 0, y: 80, rotate: 0 }}
-                        animate={{ opacity: 1, y: yOffset, rotate: angle }}
-                        exit={{ opacity: 0, scale: 0.5, y: -100 }}
-                        whileHover={{ y: yOffset - 16, scale: 1.08, zIndex: 30 }}
-                        whileTap={{ scale: 0.95 }}
                         onClick={() => handleFanCardSelect(i)}
-                        transition={{ type: 'spring', stiffness: 300, damping: 22 }}
-                        layout
                       >
                         <img src="/cards/card_back.webp" alt="Card" className={styles.fanCardImg} />
-                      </motion.div>
+                      </div>
                     );
                   })}
                 </div>
@@ -397,7 +405,12 @@ export default function TarotPage() {
                   transition={{ delay: i * 0.1 }}
                 >
                   <div className={styles.resultCardRow}>
-                    <img src={dc.card.image} alt={dc.card.nameRu} className={styles.resultCardImg} />
+                    <img
+                      src={dc.card.image}
+                      alt={dc.card.nameRu}
+                      className={styles.resultCardImg}
+                      onClick={() => setZoomCard({ src: dc.card.image, name: dc.card.nameRu, reversed: dc.reversed })}
+                    />
                     <div className={styles.resultCardBody}>
                       <span className={styles.resultPos}>{dc.positionName}</span>
                       <span className={styles.resultName}>
@@ -458,6 +471,16 @@ export default function TarotPage() {
               Новый расклад
             </motion.button>
           </motion.div>
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {zoomCard && (
+          <CardZoom
+            src={zoomCard.src}
+            name={zoomCard.name}
+            reversed={zoomCard.reversed}
+            onClose={() => setZoomCard(null)}
+          />
         )}
       </AnimatePresence>
     </motion.div>

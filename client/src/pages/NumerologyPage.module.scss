@@ -1,0 +1,616 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 24px;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.backBtn {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  padding: 6px 12px;
+  border-radius: $radius-md;
+  @include glass(0.1);
+  white-space: nowrap;
+}
+
+.title {
+  font-family: $font-display;
+  font-size: 1.3rem;
+  color: $accent-gold;
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  @include glass(0.1);
+  border-radius: $radius-lg;
+}
+
+.fieldLabel {
+  font-size: 0.78rem;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.input {
+  width: 100%;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-md;
+  color: $text-primary;
+  font-size: 0.95rem;
+
+  &::placeholder { color: $text-muted; }
+}
+
+.calcBtn {
+  padding: 12px;
+  background: linear-gradient(135deg, $accent-gold, #b8860b);
+  color: #0a0a1a;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: $radius-lg;
+  margin-top: 4px;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionTitle {
+  font-family: $font-display;
+  font-size: 1.05rem;
+  color: $accent-gold;
+  text-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
+  margin-top: 12px;
+}
+
+.subTitle {
+  font-family: $font-accent;
+  font-size: 0.9rem;
+  color: $accent-gold;
+  margin-top: 12px;
+  margin-bottom: 6px;
+}
+
+.numGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.numCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 8px;
+  @include glass(0.12);
+  border-radius: $radius-lg;
+  border: 1px solid;
+  cursor: pointer;
+  transition: transform 0.2s;
+
+  &:active { transform: scale(0.96); }
+}
+
+.numValue {
+  font-family: $font-display;
+  font-size: 2rem;
+}
+
+.numLabel {
+  font-size: 0.7rem;
+  color: $text-secondary;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// Arcana
+.arcanaSection {
+  margin-top: 4px;
+}
+
+.arcanaCard {
+  display: flex;
+  gap: 14px;
+  padding: 14px;
+  @include glass(0.12);
+  border-radius: $radius-lg;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.arcanaImg {
+  width: 90px;
+  height: auto;
+  border-radius: $radius-md;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.arcanaInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.arcanaName {
+  font-family: $font-display;
+  font-size: 0.9rem;
+  color: $accent-gold;
+}
+
+.arcanaDesc {
+  font-size: 0.82rem;
+  color: $text-secondary;
+  line-height: 1.55;
+}
+
+// Karmic debts
+.karmicSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.karmicCard {
+  display: flex;
+  gap: 12px;
+  padding: 14px;
+  @include glass(0.1);
+  border-radius: $radius-lg;
+  border-left: 3px solid #ef4444;
+}
+
+.karmicNumber {
+  font-family: $font-display;
+  font-size: 1.8rem;
+  color: #ef4444;
+  flex-shrink: 0;
+  width: 44px;
+  text-align: center;
+}
+
+.karmicInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.karmicTitle {
+  font-family: $font-accent;
+  font-size: 0.88rem;
+  color: #fca5a5;
+  font-weight: 600;
+}
+
+.karmicSource {
+  font-size: 0.7rem;
+  color: $text-muted;
+  font-style: italic;
+}
+
+.karmicDesc {
+  font-size: 0.8rem;
+  color: $text-secondary;
+  line-height: 1.55;
+}
+
+.karmicLesson {
+  font-size: 0.8rem;
+  color: #86efac;
+  line-height: 1.55;
+  padding: 8px;
+  background: rgba(34, 197, 94, 0.06);
+  border-radius: $radius-md;
+  border-left: 2px solid rgba(34, 197, 94, 0.3);
+}
+
+// Psychomatrix
+.psychoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.psychoWorking {
+  font-size: 0.78rem;
+  color: $text-muted;
+  text-align: center;
+  padding: 6px;
+  @include glass(0.06);
+  border-radius: $radius-sm;
+}
+
+.psychoGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.psychoCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 12px 6px;
+  @include glass(0.1);
+  border-radius: $radius-md;
+  border: 1px solid rgba(139, 92, 246, 0.15);
+  min-height: 72px;
+}
+
+.psychoCellDigit {
+  font-family: $font-display;
+  font-size: 1.3rem;
+  color: $accent-purple;
+  letter-spacing: 2px;
+}
+
+.psychoCellName {
+  font-size: 0.58rem;
+  color: $text-muted;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+}
+
+.psychoCellDesc {
+  padding: 8px 12px;
+  @include glass(0.06);
+  border-radius: $radius-md;
+}
+
+.psychoCellLabel {
+  font-size: 0.78rem;
+  color: $accent-purple;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.psychoCellDesc p {
+  font-size: 0.78rem;
+  color: $text-secondary;
+  line-height: 1.5;
+  margin: 0;
+}
+
+// Lines
+.linesList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lineItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  @include glass(0.06);
+  border-radius: $radius-md;
+}
+
+.lineName {
+  font-size: 0.78rem;
+  color: $text-secondary;
+}
+
+.lineVal {
+  font-size: 0.78rem;
+  color: $accent-gold;
+  font-weight: 600;
+}
+
+// Timeline (pinnacles + challenges)
+.timelineSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  padding-left: 24px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 18px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, $accent-gold, rgba(212, 175, 55, 0.1));
+  }
+}
+
+.timelineItem {
+  display: flex;
+  gap: 12px;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 14px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: $accent-gold;
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+  }
+}
+
+.timelineNum {
+  font-family: $font-display;
+  font-size: 1.8rem;
+  color: $accent-gold;
+  flex-shrink: 0;
+  width: 40px;
+  text-align: center;
+}
+
+.timelineInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  @include glass(0.08);
+  border-radius: $radius-md;
+  flex: 1;
+}
+
+.timelineLabel {
+  font-family: $font-accent;
+  font-size: 0.85rem;
+  color: $accent-gold;
+  font-weight: 600;
+}
+
+.timelineAge {
+  font-size: 0.72rem;
+  color: $text-muted;
+}
+
+.timelineDesc {
+  font-size: 0.78rem;
+  color: $text-secondary;
+  line-height: 1.5;
+  margin: 0;
+}
+
+// Cycles
+.cyclesRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.cycleCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 12px 4px;
+  @include glass(0.08);
+  border-radius: $radius-md;
+}
+
+.cycleValue {
+  font-family: $font-display;
+  font-size: 1.4rem;
+  color: $accent-purple;
+}
+
+.cycleLabel {
+  font-size: 0.6rem;
+  color: $text-muted;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+// Lessons
+.lessonsSection {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.lessonsHint {
+  font-size: 0.78rem;
+  color: $text-muted;
+  font-style: italic;
+}
+
+.lessonItem {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  @include glass(0.08);
+  border-radius: $radius-md;
+  border-left: 3px solid #F59E0B;
+}
+
+.lessonNum {
+  font-family: $font-display;
+  font-size: 1.6rem;
+  color: #F59E0B;
+  flex-shrink: 0;
+  width: 36px;
+  text-align: center;
+}
+
+.lessonTitle {
+  font-size: 0.85rem;
+  color: #FCD34D;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.lessonDesc {
+  font-size: 0.78rem;
+  color: $text-secondary;
+  line-height: 1.5;
+  margin: 0;
+}
+
+// Detail panel
+.detail {
+  padding: 16px;
+  @include glass(0.12);
+  border-radius: $radius-lg;
+  border-left: 3px solid $accent-gold;
+  overflow: hidden;
+}
+
+.detailTitle {
+  font-family: $font-display;
+  font-size: 1.05rem;
+  color: $accent-gold;
+  margin-bottom: 8px;
+}
+
+.detailDesc {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.metaItem {
+  font-size: 0.75rem;
+  color: $accent-purple;
+  padding: 4px 10px;
+  border-radius: $radius-full;
+  background: rgba(139, 92, 246, 0.1);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.detailSub {
+  font-family: $font-accent;
+  font-size: 0.85rem;
+  color: $accent-gold;
+  margin: 8px 0 4px;
+}
+
+.detailList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  li {
+    font-size: 0.82rem;
+    color: $text-secondary;
+    line-height: 1.5;
+    padding-left: 14px;
+    position: relative;
+
+    &::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: $accent-gold;
+    }
+  }
+}
+
+.closeDetail {
+  margin-top: 12px;
+  padding: 10px;
+  width: 100%;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  color: $accent-gold;
+  border-radius: $radius-md;
+  font-size: 0.85rem;
+}
+
+// Compatibility
+.compatSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  @include glass(0.1);
+  border-radius: $radius-lg;
+}
+
+.compatResult {
+  padding: 16px;
+  @include glass(0.12);
+  border-radius: $radius-lg;
+}
+
+.compatScore {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.compatGauge {
+  position: relative;
+  width: 140px;
+  height: 75px;
+}
+
+.compatSvg {
+  width: 100%;
+  height: 100%;
+}
+
+.compatPct {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: $font-display;
+  font-size: 1.6rem;
+  color: $accent-gold;
+}
+
+.compatNums {
+  font-size: 0.8rem;
+  color: $text-muted;
+}
+
+.compatDesc {
+  font-size: 0.88rem;
+  color: $text-secondary;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}

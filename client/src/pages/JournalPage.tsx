@@ -22,7 +22,7 @@ export default function JournalPage() {
   const { readings, toggleBookmark, deleteReading } = useHistoryStore();
   const { impact } = useHaptic();
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | 'tarot' | 'synthesis' | 'bookmarked'>('all');
+  const [filter, setFilter] = useState<'all' | 'tarot' | 'synthesis' | 'rune' | 'bookmarked'>('all');
 
   const filtered = readings.filter((r) => {
     if (filter === 'bookmarked') return r.isBookmarked;
@@ -61,6 +61,7 @@ export default function JournalPage() {
           {([
             ['all', 'Все'],
             ['tarot', 'Таро'],
+            ['rune', 'Руны'],
             ['synthesis', 'Синтез'],
             ['bookmarked', 'Избранное'],
           ] as const).map(([key, label]) => (
@@ -160,6 +161,8 @@ function ReadingCard({
                 <rect x="5" y="2" width="14" height="20" rx="2" stroke="currentColor" strokeWidth="1.5" />
                 <path d="M12 7l-2 3 2 3M10 7l2 3-2 3" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
               </svg>
+            ) : reading.type === 'rune' ? (
+              <span style={{ fontSize: '1.1rem', lineHeight: 1 }}>ᚱ</span>
             ) : (
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                 <path d="M12 2l2.5 7.5H22l-6 4.5 2.5 7.5L12 17l-6.5 4.5 2.5-7.5-6-4.5h7.5L12 2z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
@@ -205,7 +208,11 @@ function ReadingCard({
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: i * 0.05 }}
           >
-            <img src={c.cardImage} alt={c.cardName} className={styles.miniCardImg} />
+            {c.cardImage ? (
+              <img src={c.cardImage} alt={c.cardName} className={styles.miniCardImg} />
+            ) : (
+              <span className={styles.miniRuneSymbol}>{c.cardName}</span>
+            )}
             {c.reversed && <span className={styles.miniReversed}>R</span>}
           </motion.div>
         ))}

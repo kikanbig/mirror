@@ -1,0 +1,244 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 24px;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.backBtn {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  padding: 6px 12px;
+  border-radius: $radius-md;
+  @include glass(0.1);
+  white-space: nowrap;
+}
+
+.title {
+  font-family: $font-display;
+  font-size: 1.3rem;
+  color: $accent-gold;
+  text-shadow: 0 0 15px rgba(212, 175, 55, 0.25);
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 16px;
+  @include glass(0.12);
+  border-radius: $radius-lg;
+}
+
+.moonVisual {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+.moonGlow {
+  position: absolute;
+  inset: -20px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 220, 0.08) 0%, transparent 65%);
+  animation: moonGlowPulse 3s ease-in-out infinite;
+}
+
+.moonSphere {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #f5f0d0 0%, #d4c98a 40%, #a09060 80%, #6a6040 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 30px rgba(255, 255, 200, 0.15), inset 0 -4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.moonShadow {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  transition: background 0.5s;
+}
+
+.moonPct {
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: $text-muted;
+  background: rgba(10, 10, 26, 0.8);
+  padding: 2px 8px;
+  border-radius: $radius-sm;
+}
+
+.heroInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.heroPhase {
+  font-family: $font-display;
+  font-size: 1.15rem;
+  color: $accent-gold;
+}
+
+.heroAge {
+  font-size: 0.8rem;
+  color: $text-secondary;
+}
+
+.section {
+  padding: 16px;
+  @include glass(0.1);
+  border-radius: $radius-lg;
+}
+
+.sectionTitle {
+  font-family: $font-accent;
+  font-size: 1rem;
+  color: $accent-gold;
+  margin-bottom: 8px;
+}
+
+.sectionText {
+  font-size: 0.88rem;
+  color: $text-secondary;
+  line-height: 1.6;
+}
+
+.recList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+}
+
+.recItem {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+
+  &::before {
+    content: '✦';
+    position: absolute;
+    left: 0;
+    color: $accent-gold;
+    font-size: 0.65rem;
+    top: 3px;
+  }
+}
+
+.calSection {
+  @include glass(0.1);
+  border-radius: $radius-lg;
+  padding: 16px;
+}
+
+.calNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.calArrow {
+  font-size: 1.5rem;
+  color: $accent-gold;
+  padding: 4px 12px;
+  line-height: 1;
+}
+
+.calMonth {
+  font-family: $font-accent;
+  font-size: 0.95rem;
+  color: $text-primary;
+}
+
+.calGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.calHeader {
+  text-align: center;
+  font-size: 0.65rem;
+  color: $text-muted;
+  padding: 4px 0;
+  text-transform: uppercase;
+}
+
+.calDay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 2px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:active {
+    background: rgba(212, 175, 55, 0.1);
+  }
+}
+
+.calToday {
+  background: rgba(139, 92, 246, 0.15);
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.calSelected {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.calEmoji {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.calNum {
+  font-size: 0.6rem;
+  color: $text-muted;
+  margin-top: 1px;
+}
+
+.selectedPhase {
+  padding: 16px;
+  @include glass(0.12);
+  border-radius: $radius-lg;
+  border-left: 3px solid $accent-gold;
+  overflow: hidden;
+}
+
+.selectedTitle {
+  font-family: $font-display;
+  font-size: 1rem;
+  color: $accent-gold;
+  margin-bottom: 8px;
+}
+
+.selectedDesc {
+  font-size: 0.85rem;
+  color: $text-secondary;
+  line-height: 1.6;
+}
+
+@keyframes moonGlowPulse {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}

@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import DailyCard from '../components/DailyCard/DailyCard';
 import MoonPhase from '../components/MoonPhase/MoonPhase';
 import { useUserStore } from '../stores/userStore';
+import { useAppStore } from '../stores/appStore';
 import { getDailyAffirmation } from '../data/affirmations';
 import styles from './HomePage.module.scss';
 
@@ -16,8 +17,15 @@ const fadeUp = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] } },
 };
 
+const featureCards = [
+  { id: 'runes', icon: 'ᚱ', title: 'Руны', subtitle: 'Древняя мудрость Футарка' },
+  { id: 'numerology', icon: '∞', title: 'Нумерология', subtitle: 'Числа Судьбы' },
+  { id: 'lunar', icon: '🌙', title: 'Луна', subtitle: 'Лунный Календарь' },
+];
+
 export default function HomePage() {
   const { profile } = useUserStore();
+  const { setActiveSubPage } = useAppStore();
   const userId = String(profile.telegramId || 'guest');
   const affirmation = getDailyAffirmation(userId);
   const levelName = LEVELS[Math.min(profile.level - 1, LEVELS.length - 1)];
@@ -86,6 +94,21 @@ export default function HomePage() {
 
       <motion.div variants={fadeUp}>
         <DailyCard />
+      </motion.div>
+
+      <motion.div className={styles.features} variants={fadeUp}>
+        {featureCards.map((f) => (
+          <motion.div
+            key={f.id}
+            className={styles.featureCard}
+            whileTap={{ scale: 0.96 }}
+            onClick={() => setActiveSubPage(f.id)}
+          >
+            <span className={styles.featureIcon}>{f.icon}</span>
+            <span className={styles.featureTitle}>{f.title}</span>
+            <span className={styles.featureSub}>{f.subtitle}</span>
+          </motion.div>
+        ))}
       </motion.div>
     </motion.div>
   );

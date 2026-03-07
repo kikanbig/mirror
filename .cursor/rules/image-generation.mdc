@@ -1,0 +1,15 @@
+---
+description: Rules for handling image generation to prevent hanging
+globs: 
+alwaysApply: true
+---
+
+# Image Generation Best Practices
+
+When using the GenerateImage tool:
+
+1. **Never make GenerateImage the last action** — always plan a follow-up step (file operation, deployment, response to user) immediately after
+2. **If image generation is needed mid-task**, batch independent work before calling GenerateImage, then continue the remaining steps after
+3. **For bot avatars / external API uploads**: generate the image first, then in the SAME turn proceed to crop/upload/API calls without waiting for user input
+4. **If GenerateImage seems slow**, do NOT abandon the task — proceed with the next planned step regardless
+5. **Always confirm completion** to the user after image generation + subsequent steps are done
