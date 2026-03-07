@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  width: 100%;
 }
 
 .position {
@@ -11,11 +12,17 @@
   color: $text-secondary;
   text-transform: uppercase;
   letter-spacing: 0.1em;
+  text-align: center;
+  min-height: 2.4em;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
 }
 
 .card {
-  width: 120px;
-  height: 214px;
+  width: 100%;
+  max-width: 120px;
+  aspect-ratio: 430 / 768;
   perspective: 1000px;
   cursor: pointer;
   border-radius: $radius-lg;

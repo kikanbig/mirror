@@ -199,13 +199,14 @@
 .drawPhase {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   gap: 20px;
 }
 
 .drawProgress {
   font-size: 0.95rem;
   color: $text-secondary;
+  width: 100%;
   text-align: center;
 
   &::first-line {
@@ -220,6 +221,7 @@
   gap: 16px;
   justify-content: center;
   min-height: 60px;
+  width: 100%;
 }
 
 .layout_single {
@@ -233,9 +235,10 @@
 
 .layout_celtic {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  max-width: 360px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  width: 100%;
+  align-items: start;
 }
 
 // --- Fan ---
