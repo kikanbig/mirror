@@ -507,7 +507,11 @@ export default function TarotPage() {
               animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.9, y: 20 }}
             >
-              <PaywallOverlay feature="премиум расклады" />
+              <PaywallOverlay
+                feature="премиум расклады"
+                onClose={() => setShowPaywall(false)}
+                onSuccess={() => setShowPaywall(false)}
+              />
             </motion.div>
           </motion.div>
         )}

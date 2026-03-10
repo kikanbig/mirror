@@ -30,15 +30,15 @@ export default function FateReportGenerator({ birthDate }: Props) {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState('');
+  const [justPurchased, setJustPurchased] = useState(false);
 
-  const hasPurchased = premiumStatus.hasFateReport;
+  const hasPurchased = premiumStatus.hasFateReport || justPurchased;
 
   const handleGenerate = useCallback(async () => {
     setLoading(true);
     setError('');
     setProgress(0);
 
-    // Simulate progress while waiting
     const progressInterval = setInterval(() => {
       setProgress(prev => {
         if (prev >= 95) return prev;
@@ -63,7 +63,6 @@ export default function FateReportGenerator({ birthDate }: Props) {
     }
   }, [birthDate]);
 
-  // Try loading existing report on mount
   const handleLoadExisting = useCallback(async () => {
     try {
       const data = await api.get<ReportResponse>(`/fate-report/${birthDate}`);
@@ -74,6 +73,11 @@ export default function FateReportGenerator({ birthDate }: Props) {
       // No existing report
     }
   }, [birthDate]);
+
+  const handlePurchaseSuccess = useCallback(() => {
+    setJustPurchased(true);
+    setError('');
+  }, []);
 
   if (report) {
     return (
@@ -89,7 +93,11 @@ export default function FateReportGenerator({ birthDate }: Props) {
   if (error === 'purchase_required' && !hasPurchased) {
     return (
       <div className={styles.container}>
-        <PaywallBanner product="fate_report" label="Купить полный отчёт — 50+ страниц" />
+        <PaywallBanner
+          product="fate_report"
+          label="Купить полный отчёт — 50+ страниц"
+          onSuccess={handlePurchaseSuccess}
+        />
       </div>
     );
   }
@@ -136,7 +144,11 @@ export default function FateReportGenerator({ birthDate }: Props) {
                 </button>
               </>
             ) : (
-              <PaywallBanner product="fate_report" label="Купить полный отчёт — 50+ страниц" />
+              <PaywallBanner
+                product="fate_report"
+                label="Купить полный отчёт — 50+ страниц"
+                onSuccess={handlePurchaseSuccess}
+              />
             )}
           </>
         )}
