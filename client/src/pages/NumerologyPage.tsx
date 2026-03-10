@@ -18,7 +18,7 @@ import { useAppStore } from '../stores/appStore';
 import { useUserStore } from '../stores/userStore';
 import FateMatrixView from '../components/FateMatrix/FateMatrixView';
 import FateReportGenerator from '../components/FateReport/FateReportGenerator';
-import Paywall, { PaywallBanner } from '../components/Paywall/Paywall';
+import { PaywallOverlay } from '../components/Paywall/Paywall';
 import styles from './NumerologyPage.module.scss';
 
 interface FullResult {
@@ -162,112 +162,117 @@ export default function NumerologyPage() {
               </div>
             )}
 
-            {/* Fate Matrix — full product */}
-            <h2 className={styles.sectionTitle}>Матрица Судьбы</h2>
-            <Paywall feature="Матрица Судьбы">
-              <FateMatrixView matrix={result.fateMatrix} />
-            </Paywall>
+            {/* Premium gate — one block for all premium sections */}
+            {premiumStatus.tier !== 'premium' ? (
+              <>
+                <h2 className={styles.sectionTitle}>Матрица Судьбы</h2>
+                <PaywallOverlay feature="Матрица Судьбы, Психоматрица, Вершины и Испытания" />
+                <FateReportGenerator birthDate={birthStr} />
+              </>
+            ) : (
+              <>
+                {/* Fate Matrix — full product */}
+                <h2 className={styles.sectionTitle}>Матрица Судьбы</h2>
+                <FateMatrixView matrix={result.fateMatrix} />
 
-            <FateReportGenerator birthDate={birthStr} />
+                <FateReportGenerator birthDate={birthStr} />
 
-            {/* Section 3: Karmic Debts */}
-            {result.karmicDebts.length > 0 && (
-              <div className={styles.karmicSection}>
-                <h2 className={styles.sectionTitle}>Кармические Долги</h2>
-                {result.karmicDebts.map((kd) => {
-                  const desc = KARMIC_DEBT_DESCRIPTIONS[kd.number];
-                  return desc ? (
-                    <div key={kd.number} className={styles.karmicCard}>
-                      <span className={styles.karmicNumber}>{kd.number}</span>
-                      <div className={styles.karmicInfo}>
-                        <span className={styles.karmicTitle}>{desc.title}</span>
-                        <span className={styles.karmicSource}>Найден в: {kd.source}</span>
-                        <p className={styles.karmicDesc}>{desc.description}</p>
-                        <p className={styles.karmicLesson}>{desc.lesson}</p>
+                {/* Karmic Debts */}
+                {result.karmicDebts.length > 0 && (
+                  <div className={styles.karmicSection}>
+                    <h2 className={styles.sectionTitle}>Кармические Долги</h2>
+                    {result.karmicDebts.map((kd) => {
+                      const desc = KARMIC_DEBT_DESCRIPTIONS[kd.number];
+                      return desc ? (
+                        <div key={kd.number} className={styles.karmicCard}>
+                          <span className={styles.karmicNumber}>{kd.number}</span>
+                          <div className={styles.karmicInfo}>
+                            <span className={styles.karmicTitle}>{desc.title}</span>
+                            <span className={styles.karmicSource}>Найден в: {kd.source}</span>
+                            <p className={styles.karmicDesc}>{desc.description}</p>
+                            <p className={styles.karmicLesson}>{desc.lesson}</p>
+                          </div>
+                        </div>
+                      ) : null;
+                    })}
+                  </div>
+                )}
+
+                {/* Psychomatrix */}
+                <div className={styles.psychoSection}>
+                  <h2 className={styles.sectionTitle}>Психоматрица (Квадрат Пифагора)</h2>
+                  <div className={styles.psychoWorking}>
+                    <div>Рабочие числа: <strong>{result.psychomatrix.workingNumbers.join(' · ')}</strong></div>
+                    <div className={styles.psychoDigits}>Все цифры: {result.psychomatrix.allDigits.split('').join(' ')}</div>
+                    <div className={styles.psychoTotal}>Общее количество цифр: {result.psychomatrix.allDigits.length}</div>
+                  </div>
+                  <div className={styles.psychoGrid}>
+                    {[1,4,7,2,5,8,3,6,9].map((d) => (
+                      <div key={d} className={styles.psychoCell}>
+                        <span className={styles.psychoCellDigit}>{String(d).repeat(result.psychomatrix.cells[d]) || '—'}</span>
+                        <span className={styles.psychoCellName}>{PSYCHOMATRIX_CELL_NAMES[d]}</span>
                       </div>
+                    ))}
+                  </div>
+
+                  <h3 className={styles.subTitle}>Расшифровка ячеек</h3>
+                  {[1,2,3,4,5,6,7,8,9].map((d) => {
+                    const count = result.psychomatrix.cells[d];
+                    const desc = getPsychomatrixCellDescription(d, count);
+                    if (!desc) return null;
+                    return (
+                      <div key={d} className={styles.psychoCellDesc}>
+                        <span className={styles.psychoCellLabel}>
+                          {PSYCHOMATRIX_CELL_NAMES[d]} — {count > 0 ? String(d).repeat(count) : 'нет'}
+                        </span>
+                        <p>{desc}</p>
+                      </div>
+                    );
+                  })}
+
+                  <h3 className={styles.subTitle}>Линии матрицы</h3>
+                  {Object.entries(result.psychomatrix.lines).map(([key, val]) => (
+                    <div key={key} className={styles.lineCard}>
+                      <div className={styles.lineHeader}>
+                        <span className={styles.lineName}>{PSYCHOMATRIX_LINE_NAMES[key]}</span>
+                        <span className={styles.lineVal}>{val} — {getLineStrength(val)}</span>
+                      </div>
+                      <p className={styles.lineDesc}>{getLineDescription(key, val)}</p>
                     </div>
-                  ) : null;
-                })}
-              </div>
-            )}
-
-            {/* Section 4: Psychomatrix (Premium) */}
-            <Paywall feature="Психоматрица">
-            <div className={styles.psychoSection}>
-              <h2 className={styles.sectionTitle}>Психоматрица (Квадрат Пифагора)</h2>
-              <div className={styles.psychoWorking}>
-                <div>Рабочие числа: <strong>{result.psychomatrix.workingNumbers.join(' · ')}</strong></div>
-                <div className={styles.psychoDigits}>Все цифры: {result.psychomatrix.allDigits.split('').join(' ')}</div>
-                <div className={styles.psychoTotal}>Общее количество цифр: {result.psychomatrix.allDigits.length}</div>
-              </div>
-              <div className={styles.psychoGrid}>
-                {[1,4,7,2,5,8,3,6,9].map((d) => (
-                  <div key={d} className={styles.psychoCell}>
-                    <span className={styles.psychoCellDigit}>{String(d).repeat(result.psychomatrix.cells[d]) || '—'}</span>
-                    <span className={styles.psychoCellName}>{PSYCHOMATRIX_CELL_NAMES[d]}</span>
-                  </div>
-                ))}
-              </div>
-
-              <h3 className={styles.subTitle}>Расшифровка ячеек</h3>
-              {[1,2,3,4,5,6,7,8,9].map((d) => {
-                const count = result.psychomatrix.cells[d];
-                const desc = getPsychomatrixCellDescription(d, count);
-                if (!desc) return null;
-                return (
-                  <div key={d} className={styles.psychoCellDesc}>
-                    <span className={styles.psychoCellLabel}>
-                      {PSYCHOMATRIX_CELL_NAMES[d]} — {count > 0 ? String(d).repeat(count) : 'нет'}
-                    </span>
-                    <p>{desc}</p>
-                  </div>
-                );
-              })}
-
-              <h3 className={styles.subTitle}>Линии матрицы</h3>
-              {Object.entries(result.psychomatrix.lines).map(([key, val]) => (
-                <div key={key} className={styles.lineCard}>
-                  <div className={styles.lineHeader}>
-                    <span className={styles.lineName}>{PSYCHOMATRIX_LINE_NAMES[key]}</span>
-                    <span className={styles.lineVal}>{val} — {getLineStrength(val)}</span>
-                  </div>
-                  <p className={styles.lineDesc}>{getLineDescription(key, val)}</p>
+                  ))}
                 </div>
-              ))}
-            </div>
-            </Paywall>
 
-            {/* Section 5: Pinnacles & Challenges (Premium) */}
-            <Paywall feature="Вершины и Испытания">
-            <div className={styles.timelineSection}>
-              <h2 className={styles.sectionTitle}>Вершины Жизни</h2>
-              <div className={styles.timeline}>
-                {result.pinnacles.map((p, i) => (
-                  <div key={i} className={styles.timelineItem}>
-                    <span className={styles.timelineNum}>{p.number}</span>
-                    <div className={styles.timelineInfo}>
-                      <span className={styles.timelineLabel}>{p.label}</span>
-                      <span className={styles.timelineAge}>{p.fromAge}–{p.toAge ?? '...'} лет</span>
-                      <p className={styles.timelineDesc}>{PINNACLE_DESCRIPTIONS[p.number] || ''}</p>
-                    </div>
+                {/* Pinnacles & Challenges */}
+                <div className={styles.timelineSection}>
+                  <h2 className={styles.sectionTitle}>Вершины Жизни</h2>
+                  <div className={styles.timeline}>
+                    {result.pinnacles.map((p, i) => (
+                      <div key={i} className={styles.timelineItem}>
+                        <span className={styles.timelineNum}>{p.number}</span>
+                        <div className={styles.timelineInfo}>
+                          <span className={styles.timelineLabel}>{p.label}</span>
+                          <span className={styles.timelineAge}>{p.fromAge}–{p.toAge ?? '...'} лет</span>
+                          <p className={styles.timelineDesc}>{PINNACLE_DESCRIPTIONS[p.number] || ''}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
 
-              <h2 className={styles.sectionTitle}>Числа Испытания</h2>
-              <div className={styles.timeline}>
-                {result.challenges.map((c, i) => (
-                  <div key={i} className={styles.timelineItem}>
-                    <span className={styles.timelineNum}>{c.number}</span>
-                    <div className={styles.timelineInfo}>
-                      <span className={styles.timelineLabel}>{c.label}</span>
-                      <p className={styles.timelineDesc}>{CHALLENGE_DESCRIPTIONS[c.number] || ''}</p>
-                    </div>
+                  <h2 className={styles.sectionTitle}>Числа Испытания</h2>
+                  <div className={styles.timeline}>
+                    {result.challenges.map((c, i) => (
+                      <div key={i} className={styles.timelineItem}>
+                        <span className={styles.timelineNum}>{c.number}</span>
+                        <div className={styles.timelineInfo}>
+                          <span className={styles.timelineLabel}>{c.label}</span>
+                          <p className={styles.timelineDesc}>{CHALLENGE_DESCRIPTIONS[c.number] || ''}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            </div>
-            </Paywall>
+                </div>
+              </>
+            )}
 
             {/* Section 6: Personal Cycles */}
             <h2 className={styles.sectionTitle}>Персональные Циклы</h2>

@@ -43,12 +43,7 @@ export default function Paywall({ product = 'premium_month', children, feature }
 
   if (isPremium) return <>{children}</>;
 
-  return (
-    <div className={styles.wrapper}>
-      <div className={styles.blurred}>{children}</div>
-      <PaywallOverlay product={product} feature={feature} />
-    </div>
-  );
+  return null;
 }
 
 export function PaywallOverlay({ product = 'premium_month', feature }: { product?: Product; feature?: string }) {
