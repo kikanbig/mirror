@@ -39,6 +39,10 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+app.get('/dashboard', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
 setupBot(app);
 
 const clientPath = path.join(__dirname, '..', 'public');

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Зеркало Судьбы — Dashboard</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#06060e;--bg2:#0a0a18;--surface:rgba(18,18,35,.75);--surface2:rgba(26,26,50,.6);
+  --surface3:rgba(34,34,60,.5);--border:rgba(80,60,140,.15);--border-h:rgba(212,175,55,.3);
+  --text:#e8e8f4;--muted:#7a7a9e;--dim:#50506a;
+  --gold:#d4af37;--gold2:#f5d065;--gold-bg:rgba(212,175,55,.08);
+  --green:#22c55e;--green-bg:rgba(34,197,94,.1);
+  --red:#ef4444;--red-bg:rgba(239,68,68,.1);
+  --blue:#3b82f6;--blue-bg:rgba(59,130,246,.1);
+  --purple:#a78bfa;--purple-bg:rgba(167,139,250,.1);
+  --cyan:#22d3ee;--cyan-bg:rgba(34,211,238,.1);
+  --pink:#f472b6;--pink-bg:rgba(244,114,182,.1);
+  --r:16px;--r-sm:12px;--r-xs:8px;
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',Roboto,sans-serif;
+  min-height:100vh;line-height:1.5;
+  background-image:
+    radial-gradient(ellipse 800px 600px at 20% 10%,rgba(139,92,246,.04),transparent),
+    radial-gradient(ellipse 600px 400px at 80% 90%,rgba(212,175,55,.03),transparent);
+}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+.loader{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;gap:20px}
+.loader-orb{width:48px;height:48px;border-radius:50%;background:conic-gradient(var(--gold),var(--purple),var(--gold));animation:spin 1.5s linear infinite;position:relative}
+.loader-orb::after{content:'';position:absolute;inset:4px;border-radius:50%;background:var(--bg)}
+.loader-text{color:var(--muted);font-size:.85rem;letter-spacing:1px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes glow{0%,100%{box-shadow:0 0 8px rgba(212,175,55,.12)}50%{box-shadow:0 0 24px rgba(212,175,55,.2)}}
+
+header{
+  background:rgba(10,10,24,.88);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);padding:14px 24px;position:sticky;top:0;z-index:100;
+}
+.hdr{max-width:1280px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-orb{
+  width:36px;height:36px;border-radius:50%;
+  background:conic-gradient(from 180deg,var(--gold),var(--purple),var(--cyan),var(--gold));
+  display:flex;align-items:center;justify-content:center;animation:spin 10s linear infinite
+}
+.logo-orb i{width:28px;height:28px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;font-style:normal;font-size:.9rem}
+.logo-t h1{font-size:1rem;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2}
+.logo-t span{font-size:.6rem;color:var(--dim);letter-spacing:2px;text-transform:uppercase;font-weight:600}
+.hdr-r{display:flex;align-items:center;gap:12px}
+.live{display:flex;align-items:center;gap:6px;background:var(--green-bg);border:1px solid rgba(34,197,94,.18);padding:3px 10px;border-radius:20px;font-size:.68rem;color:var(--green);font-weight:600}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+#ts{font-size:.68rem;color:var(--dim)}
+#rbtn{
+  background:rgba(212,175,55,.06);border:1px solid rgba(212,175,55,.18);
+  color:var(--gold);padding:5px 14px;border-radius:var(--r-xs);cursor:pointer;
+  font-size:.7rem;font-weight:600;transition:.25s;letter-spacing:.5px;font-family:inherit
+}
+#rbtn:hover{background:rgba(212,175,55,.14);border-color:var(--gold)}
+#rbtn:active{transform:scale(.96)}
+
+main{max-width:1280px;margin:0 auto;padding:24px 20px 80px}
+
+.sec{margin-bottom:28px}
+.sec[data-i]{animation:slideUp .5s ease both}
+.sec[data-i="0"]{animation-delay:0s}.sec[data-i="1"]{animation-delay:.05s}
+.sec[data-i="2"]{animation-delay:.1s}.sec[data-i="3"]{animation-delay:.15s}
+.sec[data-i="4"]{animation-delay:.2s}.sec[data-i="5"]{animation-delay:.25s}
+.sec[data-i="6"]{animation-delay:.3s}.sec[data-i="7"]{animation-delay:.35s}
+.sh{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.si{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.st{font-size:.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:2px}
+
+.g{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.ga{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.gb{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:20px 18px;transition:.3s;position:relative;overflow:hidden;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+.card:hover{border-color:var(--border-h);transform:translateY(-2px)}
+.card-glow{position:absolute;bottom:-24px;right:-24px;width:80px;height:80px;border-radius:50%;opacity:.04;pointer-events:none}
+
+.ct{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.cv{font-size:2rem;font-weight:800;letter-spacing:-1px;line-height:1.1}
+.cl{font-size:.7rem;color:var(--muted);font-weight:600;margin-top:4px;letter-spacing:.3px}
+.cf{font-size:.62rem;color:var(--dim);margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+.ci{width:32px;height:32px;border-radius:var(--r-xs);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+
+.hero{
+  border-color:rgba(212,175,55,.2)!important;
+  background:linear-gradient(135deg,rgba(212,175,55,.05),rgba(139,92,246,.02))!important;
+  animation:glow 4s ease infinite;
+}
+.hero .cv{font-size:2.6rem}
+
+.rv{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.rc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:22px 18px;text-align:center;backdrop-filter:blur(12px);transition:.3s}
+.rc:hover{border-color:var(--border-h)}
+.rv-v{font-size:2rem;font-weight:900;letter-spacing:-1px;margin-bottom:2px}
+.rv-l{font-size:.72rem;color:var(--muted);font-weight:500}
+.rv-s{font-size:.62rem;color:var(--dim);margin-top:8px}
+
+.bar{height:5px;background:rgba(255,255,255,.03);border-radius:3px;overflow:hidden;margin-top:10px}
+.bf{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1)}
+
+.pc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;backdrop-filter:blur(12px);transition:.3s}
+.pc:hover{border-color:var(--border-h)}
+.ph{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ps{display:flex;gap:20px}
+.psv{font-size:1.05rem;font-weight:800}
+.psl{font-size:.6rem;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+
+.tw{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;backdrop-filter:blur(12px)}
+table{width:100%;border-collapse:collapse}
+th{background:rgba(26,26,50,.5);padding:10px 14px;font-size:.62rem;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:1.5px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:10px 14px;font-size:.8rem;border-bottom:1px solid rgba(255,255,255,.025)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(212,175,55,.012)}
+.uc{display:flex;align-items:center;gap:10px}
+.ua{width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;flex-shrink:0}
+.un{font-weight:600;font-size:.8rem}
+.uh{font-size:.68rem;color:var(--dim)}
+
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:6px;font-size:.66rem;font-weight:700;letter-spacing:.3px}
+.bg{background:var(--green-bg);color:var(--green)}.br{background:var(--red-bg);color:var(--red)}
+.bb{background:var(--blue-bg);color:var(--blue)}.bp{background:var(--purple-bg);color:var(--purple)}
+.bgo{background:var(--gold-bg);color:var(--gold)}.bc{background:var(--cyan-bg);color:var(--cyan)}
+.bpk{background:var(--pink-bg);color:var(--pink)}
+
+.el{display:flex;flex-direction:column;gap:6px}
+.ei{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);
+  padding:12px 16px;backdrop-filter:blur(12px);transition:.3s;
+  display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;
+}
+.ei:hover{border-color:rgba(239,68,68,.15)}
+.ec{font-size:1.2rem;font-weight:800;color:var(--red);text-align:center}
+.em{font-size:.78rem;line-height:1.4}
+.em span{color:var(--muted);font-size:.7rem}
+.et{font-size:.66rem;color:var(--dim);text-align:right;white-space:nowrap}
+
+/* Responsive */
+@media(max-width:900px){.g4{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){
+  .g4,.g3{grid-template-columns:repeat(2,1fr)}
+  .rv{grid-template-columns:repeat(2,1fr)}
+  header{padding:10px 14px}main{padding:16px 12px 40px}
+  .hero .cv{font-size:2rem}
+  .tw{overflow-x:auto}
+  table{min-width:600px}
+}
+@media(max-width:400px){.g4,.g3,.g2{grid-template-columns:1fr}.rv{grid-template-columns:1fr}}
+
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--dim);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+</style>
+</head>
+<body>
+<div id="app"><div class="loader"><div class="loader-orb"></div><div class="loader-text">Загрузка</div></div></div>
+<script>
+const $ = s => document.querySelector(s);
+const f = n => (n ?? 0).toLocaleString('ru-RU');
+const ago = iso => {
+  if(!iso) return '—';
+  const d=Date.now()-new Date(iso).getTime(),m=Math.floor(d/60000),h=Math.floor(m/60),dd=Math.floor(h/24);
+  if(dd>0)return dd+'д';if(h>0)return h+'ч';if(m>0)return m+'м';return 'сейчас';
+};
+const ts = iso => iso ? new Date(iso).toLocaleString('ru-RU',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : '—';
+const clr = (v,good,med) => v>good?'var(--green)':v>med?'var(--gold)':'var(--red)';
+const avColors = ['#8b5cf6,#3b82f6','#ec4899,#f59e0b','#22c55e,#06b6d4','#f43f5e,#a855f7','#14b8a6,#6366f1'];
+const avBg = i => `linear-gradient(135deg,${avColors[i%avColors.length]})`;
+
+async function load(){
+  try{
+    const r = await fetch('/api/stats');
+    if(!r.ok) throw new Error(`${r.status}`);
+    render(await r.json());
+  }catch(e){
+    $('#app').innerHTML=`<div class="loader"><div style="color:var(--red);font-size:.9rem">Ошибка: ${e.message}</div><button onclick="load()" style="margin-top:12px;background:var(--gold);color:#0a0a14;border:none;padding:8px 20px;border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit">Повторить</button></div>`;
+  }
+}
+
+function render(d){
+  const u=d.users, c=d.content, a=d.api, rev=d.revenue, t=d.today;
+  const sr = a.totalCalls>0 ? ((a.totalCalls-a.failedCalls)/a.totalCalls*100) : 0;
+  const rub = (rev.totalStarsEarned * 1.7).toFixed(0);
+  const maxProv = Math.max(...d.allTime.byProvider.map(p=>p.count),1);
+  const maxEp = Math.max(...d.allTime.byEndpoint.map(e=>e.count),1);
+  const epColors = ['var(--gold)','var(--pink)','var(--cyan)','var(--green)','var(--purple)','var(--blue)'];
+  let si=0;
+
+  $('#app').innerHTML=`
+<header>
+  <div class="hdr">
+    <div class="logo">
+      <div class="logo-orb"><i>🔮</i></div>
+      <div class="logo-t"><h1>Dashboard</h1><span>Зеркало Судьбы</span></div>
+    </div>
+    <div class="hdr-r">
+      <div class="live"><span class="dot"></span>Live</div>
+      <span id="ts"></span>
+      <button id="rbtn" onclick="load()">↻ Обновить</button>
+    </div>
+  </div>
+</header>
+<main>
+
+<div class="sec" data-i="${si++}">
+  <div class="sh"><div class="si" style="background:var(--gold-bg)">💰</div><div class="st">Доходы</div></div>
+  <div class="rv">
+    <div class="rc hero">
+      <div class="rv-v" style="color:var(--gold);font-size:2.6rem">⭐ ${f(rev.totalStarsEarned)}</div>
+      <div class="rv-l">Stars заработано</div>
+      <div class="rv-s">≈ ${f(+rub)} ₽</div>
+    </div>
+    <div class="rc">
+      <div class="rv-v" style="color:var(--gold)">${rev.botStarsBalance!==null?f(rev.botStarsBalance):'—'}</div>
+      <div class="rv-l">Баланс бота</div>
+      <div class="rv-s">доступно к выводу</div>
+    </div>
+    <div class="rc">
+      <div class="rv-v" style="color:var(--purple)">${f(rev.subscriptions.active)} <span style="font-size:.85rem;color:var(--dim)">/ ${f(rev.subscriptions.total)}</span></div>
+      <div class="rv-l">Подписки (акт / всего)</div>
+      <div class="rv-s">⭐ ${f(rev.subscriptions.starsEarned)} Stars</div>
+    </div>
+    <div class="rc">
+      <div class="rv-v" style="color:var(--cyan)">${f(rev.purchases.total)}</div>
+      <div class="rv-l">Покупки отчётов</div>
+      <div class="rv-s">⭐ ${f(rev.purchases.starsEarned)} · ${f(rev.fateReports.generated)} готово</div>
+    </div>
+  </div>
+</div>
+
+<div class="sec" data-i="${si++}">
+  <div class="sh"><div class="si" style="background:var(--blue-bg)">👥</div><div class="st">Пользователи</div></div>
+  <div class="g g4">
+    <div class="card">
+      <div class="card-glow" style="background:var(--gold)"></div>
+      <div class="ct"><div><div class="cv" style="color:var(--gold)">${f(u.total)}</div><div class="cl">Всего</div></div><div class="ci" style="background:var(--gold-bg)">👤</div></div>
+    </div>
+    <div class="card">
+      <div class="card-glow" style="background:var(--green)"></div>
+      <div class="ct"><div><div class="cv" style="color:var(--green)">${f(u.activeToday)}</div><div class="cl">Сегодня</div></div><div class="ci" style="background:var(--green-bg)">⚡</div></div>
+      ${u.total>0?`<div class="cf"><span style="color:var(--green);font-weight:600">${(u.activeToday/u.total*100).toFixed(0)}%</span><span>от всех</span></div>`:''}
+    </div>
+    <div class="card">
+      <div class="ct"><div><div class="cv" style="color:var(--blue)">${f(u.activeThisWeek)}</div><div class="cl">За неделю</div></div><div class="ci" style="background:var(--blue-bg)">📅</div></div>
+    </div>
+    <div class="card">
+      <div class="ct"><div><div class="cv" style="color:var(--purple)">${f(u.activeThisMonth)}</div><div class="cl">За месяц</div></div><div class="ci" style="background:var(--purple-bg)">📊</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sec" data-i="${si++}">
+  <div class="sh"><div class="si" style="background:var(--pink-bg)">🃏</div><div class="st">Контент</div></div>
+  <div class="g ga">
+    <div class="card">
+      <div class="ct"><div><div class="cv" style="color:var(--pink)">${f(c.totalReadings)}</div><div class="cl">Раскладов</div></div><div class="ci" style="background:var(--pink-bg)">🔮</div></div>
+      <div class="cf"><span>сегодня ${c.readingsToday}</span><span>неделя ${c.readingsThisWeek}</span></div>
+    </div>
+    <div class="card">
+      <div class="ct"><div><div class="cv" style="color:var(--cyan)">${f(c.totalDailyCards)}</div><div class="cl">Карт дня</div></div><div class="ci" style="background:var(--cyan-bg)">☀️</div></div>
+      <div class="cf"><span>сегодня ${c.dailyCardsToday}</span></div>
+    </div>
+    <div class="card">
+      <div class="ct"><div><div class="cv" style="color:var(--purple)">${f(c.totalJournalEntries)}</div><div class="cl">Записей в дневнике</div></div><div class="ci" style="background:var(--purple-bg)">📖</div></div>
+    </div>
+    ${c.readingsByType.map((r,i)=>`<div class="card"><div class="ct"><div><div class="cv" style="color:var(--muted)">${f(r.count)}</div><div class="cl">${r.type}</div></div></div></div>`).join('')}
+  </div>
+</div>
+
+<div class="sec" data-i="${si++}">
+  <div class="sh"><div class="si" style="background:var(--cyan-bg)">⚙️</div><div class="st">API</div></div>
+  <div class="g g4" style="margin-bottom:14px">
+    <div class="card">
+      <div class="ct"><div><div class="cv">${f(a.totalCalls)}</div><div class="cl">Запросов</div></div><div class="ci" style="background:var(--blue-bg)">📡</div></div>
+      <div class="cf"><span>сегодня ${a.todayCalls}</span><span>неделя ${a.weekCalls}</span></div>
+    </div>
+    <div class="card">
+      <div class="ct"><div><div class="cv" style="color:${clr(sr,80,50)}">${sr.toFixed(1)}%</div><div class="cl">Успешность</div></div><div class="ci" style="background:${sr>80?'var(--green-bg)':sr>50?'var(--gold-bg)':'var(--red-bg)'}">${sr>80?'✅':sr>50?'⚠️':'❌'}</div></div>
+      <div class="bar"><div class="bf" style="width:${sr}%;background:${clr(sr,80,50)}"></div></div>
+    </div>
+    <div class="card">
+      <div class="ct"><div><div class="cv" style="color:var(--cyan)">${f(a.avgLatencyMs)}<span style="font-size:.6rem;color:var(--dim);font-weight:500">ms</span></div><div class="cl">Средняя задержка</div></div><div class="ci" style="background:var(--cyan-bg)">⏱</div></div>
+    </div>
+    <div class="card">
+      <div class="ct"><div><div class="cv" style="color:var(--red)">${f(a.failedCalls)}</div><div class="cl">Ошибок</div></div><div class="ci" style="background:var(--red-bg)">🔴</div></div>
+      <div class="cf"><span>${a.uniqueApiUsers} уник. пользователей</span></div>
+    </div>
+  </div>
+  <div class="g gb">
+    ${d.allTime.byProvider.map(p=>{
+      const w=(p.count/maxProv*100).toFixed(0);
+      const col=p.provider==='gemini'?'var(--blue)':'var(--purple)';
+      return `<div class="pc"><div class="ph"><span class="badge ${p.provider==='gemini'?'bb':'bp'}">${p.provider.toUpperCase()}</span></div><div class="ps"><div><div class="psv" style="color:${col}">${f(p.count)}</div><div class="psl">запросов</div></div><div><div class="psv">${f(p.avgLatencyMs)}<span style="font-size:.55rem;color:var(--dim)">ms</span></div><div class="psl">задержка</div></div></div><div class="bar"><div class="bf" style="width:${w}%;background:${col}"></div></div></div>`}).join('')}
+    ${d.allTime.byEndpoint.map((e,i)=>{
+      const w=(e.count/maxEp*100).toFixed(0);
+      const col=epColors[i%epColors.length];
+      return `<div class="pc"><div class="ph"><span class="badge bgo">${e.endpoint}</span></div><div class="ps"><div><div class="psv" style="color:${col}">${f(e.count)}</div><div class="psl">вызовов</div></div></div><div class="bar"><div class="bf" style="width:${w}%;background:${col}"></div></div></div>`}).join('')}
+  </div>
+</div>
+
+${t.byProvider.length?`
+<div class="sec" data-i="${si++}">
+  <div class="sh"><div class="si" style="background:var(--green-bg)">📈</div><div class="st">Сегодня по моделям</div></div>
+  <div class="g ga">
+    ${t.byProvider.map((p,i)=>{
+      const cols=['var(--blue)','var(--purple)','var(--cyan)','var(--gold)'];
+      return `<div class="card"><div class="ct"><div><div class="cv" style="color:${cols[i%4]}">${f(p.count)}</div><div class="cl">${p.provider}</div></div></div><div class="cf"><span class="badge bp" style="font-size:.58rem">${p.model}</span></div></div>`}).join('')}
+  </div>
+</div>`:''}
+
+<div class="sec" data-i="${si++}">
+  <div class="sh"><div class="si" style="background:var(--purple-bg)">👤</div><div class="st">Пользователи</div></div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Пользователь</th><th>Уровень</th><th>Стрик</th><th>Расклады</th><th>Карты</th><th>Активность</th><th>Регистрация</th></tr></thead>
+      <tbody>
+        ${d.recentUsers.map((u,i)=>`<tr>
+          <td><div class="uc"><div class="ua" style="background:${avBg(i)}">${(u.firstName||'?')[0]}</div><div><div class="un">${u.firstName||'—'}</div><div class="uh">@${u.username||'—'}</div></div></div></td>
+          <td><span class="badge bgo">Lv.${u.level}</span></td>
+          <td>${u.streak>0?'🔥 '+u.streak:'<span style="color:var(--dim)">—</span>'}</td>
+          <td>${u.readings}</td>
+          <td>${u.dailyCards}</td>
+          <td><span style="color:var(--muted);font-size:.76rem">${ago(u.lastActive)}</span></td>
+          <td><span style="color:var(--dim);font-size:.72rem">${ts(u.joined)}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+${d.recentErrors.length?`
+<div class="sec" data-i="${si++}">
+  <div class="sh"><div class="si" style="background:var(--red-bg)">⚠️</div><div class="st">Ошибки</div></div>
+  <div class="el">
+    ${d.recentErrors.slice(0,8).map(e=>`
+    <div class="ei">
+      <div class="ec">${e.error}</div>
+      <div class="em"><strong>${e.provider}</strong> → <span class="badge bgo" style="font-size:.58rem">${e.endpoint}</span><br><span>${e.model} · ${e.latencyMs}ms</span></div>
+      <div class="et">${ts(e.createdAt)}</div>
+    </div>`).join('')}
+  </div>
+</div>`:''}
+
+</main>`;
+  $('#ts').textContent = new Date().toLocaleTimeString('ru-RU');
+}
+
+load();
+setInterval(load, 60000);
+</script>
+</body>
+</html>

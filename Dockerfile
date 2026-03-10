@@ -16,6 +16,7 @@ RUN npm run build
 FROM node:20-alpine
 WORKDIR /app
 COPY --from=server-build /app/server/dist ./dist
+COPY --from=server-build /app/server/src/dashboard.html ./dist/dashboard.html
 COPY --from=server-build /app/server/node_modules ./node_modules
 COPY --from=server-build /app/server/package.json ./
 COPY --from=server-build /app/server/src/prisma ./src/prisma
