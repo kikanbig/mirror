@@ -127,6 +127,38 @@ router.get('/', async (_req, res) => {
       _count: true,
     });
 
+    // Revenue stats
+    const [
+      totalSubscriptions,
+      activeSubscriptions,
+      totalPurchases,
+      totalFateReports,
+      subscriptionRevenue,
+      purchaseRevenue,
+    ] = await Promise.all([
+      prisma.subscription.count(),
+      prisma.subscription.count({ where: { status: 'active', expiresAt: { gt: now } } }),
+      prisma.purchase.count(),
+      prisma.fateReport.count({ where: { status: 'ready' } }),
+      prisma.subscription.aggregate({ _sum: { amount: true } }),
+      prisma.purchase.aggregate({ _sum: { amount: true } }),
+    ]);
+
+    const totalStarsEarned = (subscriptionRevenue._sum.amount || 0) + (purchaseRevenue._sum.amount || 0);
+
+    // Bot Stars balance via Telegram API
+    let botStarsBalance: number | null = null;
+    const BOT_TOKEN = process.env.BOT_TOKEN;
+    if (BOT_TOKEN) {
+      try {
+        const resp = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getStarTransactions?limit=1`);
+        const data = await resp.json() as any;
+        if (data.ok) {
+          botStarsBalance = data.result?.balance ?? null;
+        }
+      } catch { /* ignore */ }
+    }
+
     res.json({
       users: {
         total: totalUsers,
@@ -195,6 +227,22 @@ router.get('/', async (_req, res) => {
         readings: u._count.readings,
         dailyCards: u._count.dailyCards,
       })),
+      revenue: {
+        botStarsBalance,
+        totalStarsEarned,
+        subscriptions: {
+          total: totalSubscriptions,
+          active: activeSubscriptions,
+          starsEarned: subscriptionRevenue._sum.amount || 0,
+        },
+        purchases: {
+          total: totalPurchases,
+          starsEarned: purchaseRevenue._sum.amount || 0,
+        },
+        fateReports: {
+          generated: totalFateReports,
+        },
+      },
       recentErrors,
     });
   } catch (error) {
