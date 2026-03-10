@@ -1,7 +1,7 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "Mirror of Fate API Server",
+  "description": "NUMA API Server",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --exec ts-node src/index.ts",

@@ -1,7 +1,7 @@
 {
   "name": "bot",
   "version": "1.0.0",
-  "description": "Mirror of Fate Telegram Bot",
+  "description": "NUMA Telegram Bot",
   "main": "index.js",
   "scripts": {
     "start": "npx ts-node src/bot.ts",

@@ -15,14 +15,14 @@ const WEBAPP_URL = process.env.WEBAPP_URL || 'https://your-app.vercel.app';
 
 bot.start(async (ctx) => {
   await ctx.reply(
-    '🔮 *Добро пожаловать в Зеркало Судьбы!*\n\n' +
-    '✨ Мистическое приложение для самопознания и предсказаний.\n\n' +
+    '🔮 *Добро пожаловать в NUMA!*\n\n' +
+    '_Числа. Карты. Ты._\n\n' +
     '🃏 Таро • ᚱ Руны • 🔢 Нумерология • 🌙 Лунный календарь\n\n' +
     'Нажмите кнопку ниже, чтобы открыть приложение:',
     {
       parse_mode: 'Markdown',
       ...Markup.inlineKeyboard([
-        [Markup.button.webApp('🔮 Открыть Зеркало Судьбы', WEBAPP_URL)],
+        [Markup.button.webApp('🔮 Открыть NUMA', WEBAPP_URL)],
       ]),
     }
   );
@@ -54,7 +54,7 @@ bot.command('tarot', async (ctx) => {
 
 bot.command('help', async (ctx) => {
   await ctx.reply(
-    '🔮 *Зеркало Судьбы — Помощь*\n\n' +
+    '🔮 *NUMA — Помощь*\n\n' +
     '📋 Доступные команды:\n' +
     '/start — Открыть приложение\n' +
     '/daily — Карта дня\n' +

@@ -17,14 +17,15 @@ export function setupBot(app: Express) {
   const WEBHOOK_PATH = `/bot${BOT_TOKEN}`;
 
   bot.telegram.setMyCommands([
-    { command: 'start', description: 'Открыть Зеркало Судьбы — таро, руны, нумерология' },
+    { command: 'start', description: 'Открыть NUMA — таро, руны, нумерология' },
     { command: 'daily', description: 'Карта дня — ежедневное предсказание таро' },
     { command: 'tarot', description: 'Гадание на таро — 7 раскладов с ИИ толкованием' },
     { command: 'help', description: 'Помощь — все функции и возможности' },
   ]).catch((err: Error) => console.warn('[Bot] setMyCommands failed:', err.message));
 
   bot.telegram.setMyDescription(
-    'Зеркало Судьбы — мистическое приложение для самопознания и предсказаний с ИИ.\n\n' +
+    'NUMA — Числа. Карты. Ты.\n\n' +
+    'Мистическое приложение для самопознания и предсказаний с ИИ.\n\n' +
     '🃏 Гадание на таро — 7 типов раскладов с умной интерпретацией\n' +
     'ᚱ Гадание на рунах — древняя мудрость Футарка\n' +
     '🔢 Нумерология — расчёт числа судьбы, души и жизненного пути\n' +
@@ -35,7 +36,7 @@ export function setupBot(app: Express) {
   ).catch((err: Error) => console.warn('[Bot] setMyDescription failed:', err.message));
 
   bot.telegram.setMyShortDescription(
-    'Таро, руны, нумерология и астрология с ИИ — бесплатные предсказания каждый день'
+    'NUMA: Числа. Карты. Ты. — таро, руны, нумерология и астрология с ИИ'
   ).catch((err: Error) => console.warn('[Bot] setMyShortDescription failed:', err.message));
 
   bot.telegram.setChatMenuButton({
@@ -49,8 +50,8 @@ export function setupBot(app: Express) {
 
   bot.start(async (ctx) => {
     await ctx.reply(
-      '🔮 *Добро пожаловать в Зеркало Судьбы!*\n\n' +
-      '✨ Мистическое приложение для самопознания и предсказаний с искусственным интеллектом.\n\n' +
+      '🔮 *Добро пожаловать в NUMA!*\n\n' +
+      '_Числа. Карты. Ты._\n\n' +
       '🃏 *Таро* — 7 типов раскладов с глубокой интерпретацией\n' +
       'ᚱ *Руны* — древняя мудрость Старшего Футарка\n' +
       '🔢 *Нумерология* — числа судьбы, души и жизненного пути\n' +
@@ -61,7 +62,7 @@ export function setupBot(app: Express) {
       {
         parse_mode: 'Markdown',
         ...Markup.inlineKeyboard([
-          [Markup.button.webApp('🔮 Открыть Зеркало Судьбы', WEBAPP_URL)],
+          [Markup.button.webApp('🔮 Открыть NUMA', WEBAPP_URL)],
         ]),
       }
     );
@@ -101,7 +102,7 @@ export function setupBot(app: Express) {
 
   bot.command('help', async (ctx) => {
     await ctx.reply(
-      '🔮 *Зеркало Судьбы — Помощь*\n\n' +
+      '🔮 *NUMA — Помощь*\n\n' +
       '📋 *Команды:*\n' +
       '/start — Открыть приложение\n' +
       '/daily — Карта дня (ежедневное предсказание)\n' +

@@ -55,7 +55,7 @@ export default function HomePage() {
             ))}
             <span className={styles.greetingComma}>,</span>
           </h1>
-          <p className={styles.subtitle}>добро пожаловать в Зеркало Судьбы</p>
+          <p className={styles.subtitle}>Числа. Карты. Ты.</p>
         </div>
         <div className={styles.level}>
           <span className={styles.levelBadge}>Ур. {profile.level}</span>

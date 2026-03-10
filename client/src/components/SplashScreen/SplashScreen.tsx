@@ -117,7 +117,7 @@ function SplashParticles({ active }: { active: boolean }) {
   return <canvas ref={canvasRef} className={styles.particleCanvas} />;
 }
 
-const TITLE = 'Зеркало Судьбы';
+const TITLE = 'NUMA';
 
 export default function SplashScreen({ onComplete }: { onComplete: () => void }) {
   const [visible, setVisible] = useState(true);
@@ -145,7 +145,7 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
             <img
               className={styles.logoImg}
               src="/icons/icon_splash_logo.webp"
-              alt="Зеркало Судьбы"
+              alt="NUMA"
               width={160}
               height={160}
             />
@@ -163,7 +163,7 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
             ))}
           </div>
 
-          <span className={styles.subtitle}>раскройте тайны судьбы</span>
+          <span className={styles.subtitle}>Числа. Карты. Ты.</span>
         </motion.div>
       )}
     </AnimatePresence>
