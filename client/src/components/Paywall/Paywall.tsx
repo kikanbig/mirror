@@ -16,7 +16,8 @@ const PRODUCT_INFO = {
   premium_month: {
     title: 'Premium подписка',
     price: '149 Stars/мес',
-    successMsg: 'Premium активирован!',
+    successMsg: 'PRO подписка активирована!',
+    successHint: 'Все функции приложения теперь доступны без ограничений',
     features: [
       'Все расклады таро (Кельтский крест, Любовь, Карьера, Неделя)',
       'Полная нумерология с психоматрицей',
@@ -29,7 +30,8 @@ const PRODUCT_INFO = {
   fate_report: {
     title: 'Полный отчёт Матрицы Судьбы',
     price: '499 Stars (разово)',
-    successMsg: 'Отчёт оплачен! Теперь можете сгенерировать.',
+    successMsg: 'Отчёт Матрицы Судьбы оплачен!',
+    successHint: 'Откройте раздел Нумерологии и нажмите «Сгенерировать отчёт»',
     features: [
       'Персональный отчёт на 50+ страниц',
       '25 глав: таланты, карма, здоровье, деньги, отношения',
@@ -156,7 +158,7 @@ export function PaywallOverlay({ product = 'premium_month', feature, onSuccess, 
             >
               <div className={styles.successIcon}>&#10003;</div>
               <h3 className={styles.successTitle}>{info.successMsg}</h3>
-              <p className={styles.successHint}>Доступ открыт</p>
+              <p className={styles.successHint}>{info.successHint}</p>
             </motion.div>
           ) : (
             <motion.div key="form" exit={{ opacity: 0 }}>
@@ -261,7 +263,7 @@ export function PaywallBanner({ product = 'premium_month', label, onSuccess }: B
         animate={{ scale: 1 }}
       >
         <span className={styles.successCheckSmall}>&#10003;</span>
-        <span className={styles.bannerText}>Оплачено!</span>
+        <span className={styles.bannerText}>{info.successMsg}</span>
       </motion.div>
     );
   }
