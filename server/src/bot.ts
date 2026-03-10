@@ -38,6 +38,15 @@ export function setupBot(app: Express) {
     'Таро, руны, нумерология и астрология с ИИ — бесплатные предсказания каждый день'
   ).catch((err: Error) => console.warn('[Bot] setMyShortDescription failed:', err.message));
 
+  bot.telegram.setChatMenuButton({
+    menuButton: {
+      type: 'web_app',
+      text: '🔮 Открыть',
+      web_app: { url: WEBAPP_URL },
+    },
+  }).then(() => console.log('[Bot] Menu button set'))
+    .catch((err: Error) => console.warn('[Bot] setChatMenuButton failed:', err.message));
+
   bot.start(async (ctx) => {
     await ctx.reply(
       '🔮 *Добро пожаловать в Зеркало Судьбы!*\n\n' +
