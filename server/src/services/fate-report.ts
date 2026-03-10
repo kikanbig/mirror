@@ -1,8 +1,9 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import Groq from 'groq-sdk';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY || '' });
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
 // Replicate reduceToArcana from client-side for server calculation
 function reduceToArcana(n: number): number {
@@ -205,9 +206,13 @@ function buildChapterPrompts(m: MatrixNumbers, birthDate: Date): Array<{ id: num
 }
 
 async function generateChapter(prompt: string): Promise<string> {
-  const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
-  const result = await model.generateContent(prompt);
-  return result.response.text();
+  const result = await groq.chat.completions.create({
+    model: GROQ_MODEL,
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.8,
+    max_tokens: 4096,
+  });
+  return result.choices[0]?.message?.content || '';
 }
 
 export async function generateFateReport(
@@ -218,9 +223,8 @@ export async function generateFateReport(
   const matrix = calculateMatrix(birthDate);
   const chapterPrompts = buildChapterPrompts(matrix, birthDate);
 
-  // Generate chapters in batches of 5 for speed
   const chapters: Record<string, Chapter> = {};
-  const BATCH_SIZE = 5;
+  const BATCH_SIZE = 3;
 
   for (let i = 0; i < chapterPrompts.length; i += BATCH_SIZE) {
     const batch = chapterPrompts.slice(i, i + BATCH_SIZE);
@@ -240,9 +244,13 @@ export async function generateFateReport(
       };
     }
 
-    // Log progress
     const done = Math.min(i + BATCH_SIZE, chapterPrompts.length);
     console.log(`[FateReport] Generated ${done}/${chapterPrompts.length} chapters for user ${userId}`);
+
+    // Pause between batches to respect Groq rate limits
+    if (i + BATCH_SIZE < chapterPrompts.length) {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+    }
   }
 
   const wordCount = Object.values(chapters).reduce(
