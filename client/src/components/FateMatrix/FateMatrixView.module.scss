@@ -1,0 +1,700 @@
+.fateSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+// ── SVG Diagram ──
+.fateVisual {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 4px;
+  touch-action: manipulation;
+  overflow-anchor: none;
+}
+
+.fateSvg {
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+}
+
+// ── Node tooltip — overlays the SVG, no layout shift ──
+.nodeTooltip {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  padding: 10px 12px;
+  @include glass(0.85);
+  border-radius: $radius-lg;
+  border-left: 3px solid $accent-gold;
+  backdrop-filter: blur(12px);
+  z-index: 2;
+  cursor: pointer;
+}
+
+.tooltipHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.tooltipNum {
+  font-family: $font-display;
+  font-size: 1.6rem;
+  color: $accent-gold;
+  width: 36px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.tooltipName {
+  font-family: $font-accent;
+  font-size: 0.85rem;
+  color: $accent-gold;
+  font-weight: 600;
+}
+
+.tooltipPlus, .tooltipMinus {
+  font-size: 0.76rem;
+  line-height: 1.5;
+  margin: 2px 0;
+
+  b { margin-right: 4px; }
+}
+
+.tooltipPlus {
+  color: $text-secondary;
+  b { color: #22c55e; }
+}
+
+.tooltipMinus {
+  color: $text-muted;
+  b { color: #ef4444; }
+}
+
+// ── Accordion ──
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-anchor: none;
+}
+
+.accordionItem {
+  border-radius: $radius-md;
+  overflow: hidden;
+  overflow-anchor: none;
+  scroll-margin-top: 12px;
+}
+
+.accordionBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 14px;
+  @include glass(0.08);
+  border-radius: $radius-md;
+  color: $text-primary;
+  font-size: 0.85rem;
+  text-align: left;
+  transition: background 0.2s;
+
+  &:active {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+.accordionOpen {
+  background: rgba(212, 175, 55, 0.08);
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.accordionIcon {
+  font-size: 1rem;
+  width: 22px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.accordionLabel {
+  flex: 1;
+  font-weight: 500;
+}
+
+.accordionArrow {
+  font-size: 0.7rem;
+  color: $text-muted;
+  flex-shrink: 0;
+}
+
+.accordionBody {
+  overflow: hidden;
+}
+
+.accordionInner {
+  padding: 12px;
+  @include glass(0.04);
+  border-bottom-left-radius: $radius-md;
+  border-bottom-right-radius: $radius-md;
+}
+
+// ── Energy Card (reusable) ──
+.energyCard {
+  padding: 12px;
+  @include glass(0.1);
+  border-radius: $radius-md;
+  border-left: 3px solid $accent-gold;
+  margin-bottom: 10px;
+}
+
+.energyHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.energyNum {
+  font-family: $font-display;
+  font-size: 1.6rem;
+  color: $accent-gold;
+  width: 36px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.energyName {
+  display: block;
+  font-family: $font-accent;
+  font-size: 0.85rem;
+  color: $accent-gold;
+  font-weight: 600;
+}
+
+.energyContext {
+  display: block;
+  font-size: 0.68rem;
+  color: $text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.energyBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.energyPlus, .energyMinus {
+  display: flex;
+  gap: 6px;
+  align-items: flex-start;
+
+  p {
+    font-size: 0.76rem;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.energyPlus p { color: $text-secondary; }
+.energyMinus p { color: $text-muted; }
+
+.plusIcon {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #22c55e;
+  flex-shrink: 0;
+  width: 14px;
+}
+
+.minusIcon {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ef4444;
+  flex-shrink: 0;
+  width: 14px;
+}
+
+// ── Talents ──
+.talentList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.talentCard {
+  padding: 12px;
+  @include glass(0.08);
+  border-radius: $radius-md;
+  border-left: 3px solid $accent-gold;
+}
+
+.talentHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.talentNum {
+  font-family: $font-display;
+  font-size: 1.8rem;
+  color: $accent-gold;
+  width: 44px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.talentLabel {
+  display: block;
+  font-size: 0.82rem;
+  color: $text-primary;
+  font-weight: 600;
+}
+
+.talentSub {
+  display: block;
+  font-size: 0.68rem;
+  color: $text-muted;
+}
+
+.talentBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.talentProf {
+  padding: 8px;
+  background: rgba(212, 175, 55, 0.06);
+  border-radius: $radius-sm;
+  margin-top: 4px;
+
+  p {
+    font-size: 0.76rem;
+    color: $text-secondary;
+    line-height: 1.5;
+    margin: 2px 0 0;
+  }
+}
+
+.profLabel {
+  font-size: 0.72rem;
+  color: $accent-gold;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+// ── Purpose ──
+.purposeList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.purposeCard {
+  padding: 12px;
+  @include glass(0.08);
+  border-radius: $radius-md;
+  border-left: 3px solid $accent-purple;
+}
+
+.purposeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.purposeLabel {
+  font-family: $font-accent;
+  font-size: 0.88rem;
+  color: $accent-purple;
+  font-weight: 600;
+}
+
+.purposeRange {
+  font-size: 0.72rem;
+  color: $text-muted;
+  padding: 3px 8px;
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: $radius-full;
+}
+
+.purposeNums {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.purposeNum {
+  font-family: $font-display;
+  font-size: 1.2rem;
+  color: $accent-purple;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @include glass(0.1);
+  border-radius: 50%;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.purposeDesc {
+  margin-top: 6px;
+}
+
+.purposeDescNum {
+  font-size: 0.72rem;
+  color: $accent-purple;
+  font-weight: 600;
+}
+
+.purposeDesc p {
+  font-size: 0.76rem;
+  color: $text-secondary;
+  line-height: 1.55;
+  margin: 2px 0 0;
+}
+
+// ── Karmic Tail ──
+.karmicTailList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.karmicTailIntro {
+  font-size: 0.78rem;
+  color: $text-muted;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+.karmicTailCard {
+  padding: 12px;
+  @include glass(0.08);
+  border-radius: $radius-md;
+  border-left: 3px solid #F97316;
+}
+
+.karmicTailHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.karmicTailNum {
+  font-family: $font-display;
+  font-size: 1.6rem;
+  color: #F97316;
+  width: 36px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.karmicTailLabel {
+  display: block;
+  font-size: 0.82rem;
+  color: $text-primary;
+  font-weight: 600;
+}
+
+.karmicTailEnergy {
+  display: block;
+  font-size: 0.7rem;
+  color: $text-muted;
+}
+
+.karmicTailDesc {
+  font-size: 0.78rem;
+  color: $text-secondary;
+  line-height: 1.55;
+  margin: 0;
+}
+
+// ── Comfort & Self-realization ──
+.comfortCard, .selfRealCard {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.comfortDesc, .selfRealDesc {
+  font-size: 0.8rem;
+  color: $text-secondary;
+  line-height: 1.6;
+  padding: 10px;
+  @include glass(0.06);
+  border-radius: $radius-sm;
+  margin: 0;
+}
+
+// ── Health / Chakra Table ──
+.healthSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chakraTable {
+  @include glass(0.06);
+  border-radius: $radius-md;
+  overflow: hidden;
+}
+
+.chakraHeaderRow {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 1px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.06);
+
+  span {
+    font-size: 0.65rem;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-align: center;
+
+    &:first-child { text-align: left; }
+  }
+}
+
+.chakraRow {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 1px;
+  padding: 8px 10px;
+  border-left: 3px solid;
+  transition: background 0.15s;
+
+  &:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
+}
+
+.chakraName {
+  font-size: 0.78rem;
+  color: $text-primary;
+  font-weight: 500;
+}
+
+.chakraVal {
+  font-family: $font-display;
+  font-size: 0.95rem;
+  color: $accent-gold;
+  text-align: center;
+}
+
+.chakraTotalRow {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 1px;
+  padding: 10px;
+  background: rgba(212, 175, 55, 0.08);
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+
+  span {
+    font-size: 0.72rem;
+    color: $text-muted;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+
+    &:first-child { font-weight: 600; }
+  }
+}
+
+.chakraTotalVal {
+  font-family: $font-display;
+  font-size: 1rem;
+  color: $accent-gold;
+  text-align: center;
+  font-weight: bold;
+}
+
+.healthSubTitle {
+  font-family: $font-accent;
+  font-size: 0.85rem;
+  color: $accent-gold;
+  margin-top: 8px;
+}
+
+.chakraTaskCard {
+  padding: 10px;
+  @include glass(0.06);
+  border-radius: $radius-sm;
+  border-left: 3px solid;
+  margin-bottom: 6px;
+}
+
+.chakraTaskName {
+  font-size: 0.78rem;
+  color: $text-primary;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.chakraTaskBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  p {
+    font-size: 0.74rem;
+    color: $text-secondary;
+    line-height: 1.5;
+    margin: 0;
+
+    b {
+      color: $text-primary;
+      font-weight: 600;
+    }
+  }
+}
+
+// ── Relationships, Money, Clan — grid layout ──
+.relSection, .moneySection, .clanSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.relGrid, .moneyGrid, .clanGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.relItem, .moneyItem, .clanItem {
+  padding: 10px;
+  @include glass(0.06);
+  border-radius: $radius-sm;
+
+  p {
+    font-size: 0.76rem;
+    color: $text-secondary;
+    line-height: 1.5;
+    margin: 2px 0 0;
+  }
+}
+
+.relItemLabel, .moneyItemLabel, .clanItemLabel {
+  font-size: 0.7rem;
+  color: $accent-gold;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+// ── Programs ──
+.programsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.programCard {
+  padding: 12px;
+  @include glass(0.08);
+  border-radius: $radius-md;
+  border-left: 3px solid #ef4444;
+}
+
+.programHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.programNums {
+  font-family: $font-display;
+  font-size: 0.9rem;
+  color: #ef4444;
+  white-space: nowrap;
+}
+
+.programName {
+  font-family: $font-accent;
+  font-size: 0.85rem;
+  color: #fca5a5;
+  font-weight: 600;
+}
+
+.programDesc {
+  font-size: 0.78rem;
+  color: $text-secondary;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.noProgramsCard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  @include glass(0.08);
+  border-radius: $radius-md;
+  border-left: 3px solid #22c55e;
+
+  p {
+    font-size: 0.8rem;
+    color: $text-secondary;
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.noProgramsIcon {
+  font-size: 1.4rem;
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+// ── Year Forecast ──
+.yearSection {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.yearHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  @include glass(0.08);
+  border-radius: $radius-md;
+}
+
+.yearAge {
+  font-size: 0.78rem;
+  color: $text-secondary;
+}
+
+.yearEnergy {
+  font-family: $font-display;
+  font-size: 0.9rem;
+  color: $accent-gold;
+  font-weight: bold;
+}
+
+.yearDesc {
+  font-size: 0.8rem;
+  color: $text-secondary;
+  line-height: 1.6;
+  padding: 10px;
+  @include glass(0.06);
+  border-radius: $radius-sm;
+  margin: 0;
+}

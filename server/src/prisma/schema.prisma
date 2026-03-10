@@ -31,6 +31,9 @@ model User {
   readings        Reading[]
   journalEntries  JournalEntry[]
   dailyCards      DailyCard[]
+  subscriptions   Subscription[]
+  purchases       Purchase[]
+  fateReports     FateReport[]
 }
 
 model Reading {
@@ -88,6 +91,49 @@ model ApiLog {
 
   @@index([createdAt])
   @@index([provider])
+}
+
+model Subscription {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  type          String
+  status        String   @default("active")
+  startsAt      DateTime @default(now())
+  expiresAt     DateTime
+  telegramPayId String?
+  amount        Int
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model Purchase {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  product       String
+  telegramPayId String?  @unique
+  amount        Int
+  metadata      Json?
+  createdAt     DateTime @default(now())
+
+  @@index([userId])
+}
+
+model FateReport {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  birthDate DateTime @db.Date
+  chapters  Json
+  wordCount Int      @default(0)
+  status    String   @default("generating")
+  createdAt DateTime @default(now())
+
+  @@unique([userId, birthDate])
+  @@index([userId])
 }
 
 enum ReadingType {

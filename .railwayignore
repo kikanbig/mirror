@@ -1,0 +1,17 @@
+**/node_modules/
+node_modules/
+client/node_modules/
+server/node_modules/
+bot/node_modules/
+.vite/
+.git/
+.DS_Store
+*.log
+.env
+.env.local
+.env.production
+.vscode/
+.idea/
+.cursor/
+20-08-1982.pdf
+bot_avatar.png

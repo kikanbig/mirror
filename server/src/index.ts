@@ -9,6 +9,8 @@ import { dailyRouter } from './routes/daily';
 import { profileRouter } from './routes/profile';
 import { interpretRouter } from './routes/interpret';
 import { statsRouter } from './routes/stats';
+import { paymentsRouter } from './routes/payments';
+import { fateReportRouter } from './routes/fate-report';
 import { setupBot } from './bot';
 
 dotenv.config();
@@ -30,6 +32,8 @@ app.use('/api/profile', profileRouter);
 app.use('/api/interpret', interpretRouter);
 
 app.use('/api/stats', statsRouter);
+app.use('/api/payments', paymentsRouter);
+app.use('/api/fate-report', fateReportRouter);
 
 app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

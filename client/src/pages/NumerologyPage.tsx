@@ -10,12 +10,15 @@ import {
   PSYCHOMATRIX_CELL_NAMES, PSYCHOMATRIX_LINE_NAMES, getLineStrength, getLineDescription,
   KARMIC_DEBT_DESCRIPTIONS, KARMIC_LESSON_DESCRIPTIONS,
   PINNACLE_DESCRIPTIONS, CHALLENGE_DESCRIPTIONS,
-  calculateFateMatrix, FATE_POSITION_NAMES, FATE_ENERGY_DESCRIPTIONS,
+  calculateFateMatrix,
   type PinnacleInfo, type ChallengeInfo, type KarmicDebtInfo, type PsychomatrixResult,
   type FateMatrixResult,
 } from '../data/numerology';
 import { useAppStore } from '../stores/appStore';
 import { useUserStore } from '../stores/userStore';
+import FateMatrixView from '../components/FateMatrix/FateMatrixView';
+import FateReportGenerator from '../components/FateReport/FateReportGenerator';
+import Paywall, { PaywallBanner } from '../components/Paywall/Paywall';
 import styles from './NumerologyPage.module.scss';
 
 interface FullResult {
@@ -63,6 +66,7 @@ export default function NumerologyPage() {
   const [fullName, setFullName] = useState('');
   const [result, setResult] = useState<FullResult | null>(null);
   const [detailNum, setDetailNum] = useState<number | null>(null);
+  const { premiumStatus } = useUserStore();
   const [partnerBirth, setPartnerBirth] = useState('');
   const [compatResult, setCompatResult] = useState<ReturnType<typeof calculateCompatibility> | null>(null);
   const [compatNums, setCompatNums] = useState<{ my: number; partner: number } | null>(null);
@@ -158,94 +162,13 @@ export default function NumerologyPage() {
               </div>
             )}
 
-            {/* Section 2.5: Fate Matrix */}
-            <div className={styles.fateSection}>
-              <h2 className={styles.sectionTitle}>Матрица Судьбы</h2>
+            {/* Fate Matrix — full product */}
+            <h2 className={styles.sectionTitle}>Матрица Судьбы</h2>
+            <Paywall feature="Матрица Судьбы">
+              <FateMatrixView matrix={result.fateMatrix} />
+            </Paywall>
 
-              {/* SVG Diamond */}
-              <div className={styles.fateVisual}>
-                <svg viewBox="0 0 300 300" className={styles.fateSvg}>
-                  {/* Diamond lines */}
-                  <line x1="150" y1="30" x2="270" y2="150" stroke="rgba(212,175,55,0.3)" strokeWidth="1" />
-                  <line x1="270" y1="150" x2="150" y2="270" stroke="rgba(212,175,55,0.3)" strokeWidth="1" />
-                  <line x1="150" y1="270" x2="30" y2="150" stroke="rgba(212,175,55,0.3)" strokeWidth="1" />
-                  <line x1="30" y1="150" x2="150" y2="30" stroke="rgba(212,175,55,0.3)" strokeWidth="1" />
-                  {/* Cross lines */}
-                  <line x1="30" y1="150" x2="270" y2="150" stroke="rgba(139,92,246,0.25)" strokeWidth="1" strokeDasharray="4" />
-                  <line x1="150" y1="30" x2="150" y2="270" stroke="rgba(139,92,246,0.25)" strokeWidth="1" strokeDasharray="4" />
-
-                  {/* Corner nodes */}
-                  {([
-                    { x: 30, y: 150, key: 'a' as const },
-                    { x: 150, y: 30, key: 'b' as const },
-                    { x: 270, y: 150, key: 'c' as const },
-                    { x: 150, y: 270, key: 'd' as const },
-                  ] as const).map(({ x, y, key }) => (
-                    <g key={key}>
-                      <circle cx={x} cy={y} r="20" fill="rgba(212,175,55,0.15)" stroke="#D4AF37" strokeWidth="1.5" />
-                      <text x={x} y={y + 1} textAnchor="middle" dominantBaseline="middle" fill="#D4AF37" fontSize="14" fontWeight="bold">
-                        {result.fateMatrix[key]}
-                      </text>
-                    </g>
-                  ))}
-
-                  {/* Center */}
-                  <circle cx="150" cy="150" r="24" fill="rgba(139,92,246,0.2)" stroke="#8B5CF6" strokeWidth="2" />
-                  <text x="150" y="151" textAnchor="middle" dominantBaseline="middle" fill="#8B5CF6" fontSize="16" fontWeight="bold">
-                    {result.fateMatrix.center}
-                  </text>
-
-                  {/* Edge nodes */}
-                  {([
-                    { x: 90, y: 90, key: 'ab' as const },
-                    { x: 210, y: 90, key: 'bc' as const },
-                    { x: 210, y: 210, key: 'cd' as const },
-                    { x: 90, y: 210, key: 'da' as const },
-                  ] as const).map(({ x, y, key }) => (
-                    <g key={key}>
-                      <circle cx={x} cy={y} r="15" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.2)" strokeWidth="1" />
-                      <text x={x} y={y + 1} textAnchor="middle" dominantBaseline="middle" fill="rgba(255,255,255,0.7)" fontSize="11">
-                        {result.fateMatrix[key]}
-                      </text>
-                    </g>
-                  ))}
-
-                  {/* Labels */}
-                  <text x="8" y="140" fill="rgba(255,255,255,0.4)" fontSize="7" textAnchor="middle">Личность</text>
-                  <text x="150" y="16" fill="rgba(255,255,255,0.4)" fontSize="7" textAnchor="middle">Общество</text>
-                  <text x="292" y="140" fill="rgba(255,255,255,0.4)" fontSize="7" textAnchor="middle">Миссия</text>
-                  <text x="150" y="296" fill="rgba(255,255,255,0.4)" fontSize="7" textAnchor="middle">Род</text>
-                </svg>
-              </div>
-
-              {/* Fate matrix positions */}
-              {(['a', 'b', 'c', 'd', 'center'] as const).map((key) => {
-                const num = result.fateMatrix[key];
-                const energy = FATE_ENERGY_DESCRIPTIONS[num];
-                if (!energy) return null;
-                return (
-                  <div key={key} className={styles.fateCard}>
-                    <div className={styles.fateCardHeader}>
-                      <span className={styles.fateCardNum}>{num}</span>
-                      <div>
-                        <span className={styles.fateCardPos}>{FATE_POSITION_NAMES[key]}</span>
-                        <span className={styles.fateCardName}>{energy.name}</span>
-                      </div>
-                    </div>
-                    <div className={styles.fateCardBody}>
-                      <div className={styles.fateCardPlus}>
-                        <span className={styles.fatePlusLabel}>+</span>
-                        <p>{energy.plus}</p>
-                      </div>
-                      <div className={styles.fateCardMinus}>
-                        <span className={styles.fateMinusLabel}>−</span>
-                        <p>{energy.minus}</p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <FateReportGenerator birthDate={birthStr} />
 
             {/* Section 3: Karmic Debts */}
             {result.karmicDebts.length > 0 && (
@@ -268,7 +191,8 @@ export default function NumerologyPage() {
               </div>
             )}
 
-            {/* Section 4: Psychomatrix */}
+            {/* Section 4: Psychomatrix (Premium) */}
+            <Paywall feature="Психоматрица">
             <div className={styles.psychoSection}>
               <h2 className={styles.sectionTitle}>Психоматрица (Квадрат Пифагора)</h2>
               <div className={styles.psychoWorking}>
@@ -311,8 +235,10 @@ export default function NumerologyPage() {
                 </div>
               ))}
             </div>
+            </Paywall>
 
-            {/* Section 5: Pinnacles & Challenges */}
+            {/* Section 5: Pinnacles & Challenges (Premium) */}
+            <Paywall feature="Вершины и Испытания">
             <div className={styles.timelineSection}>
               <h2 className={styles.sectionTitle}>Вершины Жизни</h2>
               <div className={styles.timeline}>
@@ -341,6 +267,7 @@ export default function NumerologyPage() {
                 ))}
               </div>
             </div>
+            </Paywall>
 
             {/* Section 6: Personal Cycles */}
             <h2 className={styles.sectionTitle}>Персональные Циклы</h2>

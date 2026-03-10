@@ -1,0 +1,103 @@
+$accent: #D4AF37;
+$bg-card: rgba(255, 255, 255, 0.03);
+$border: rgba(255, 255, 255, 0.08);
+$text: rgba(255, 255, 255, 0.92);
+$text-muted: rgba(255, 255, 255, 0.55);
+
+.container {
+  margin: 20px 0;
+}
+
+.card {
+  background: $bg-card;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 18px;
+  padding: 24px 20px;
+  text-align: center;
+}
+
+.icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+
+.title {
+  color: $accent;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 10px;
+}
+
+.description {
+  color: $text-muted;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.generateBtn {
+  width: 100%;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, $accent, #F5D065);
+  color: #1a0a2e;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.loadBtn {
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: 1px solid $border;
+  border-radius: 10px;
+  color: $text-muted;
+  font-size: 0.82rem;
+  cursor: pointer;
+
+  &:active {
+    background: rgba(255, 255, 255, 0.03);
+  }
+}
+
+.progressSection {
+  padding: 10px 0;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, $accent, #F5D065);
+  border-radius: 3px;
+}
+
+.progressText {
+  color: $accent;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+}
+
+.progressHint {
+  color: $text-muted;
+  font-size: 0.78rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.error {
+  color: #ef4444;
+  font-size: 0.82rem;
+  margin-top: 12px;
+}

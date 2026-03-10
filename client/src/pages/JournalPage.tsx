@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHistoryStore, SavedReading } from '../stores/historyStore';
+import { useUserStore } from '../stores/userStore';
 import { useHaptic } from '../hooks/useHaptic';
+import { api } from '../services/api';
+import FateReportView from '../components/FateReport/FateReportView';
 import styles from './JournalPage.module.scss';
 
 function formatDate(iso: string): string {
@@ -18,11 +21,62 @@ const cardVariant = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.3 } },
 };
 
+interface FateReportSummary {
+  id: string;
+  birthDate: string;
+  wordCount: number;
+  status: string;
+  createdAt: string;
+}
+
+interface FateReportFull {
+  id: string;
+  chapters: Record<string, { id: number; title: string; content: string }>;
+  wordCount: number;
+  status: string;
+  createdAt: string;
+}
+
 export default function JournalPage() {
   const { readings, toggleBookmark, deleteReading } = useHistoryStore();
+  const { premiumStatus } = useUserStore();
   const { impact } = useHaptic();
   const [expandedId, setExpandedId] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | 'tarot' | 'synthesis' | 'rune' | 'bookmarked'>('all');
+  const [filter, setFilter] = useState<'all' | 'tarot' | 'synthesis' | 'rune' | 'bookmarked' | 'reports'>('all');
+  const [fateReports, setFateReports] = useState<FateReportSummary[]>([]);
+  const [activeReport, setActiveReport] = useState<FateReportFull | null>(null);
+  const [loadingReport, setLoadingReport] = useState(false);
+
+  useEffect(() => {
+    if (premiumStatus.hasFateReport) {
+      api.get<FateReportSummary[]>('/fate-report')
+        .then(setFateReports)
+        .catch(() => {});
+    }
+  }, [premiumStatus.hasFateReport]);
+
+  const openReport = async (r: FateReportSummary) => {
+    setLoadingReport(true);
+    try {
+      const data = await api.get<FateReportFull>(`/fate-report/${r.birthDate}`);
+      setActiveReport(data);
+    } catch { /* ignore */ }
+    setLoadingReport(false);
+  };
+
+  if (activeReport) {
+    return (
+      <motion.div className={styles.page} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+        <FateReportView
+          chapters={activeReport.chapters}
+          wordCount={activeReport.wordCount}
+          birthDate={fateReports.find(r => r.id === activeReport.id)?.birthDate || ''}
+          createdAt={activeReport.createdAt}
+          onClose={() => setActiveReport(null)}
+        />
+      </motion.div>
+    );
+  }
 
   const filtered = readings.filter((r) => {
     if (filter === 'bookmarked') return r.isBookmarked;
@@ -56,13 +110,14 @@ export default function JournalPage() {
     >
       <h1 className={styles.title}>Дневник Предсказаний</h1>
 
-      {readings.length > 0 && (
+      {(readings.length > 0 || fateReports.length > 0) && (
         <div className={styles.filters}>
           {([
             ['all', 'Все'],
             ['tarot', 'Таро'],
             ['rune', 'Руны'],
             ['synthesis', 'Синтез'],
+            ...(fateReports.length > 0 ? [['reports', 'Отчёты'] as const] : []),
             ['bookmarked', 'Избранное'],
           ] as const).map(([key, label]) => (
             <motion.button
@@ -84,7 +139,34 @@ export default function JournalPage() {
         </div>
       )}
 
-      {filtered.length === 0 ? (
+      {filter === 'reports' ? (
+        <motion.div className={styles.list} initial="initial" animate="animate">
+          {fateReports.map((r) => (
+            <motion.div
+              key={r.id}
+              className={styles.card}
+              onClick={() => openReport(r)}
+              variants={cardVariant}
+              layout
+            >
+              <div className={styles.cardHeader}>
+                <div className={styles.cardMeta}>
+                  <span className={styles.cardType}>
+                    <span style={{ fontSize: '1.1rem' }}>&#128218;</span>
+                  </span>
+                  <div>
+                    <span className={styles.cardTitle}>Матрица Судьбы — полный отчёт</span>
+                    <span className={styles.cardDate}>
+                      {new Date(r.birthDate).toLocaleDateString('ru-RU')} · {r.wordCount.toLocaleString()} слов
+                    </span>
+                  </div>
+                </div>
+              </div>
+              {loadingReport && <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', padding: '8px 16px' }}>Загрузка...</p>}
+            </motion.div>
+          ))}
+        </motion.div>
+      ) : filtered.length === 0 ? (
         <motion.div
           className={styles.empty}
           initial={{ opacity: 0, y: 20 }}

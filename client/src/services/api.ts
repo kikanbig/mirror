@@ -33,6 +33,11 @@ declare global {
     Telegram?: {
       WebApp?: {
         initData: string;
+        openInvoice: (url: string, callback?: (status: string) => void) => void;
+        HapticFeedback?: {
+          impactOccurred: (style: string) => void;
+          notificationOccurred: (type: string) => void;
+        };
       };
     };
   }

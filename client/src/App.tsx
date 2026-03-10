@@ -69,7 +69,7 @@ function PageRouter() {
 
 export default function App() {
   const { user, isReady, initData } = useTelegram();
-  const { setProfile } = useUserStore();
+  const { setProfile, setPremiumStatus } = useUserStore();
   const [splashDone, setSplashDone] = useState(false);
 
   useEffect(() => {
@@ -89,8 +89,17 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ initData }),
       }).catch(() => {});
+
+      fetch('/api/payments/status', {
+        headers: { 'X-Telegram-Init-Data': initData },
+      })
+        .then(r => r.ok ? r.json() : null)
+        .then(data => {
+          if (data) setPremiumStatus(data);
+        })
+        .catch(() => {});
     }
-  }, [initData]);
+  }, [initData, setPremiumStatus]);
 
   const handleSplashComplete = useCallback(() => setSplashDone(true), []);
 

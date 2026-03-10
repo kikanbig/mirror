@@ -465,3 +465,15 @@
     box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
   }
 }
+
+.paywallModal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  padding: 20px;
+}

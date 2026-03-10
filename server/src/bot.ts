@@ -1,5 +1,8 @@
 import { Telegraf, Markup } from 'telegraf';
+import { PrismaClient } from '@prisma/client';
 import type { Express } from 'express';
+
+const prisma = new PrismaClient();
 
 export function setupBot(app: Express) {
   const BOT_TOKEN = process.env.BOT_TOKEN;
@@ -105,6 +108,87 @@ export function setupBot(app: Express) {
       '💡 *Совет:* Делайте карту дня каждое утро — ваш стрик покажет вашу приверженность!',
       { parse_mode: 'Markdown' }
     );
+  });
+
+  // ── Payment handlers ──
+  bot.on('pre_checkout_query', async (ctx) => {
+    try {
+      await ctx.answerPreCheckoutQuery(true);
+      console.log('[Bot] Pre-checkout approved:', ctx.preCheckoutQuery.id);
+    } catch (err) {
+      console.error('[Bot] Pre-checkout error:', err);
+    }
+  });
+
+  bot.on('message', async (ctx, next) => {
+    const msg = ctx.message;
+    if (!('successful_payment' in msg)) return next();
+
+    const payment = msg.successful_payment;
+    console.log('[Bot] Successful payment:', JSON.stringify(payment));
+
+    try {
+      const payload = JSON.parse(payment.invoice_payload) as {
+        product: string;
+        telegramId: number;
+      };
+
+      const user = await prisma.user.findUnique({
+        where: { telegramId: BigInt(payload.telegramId) },
+      });
+
+      if (!user) {
+        console.error('[Bot] Payment user not found:', payload.telegramId);
+        return;
+      }
+
+      if (payload.product === 'premium_month') {
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 30);
+
+        await prisma.subscription.create({
+          data: {
+            userId: user.id,
+            type: 'premium',
+            status: 'active',
+            expiresAt,
+            telegramPayId: payment.telegram_payment_charge_id,
+            amount: payment.total_amount,
+          },
+        });
+
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { premiumUntil: expiresAt },
+        });
+
+        await ctx.reply(
+          '✅ *Premium активирован!*\n\n' +
+          'Теперь вам доступны все расклады, полная нумерология, ' +
+          'матрица судьбы и AI-интерпретации без ограничений.\n\n' +
+          `Действует до: ${expiresAt.toLocaleDateString('ru-RU')}`,
+          { parse_mode: 'Markdown' }
+        );
+      } else if (payload.product === 'fate_report') {
+        await prisma.purchase.create({
+          data: {
+            userId: user.id,
+            product: 'fate_report',
+            telegramPayId: payment.telegram_payment_charge_id,
+            amount: payment.total_amount,
+          },
+        });
+
+        await ctx.reply(
+          '✅ *Полный отчёт Матрицы Судьбы оплачен!*\n\n' +
+          'Откройте раздел Нумерологии, введите дату рождения ' +
+          'и нажмите «Получить полный отчёт» для генерации.',
+          { parse_mode: 'Markdown' }
+        );
+      }
+    } catch (err) {
+      console.error('[Bot] Payment processing error:', err);
+    }
   });
 
   if (WEBHOOK_DOMAIN && process.env.NODE_ENV === 'production') {

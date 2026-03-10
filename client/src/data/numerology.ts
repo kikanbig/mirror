@@ -1417,65 +1417,202 @@ function reduceToArcana(n: number): number {
   return n === 0 ? 22 : n;
 }
 
+// ── Chakra health row ──
+export interface ChakraRow {
+  name: string;
+  nameRu: string;
+  physical: number;
+  energy: number;
+  emotions: number;
+}
+
+// ── Karmic program ──
+export interface KarmicProgram {
+  numbers: number[];
+  name: string;
+  description: string;
+}
+
+// ── Purpose triple ──
+export interface PurposeTriple {
+  label: string;
+  ageRange: string;
+  numbers: number[];
+}
+
+// ── Full Fate Matrix ──
 export interface FateMatrixResult {
-  a: number;   // left — personal energy (day)
-  b: number;   // top — social mask (month)
-  c: number;   // right — soul mission (year sum)
-  d: number;   // bottom — family karma (a+b+c)
-  center: number;
-  ab: number;  // top-left edge
-  bc: number;  // top-right edge
-  cd: number;  // bottom-right edge
-  da: number;  // bottom-left edge
-  // comfort zone line (horizontal): a - center - c
-  // spiritual line (vertical): b - center - d
-  // talent points
-  talentTop: number;    // ab + bc
-  talentRight: number;  // bc + cd
-  talentBottom: number; // cd + da
-  talentLeft: number;   // da + ab
+  // 4 corners
+  a: number;      // left — day of birth (main talent)
+  b: number;      // top — month (2nd talent, opens by ~20)
+  c: number;      // right — year sum (3rd talent, opens by ~40)
+  d: number;      // bottom — a+b+c (karma sum)
+  center: number; // a+b+c+d (comfort zone / soul point)
+
+  // 4 edge midpoints
+  ab: number; bc: number; cd: number; da: number;
+
+  // Inner positions (corner to center)
+  aCenter: number; bCenter: number; cCenter: number; dCenter: number;
+
+  // Between corners and edges
+  aAb: number; abB: number; bBc: number; bcC: number;
+  cCd: number; cdD: number; dDa: number; daA: number;
+
+  // Purpose lines
+  sky: number;           // = a
+  earth: number;         // reduceArcana(a + c)
+  male: number;          // reduceArcana(ab + cd)
+  female: number;        // reduceArcana(bc + da)
+  socialCenter: number;  // reduceArcana(male + female)
+  spiritual: number;     // reduceArcana(center + socialCenter)
+
+  // Karmic tail
+  karmicTail: [number, number, number]; // d, reduce(d+center), reduce(d + reduce(d+center))
+
+  // Purpose triples
+  personalPurpose: PurposeTriple;
+  socialPurpose: PurposeTriple;
+  spiritualPurpose: PurposeTriple;
+
+  // Health card
+  chakras: ChakraRow[];
+  chakraTotals: { physical: number; energy: number; emotions: number };
+
+  // Karmic programs
+  programs: KarmicProgram[];
+
+  // Relationships
+  partnerTasks: number;   // karmicTail[1]
+  partnerType: number;    // b
+  meetingPlace: number;   // b
+  relationProblems: number; // b
+
+  // Money
+  moneyProfession: number;  // b
+  moneyGives: number;       // from specific matrix position
+  moneyBlocks: number;      // b
+
+  // Self-realization (throat chakra)
+  selfRealization: number; // b (gorlovaya)
+  selfRealizationHow: number; // from edge
+
+  // Personal strength
+  personalStrength: number; // center
+  clanStrength: number;     // spiritual
+
+  // Age/year
+  currentAge: number;
+  yearEnergy: number;
 }
 
 export function calculateFateMatrix(birthDate: Date): FateMatrixResult {
   const day = birthDate.getDate();
   const month = birthDate.getMonth() + 1;
   const year = birthDate.getFullYear();
+  const r = reduceToArcana;
 
-  const a = reduceToArcana(day);
-  const b = reduceToArcana(month);
+  const a = r(day);
+  const b = r(month);
   const yearDigits = year.toString().split('').reduce((s, ch) => s + parseInt(ch, 10), 0);
-  const c = reduceToArcana(yearDigits);
-  const d = reduceToArcana(a + b + c);
-  const center = reduceToArcana(a + b + c + d);
+  const c = r(yearDigits);
+  const d = r(a + b + c);
+  const center = r(a + b + c + d);
 
-  const ab = reduceToArcana(a + b);
-  const bc = reduceToArcana(b + c);
-  const cd = reduceToArcana(c + d);
-  const da = reduceToArcana(d + a);
+  const ab = r(a + b);
+  const bc = r(b + c);
+  const cd = r(c + d);
+  const da = r(d + a);
 
-  const talentTop = reduceToArcana(ab + bc);
-  const talentRight = reduceToArcana(bc + cd);
-  const talentBottom = reduceToArcana(cd + da);
-  const talentLeft = reduceToArcana(da + ab);
+  const aCenter = r(a + center);
+  const bCenter = r(b + center);
+  const cCenter = r(c + center);
+  const dCenter = r(d + center);
 
-  return { a, b, c, d, center, ab, bc, cd, da, talentTop, talentRight, talentBottom, talentLeft };
+  const aAb = r(a + ab);
+  const abB = r(ab + b);
+  const bBc = r(b + bc);
+  const bcC = r(bc + c);
+  const cCd = r(c + cd);
+  const cdD = r(cd + d);
+  const dDa = r(d + da);
+  const daA = r(da + a);
+
+  const sky = a;
+  const earth = r(a + c);
+  const male = r(ab + cd);
+  const female = r(bc + da);
+  const socialCenter = r(male + female);
+  const spiritual = r(center + socialCenter);
+
+  const kt1 = d;
+  const kt2 = r(d + center);
+  const kt3 = r(kt1 + kt2);
+  const karmicTail: [number, number, number] = [kt1, kt2, kt3];
+
+  const personalPurpose: PurposeTriple = { label: 'Личное предназначение', ageRange: '20–40 лет', numbers: [a, earth, center] };
+  const socialPurpose: PurposeTriple = { label: 'Социальное предназначение', ageRange: '40–60 лет', numbers: [male, socialCenter, female] };
+  const spiritualPurpose: PurposeTriple = { label: 'Духовное предназначение', ageRange: '60+ лет', numbers: [spiritual] };
+
+  // Health card (7 chakras x 3)
+  const chakras: ChakraRow[] = [
+    { name: 'Sahasrara', nameRu: 'Сахасрара', physical: a, energy: b, emotions: ab },
+    { name: 'Ajna', nameRu: 'Аджна', physical: ab, energy: r(ab + cd), emotions: cd },
+    { name: 'Vishuddha', nameRu: 'Вишудха', physical: b, energy: bCenter, emotions: r(bCenter + cCd) },
+    { name: 'Anahata', nameRu: 'Анахата', physical: bCenter, energy: a, emotions: cCd },
+    { name: 'Manipura', nameRu: 'Манипура', physical: center, energy: center, emotions: d },
+    { name: 'Svadhisthana', nameRu: 'Свадхистана', physical: b, energy: dCenter, emotions: b },
+    { name: 'Muladhara', nameRu: 'Муладхара', physical: a, energy: d, emotions: da },
+  ];
+
+  const phTotal = r(chakras.reduce((s, ch) => s + ch.physical, 0));
+  const enTotal = r(chakras.reduce((s, ch) => s + ch.energy, 0));
+  const emTotal = r(chakras.reduce((s, ch) => s + ch.emotions, 0));
+
+  // Karmic programs detection
+  const programs: KarmicProgram[] = [];
+  const allNums = [a, b, c, d, center, ab, bc, cd, da, aCenter, bCenter, cCenter, dCenter];
+  const numSet = new Set(allNums);
+
+  const programDefs: { nums: number[]; name: string; desc: string }[] = [
+    { nums: [8, 14, 22], name: 'Программа скупости', desc: 'Духовно-эмоциональная зажатость, трудность с проявлением эмоций, скованность в отношениях. На материальном уровне — бережливость или транжирство.' },
+    { nums: [18, 3, 12], name: 'Физические страдания', desc: 'Карма из прошлой жизни, связанная с физическими страданиями. Страх боли за себя или близких. Задача — работать с духовной стороной тела.' },
+    { nums: [18, 8, 8], name: 'Страх разочарования', desc: 'Вложение энергии без результата. Страх обмана и повторения негативного опыта. Необходимо изучить законы кармы.' },
+    { nums: [13, 4, 16], name: 'Программа разрушения', desc: 'Кармическая программа разрушения стабильности. Трансформация через кризисы. Задача — научиться строить заново.' },
+    { nums: [15, 6, 21], name: 'Программа искушения', desc: 'Притяжение зависимостей и искушений. Задача — использовать свою силу для помощи другим, а не для манипуляций.' },
+    { nums: [16, 7, 22], name: 'Программа гордыни', desc: 'Падение из-за эго и самоуверенности. Урок смирения. Задача — научиться начинать с нуля без ощущения потери.' },
+  ];
+
+  for (const pd of programDefs) {
+    const found = pd.nums.every(n => numSet.has(n));
+    if (found) programs.push({ numbers: pd.nums, name: pd.name, description: pd.desc });
+  }
+
+  // Year energy calculation
+  const now = new Date();
+  const currentAge = now.getFullYear() - year - (now < new Date(now.getFullYear(), month - 1, day) ? 1 : 0);
+  const yearEnergy = r(currentAge + a);
+
+  // Money positions
+  const moneyGives = r(cd + dCenter);
+
+  return {
+    a, b, c, d, center,
+    ab, bc, cd, da,
+    aCenter, bCenter, cCenter, dCenter,
+    aAb, abB, bBc, bcC, cCd, cdD, dDa, daA,
+    sky, earth, male, female, socialCenter, spiritual,
+    karmicTail, personalPurpose, socialPurpose, spiritualPurpose,
+    chakras,
+    chakraTotals: { physical: phTotal, energy: enTotal, emotions: emTotal },
+    programs,
+    partnerTasks: kt2, partnerType: b, meetingPlace: b, relationProblems: b,
+    moneyProfession: b, moneyGives, moneyBlocks: b,
+    selfRealization: b, selfRealizationHow: aCenter,
+    personalStrength: center, clanStrength: spiritual,
+    currentAge, yearEnergy,
+  };
 }
-
-export const FATE_POSITION_NAMES: Record<string, string> = {
-  a: 'Личная энергия',
-  b: 'Социальная маска',
-  c: 'Миссия души',
-  d: 'Родовая карма',
-  center: 'Предназначение',
-  ab: 'Связь личности и общества',
-  bc: 'Связь общества и миссии',
-  cd: 'Связь миссии и рода',
-  da: 'Связь рода и личности',
-  talentTop: 'Талант Духа',
-  talentRight: 'Талант Реализации',
-  talentBottom: 'Талант Рода',
-  talentLeft: 'Талант Опыта',
-};
 
 export const FATE_ENERGY_DESCRIPTIONS: Record<number, { name: string; plus: string; minus: string }> = {
   1: { name: 'Маг — Сила воли', plus: 'Лидерство, целеустремлённость, харизма. Умение начинать новое и вести за собой. Мощная энергия созидания.', minus: 'Эгоизм, деспотизм, манипуляции. Агрессивное навязывание своей воли. Неумение слушать других.' },

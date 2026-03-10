@@ -9,6 +9,7 @@ import { useUserStore } from '../stores/userStore';
 import { useHistoryStore } from '../stores/historyStore';
 import CardReveal from '../components/CardReveal/CardReveal';
 import CardZoom from '../components/CardZoom/CardZoom';
+import { PaywallOverlay } from '../components/Paywall/Paywall';
 import { useHaptic } from '../hooks/useHaptic';
 import { api } from '../services/api';
 import styles from './TarotPage.module.scss';
@@ -30,9 +31,10 @@ export default function TarotPage() {
     setSpreadType, setQuestion, setArea, addDrawnCard, setInterpretation,
     setIsInterpreting, reset,
   } = useReadingStore();
-  const { profile, addExperience } = useUserStore();
+  const { profile, addExperience, premiumStatus } = useUserStore();
   const { addReading } = useHistoryStore();
   const { impact, notification } = useHaptic();
+  const [showPaywall, setShowPaywall] = useState(false);
 
   const spread = spreads.find((s) => s.id === spreadType);
   const [shuffledDeck, setShuffledDeck] = useState(fullDeck);
@@ -55,16 +57,22 @@ export default function TarotPage() {
   }, [tabResetSignal, reset]);
 
   const handleSelectSpread = useCallback((id: string) => {
+    const selected = spreads.find((s) => s.id === id);
+    if (selected?.isPremium && premiumStatus.tier !== 'premium') {
+      impact('light');
+      setShowPaywall(true);
+      return;
+    }
     impact('light');
+    setShowPaywall(false);
     reset();
     setSpreadType(id);
-    const selected = spreads.find((s) => s.id === id);
     if (selected) {
       const categoryToArea: Record<string, typeof area> = { love: 'love', career: 'career' };
       if (categoryToArea[selected.category]) setArea(categoryToArea[selected.category]);
     }
     setPhase('question');
-  }, [impact, reset, setSpreadType, setArea]);
+  }, [impact, reset, setSpreadType, setArea, premiumStatus]);
 
   const handleStartDraw = useCallback(() => {
     impact('medium');
@@ -481,6 +489,27 @@ export default function TarotPage() {
             reversed={zoomCard.reversed}
             onClose={() => setZoomCard(null)}
           />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showPaywall && (
+          <motion.div
+            className={styles.paywallModal}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowPaywall(false)}
+          >
+            <motion.div
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+            >
+              <PaywallOverlay feature="премиум расклады" />
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </motion.div>

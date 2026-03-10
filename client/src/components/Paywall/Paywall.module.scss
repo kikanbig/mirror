@@ -1,0 +1,149 @@
+.wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.blurred {
+  filter: blur(6px);
+  opacity: 0.4;
+  pointer-events: none;
+  user-select: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  padding: 20px;
+}
+
+.content {
+  background: rgba(20, 10, 35, 0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 20px;
+  padding: 28px 24px;
+  text-align: center;
+  max-width: 340px;
+  width: 100%;
+}
+
+.badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #D4AF37, #F5D065);
+  color: #1a0a2e;
+  font-weight: 800;
+  font-size: 0.75rem;
+  padding: 4px 16px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.title {
+  color: #fff;
+  font-size: 1.2rem;
+  margin: 0 0 8px;
+  font-weight: 700;
+}
+
+.featureText {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+  margin: 0 0 16px;
+}
+
+.features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px;
+  text-align: left;
+}
+
+.featureItem {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.82rem;
+  padding: 5px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.4;
+}
+
+.checkmark {
+  color: #D4AF37;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.purchaseBtn {
+  width: 100%;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #D4AF37, #F5D065);
+  color: #1a0a2e;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.error {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 10px;
+}
+
+// Banner style (inline CTA)
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.08), rgba(212, 175, 55, 0.02));
+  cursor: pointer;
+  margin: 12px 0;
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+.bannerBadge {
+  background: linear-gradient(135deg, #D4AF37, #F5D065);
+  color: #1a0a2e;
+  font-weight: 800;
+  font-size: 0.65rem;
+  padding: 3px 10px;
+  border-radius: 12px;
+  letter-spacing: 1px;
+  flex-shrink: 0;
+}
+
+.bannerText {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.85rem;
+  flex: 1;
+  text-align: left;
+}
+
+.bannerPrice {
+  color: #D4AF37;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
