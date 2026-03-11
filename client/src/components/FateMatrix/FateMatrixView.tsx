@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useMemo, createContext, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { FateMatrixResult } from '../../data/numerology';
 import { FATE_ENERGY_DESCRIPTIONS } from '../../data/numerology';
@@ -9,6 +9,8 @@ import {
   CLAN_LINE_DESCRIPTIONS, YEAR_FORECAST_DESCRIPTIONS,
 } from '../../data/fate-matrix-descriptions';
 import { useTranslation } from '../../i18n';
+import { getLocalizedFateDescriptions } from '../../i18n/data';
+import type { Lang } from '../../i18n';
 import styles from './FateMatrixView.module.scss';
 
 interface Props {
@@ -52,8 +54,41 @@ const SECTION_ICONS: Record<string, string> = {
   yearForecast: '☀',
 };
 
+interface FateDataCtx {
+  talents: typeof TALENT_DESCRIPTIONS;
+  purpose: typeof PURPOSE_DESCRIPTIONS;
+  karmicTail: typeof KARMIC_TAIL_DESCRIPTIONS;
+  relationships: typeof RELATIONSHIP_DESCRIPTIONS;
+  money: typeof MONEY_DESCRIPTIONS;
+  chakraTasks: typeof CHAKRA_TASK_DESCRIPTIONS;
+  selfRealization: typeof SELF_REALIZATION_DESCRIPTIONS;
+  comfortZone: typeof COMFORT_ZONE_DESCRIPTIONS;
+  clanLines: typeof CLAN_LINE_DESCRIPTIONS;
+  yearForecast: typeof YEAR_FORECAST_DESCRIPTIONS;
+  energy: typeof FATE_ENERGY_DESCRIPTIONS;
+}
+
+const FateDataContext = createContext<FateDataCtx>({
+  talents: TALENT_DESCRIPTIONS,
+  purpose: PURPOSE_DESCRIPTIONS,
+  karmicTail: KARMIC_TAIL_DESCRIPTIONS,
+  relationships: RELATIONSHIP_DESCRIPTIONS,
+  money: MONEY_DESCRIPTIONS,
+  chakraTasks: CHAKRA_TASK_DESCRIPTIONS,
+  selfRealization: SELF_REALIZATION_DESCRIPTIONS,
+  comfortZone: COMFORT_ZONE_DESCRIPTIONS,
+  clanLines: CLAN_LINE_DESCRIPTIONS,
+  yearForecast: YEAR_FORECAST_DESCRIPTIONS,
+  energy: FATE_ENERGY_DESCRIPTIONS,
+});
+
+function useFateData() {
+  return useContext(FateDataContext);
+}
+
 function EnergyCard({ num, context }: { num: number; context: string }) {
-  const e = FATE_ENERGY_DESCRIPTIONS[num];
+  const { energy } = useFateData();
+  const e = energy[num];
   if (!e) return null;
   return (
     <div className={styles.energyCard}>
@@ -73,10 +108,40 @@ function EnergyCard({ num, context }: { num: number; context: string }) {
 }
 
 export default function FateMatrixView({ matrix }: Props) {
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const [activeNode, setActiveNode] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
   const accordionRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+  const fateData = useMemo<FateDataCtx>(() => {
+    const overlay = getLocalizedFateDescriptions(lang as Lang);
+    if (!overlay) return {
+      talents: TALENT_DESCRIPTIONS,
+      purpose: PURPOSE_DESCRIPTIONS,
+      karmicTail: KARMIC_TAIL_DESCRIPTIONS,
+      relationships: RELATIONSHIP_DESCRIPTIONS,
+      money: MONEY_DESCRIPTIONS,
+      chakraTasks: CHAKRA_TASK_DESCRIPTIONS,
+      selfRealization: SELF_REALIZATION_DESCRIPTIONS,
+      comfortZone: COMFORT_ZONE_DESCRIPTIONS,
+      clanLines: CLAN_LINE_DESCRIPTIONS,
+      yearForecast: YEAR_FORECAST_DESCRIPTIONS,
+      energy: FATE_ENERGY_DESCRIPTIONS,
+    };
+    return {
+      talents: overlay.talents as typeof TALENT_DESCRIPTIONS,
+      purpose: overlay.purpose as typeof PURPOSE_DESCRIPTIONS,
+      karmicTail: overlay.karmicTail,
+      relationships: overlay.relationships as typeof RELATIONSHIP_DESCRIPTIONS,
+      money: overlay.money as typeof MONEY_DESCRIPTIONS,
+      chakraTasks: overlay.chakraTasks as typeof CHAKRA_TASK_DESCRIPTIONS,
+      selfRealization: overlay.selfRealization,
+      comfortZone: overlay.comfortZone,
+      clanLines: overlay.clanLines,
+      yearForecast: overlay.yearForecast,
+      energy: overlay.energy,
+    };
+  }, [lang]);
 
   const toggle = useCallback((id: string) => {
     setExpanded(prev => {
@@ -158,7 +223,7 @@ export default function FateMatrixView({ matrix }: Props) {
 
   const nodeInfo = activeNode ? (() => {
     const num = getVal(activeNode);
-    const e = FATE_ENERGY_DESCRIPTIONS[num];
+    const e = fateData.energy[num];
     return e ? { num, ...e } : null;
   })() : null;
 
@@ -170,6 +235,7 @@ export default function FateMatrixView({ matrix }: Props) {
   ];
 
   return (
+    <FateDataContext.Provider value={fateData}>
     <div className={styles.fateSection}>
       {/* ── SVG Diagram + overlay tooltip ── */}
       <div className={styles.fateVisual}>
@@ -257,6 +323,7 @@ export default function FateMatrixView({ matrix }: Props) {
         ))}
       </div>
     </div>
+    </FateDataContext.Provider>
   );
 }
 
@@ -281,6 +348,7 @@ function renderSection(id: string, m: FateMatrixResult) {
 
 function TalentsSection({ m }: { m: FateMatrixResult }) {
   const { t } = useTranslation();
+  const fd = useFateData();
   const talents = [
     { num: m.a, label: t('fm.talent1'), sub: t('fm.talent1sub') },
     { num: m.b, label: t('fm.talent2'), sub: t('fm.talent2sub') },
@@ -289,7 +357,7 @@ function TalentsSection({ m }: { m: FateMatrixResult }) {
   return (
     <div className={styles.talentList}>
       {talents.map((tal, i) => {
-        const desc = TALENT_DESCRIPTIONS[tal.num];
+        const desc = fd.talents[tal.num];
         if (!desc) return null;
         return (
           <div key={i} className={styles.talentCard}>
@@ -317,6 +385,7 @@ function TalentsSection({ m }: { m: FateMatrixResult }) {
 
 function PurposeSection({ m }: { m: FateMatrixResult }) {
   const { t } = useTranslation();
+  const fd = useFateData();
   const triples = [m.personalPurpose, m.socialPurpose, m.spiritualPurpose];
   return (
     <div className={styles.purposeList}>
@@ -334,7 +403,7 @@ function PurposeSection({ m }: { m: FateMatrixResult }) {
               ))}
             </div>
             {triple.numbers.map((n, j) => {
-              const desc = PURPOSE_DESCRIPTIONS[n];
+              const desc = fd.purpose[n];
               if (!desc) return null;
               return (
                 <div key={j} className={styles.purposeDesc}>
@@ -352,13 +421,14 @@ function PurposeSection({ m }: { m: FateMatrixResult }) {
 
 function KarmicTailSection({ m }: { m: FateMatrixResult }) {
   const { t } = useTranslation();
+  const fd = useFateData();
   return (
     <div className={styles.karmicTailList}>
       <p className={styles.karmicTailIntro}>
         {t('fm.karmicTailIntro')}
       </p>
       {m.karmicTail.map((num, i) => {
-        const desc = KARMIC_TAIL_DESCRIPTIONS[num];
+        const desc = fd.karmicTail[num];
         const labels = [t('fm.karmicTask1'), t('fm.karmicTask2'), t('fm.karmicTask3')];
         return (
           <div key={i} className={styles.karmicTailCard}>
@@ -366,7 +436,7 @@ function KarmicTailSection({ m }: { m: FateMatrixResult }) {
               <span className={styles.karmicTailNum}>{num}</span>
               <div>
                 <span className={styles.karmicTailLabel}>{labels[i]}</span>
-                <span className={styles.karmicTailEnergy}>{FATE_ENERGY_DESCRIPTIONS[num]?.name}</span>
+                <span className={styles.karmicTailEnergy}>{fd.energy[num]?.name}</span>
               </div>
             </div>
             {desc && <p className={styles.karmicTailDesc}>{desc}</p>}
@@ -379,7 +449,8 @@ function KarmicTailSection({ m }: { m: FateMatrixResult }) {
 
 function ComfortSection({ m }: { m: FateMatrixResult }) {
   const { t } = useTranslation();
-  const desc = COMFORT_ZONE_DESCRIPTIONS[m.center];
+  const fd = useFateData();
+  const desc = fd.comfortZone[m.center];
   return (
     <div className={styles.comfortCard}>
       <EnergyCard num={m.center} context={t('fm.comfortZone')} />
@@ -390,7 +461,8 @@ function ComfortSection({ m }: { m: FateMatrixResult }) {
 
 function SelfRealSection({ m }: { m: FateMatrixResult }) {
   const { t } = useTranslation();
-  const desc = SELF_REALIZATION_DESCRIPTIONS[m.selfRealization];
+  const fd = useFateData();
+  const desc = fd.selfRealization[m.selfRealization];
   return (
     <div className={styles.selfRealCard}>
       <EnergyCard num={m.selfRealization} context={t('fm.selfRealContext')} />
@@ -401,6 +473,7 @@ function SelfRealSection({ m }: { m: FateMatrixResult }) {
 
 function HealthSection({ m }: { m: FateMatrixResult }) {
   const { t } = useTranslation();
+  const fd = useFateData();
   const chakraColors = ['#9333EA', '#6366F1', '#06B6D4', '#22C55E', '#EAB308', '#F97316', '#EF4444'];
   return (
     <div className={styles.healthSection}>
@@ -429,7 +502,7 @@ function HealthSection({ m }: { m: FateMatrixResult }) {
 
       <h4 className={styles.healthSubTitle}>{t('fm.chakraTasks')}</h4>
       {m.chakras.map((ch, i) => {
-        const desc = CHAKRA_TASK_DESCRIPTIONS[ch.physical];
+        const desc = fd.chakraTasks[ch.physical];
         if (!desc) return null;
         return (
           <div key={i} className={styles.chakraTaskCard} style={{ borderLeftColor: chakraColors[i] }}>
@@ -448,7 +521,8 @@ function HealthSection({ m }: { m: FateMatrixResult }) {
 
 function RelationshipsSection({ m }: { m: FateMatrixResult }) {
   const { t } = useTranslation();
-  const desc = RELATIONSHIP_DESCRIPTIONS[m.partnerTasks];
+  const fd = useFateData();
+  const desc = fd.relationships[m.partnerTasks];
   if (!desc) return null;
   return (
     <div className={styles.relSection}>
@@ -477,7 +551,8 @@ function RelationshipsSection({ m }: { m: FateMatrixResult }) {
 
 function MoneySection({ m }: { m: FateMatrixResult }) {
   const { t } = useTranslation();
-  const desc = MONEY_DESCRIPTIONS[m.moneyProfession];
+  const fd = useFateData();
+  const desc = fd.money[m.moneyProfession];
   if (!desc) return null;
   return (
     <div className={styles.moneySection}>
@@ -502,7 +577,8 @@ function MoneySection({ m }: { m: FateMatrixResult }) {
 
 function ClanSection({ m }: { m: FateMatrixResult }) {
   const { t } = useTranslation();
-  const desc = CLAN_LINE_DESCRIPTIONS[m.clanStrength];
+  const fd = useFateData();
+  const desc = fd.clanLines[m.clanStrength];
   if (!desc) return null;
   return (
     <div className={styles.clanSection}>
@@ -556,7 +632,8 @@ function ProgramsSection({ m }: { m: FateMatrixResult }) {
 
 function YearForecastSection({ m }: { m: FateMatrixResult }) {
   const { t } = useTranslation();
-  const desc = YEAR_FORECAST_DESCRIPTIONS[m.yearEnergy];
+  const fd = useFateData();
+  const desc = fd.yearForecast[m.yearEnergy];
   return (
     <div className={styles.yearSection}>
       <div className={styles.yearHeader}>

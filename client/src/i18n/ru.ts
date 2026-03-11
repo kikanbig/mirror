@@ -72,6 +72,14 @@ export const ru: Record<string, string> = {
   'moon.age': 'Возраст: {days} дн.',
   'moon.waxing': 'Растущая',
   'moon.waning': 'Убывающая',
+  'moon.new_moon': 'Новолуние',
+  'moon.waxing_crescent': 'Растущий серп',
+  'moon.first_quarter': 'Первая четверть',
+  'moon.waxing_gibbous': 'Растущая луна',
+  'moon.full_moon': 'Полнолуние',
+  'moon.waning_gibbous': 'Убывающая луна',
+  'moon.last_quarter': 'Последняя четверть',
+  'moon.waning_crescent': 'Убывающий серп',
 
   // Lunar page
   'lunar.title': 'Лунный Календарь',

@@ -72,6 +72,14 @@ export const en: Record<string, string> = {
   'moon.age': 'Age: {days} d.',
   'moon.waxing': 'Waxing',
   'moon.waning': 'Waning',
+  'moon.new_moon': 'New Moon',
+  'moon.waxing_crescent': 'Waxing Crescent',
+  'moon.first_quarter': 'First Quarter',
+  'moon.waxing_gibbous': 'Waxing Gibbous',
+  'moon.full_moon': 'Full Moon',
+  'moon.waning_gibbous': 'Waning Gibbous',
+  'moon.last_quarter': 'Last Quarter',
+  'moon.waning_crescent': 'Waning Crescent',
 
   // Lunar page
   'lunar.title': 'Lunar Calendar',

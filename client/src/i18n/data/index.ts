@@ -4,6 +4,7 @@ import type { Rune } from '../../data/runes';
 import type { MoonPhaseInfo } from '../../data/moon-phases';
 import type { Spread, SpreadPosition } from '../../data/spreads';
 import type { RuneSpread } from '../../data/rune-spreads';
+import type { TalentDesc, PurposeDesc, RelationshipDesc, MoneyDesc, ChakraTaskDesc } from '../../data/fate-matrix-descriptions';
 import { tarotEn } from './tarot.en';
 import { tarotEs } from './tarot.es';
 import { runesEn } from './runes.en';
@@ -16,6 +17,11 @@ import { runeSpreadsEn } from './rune-spreads.en';
 import { runeSpreadsEs } from './rune-spreads.es';
 import { affirmationsEn } from './affirmations.en';
 import { affirmationsEs } from './affirmations.es';
+import { TALENT_DESCRIPTIONS_EN, PURPOSE_DESCRIPTIONS_EN, KARMIC_TAIL_DESCRIPTIONS_EN } from './fate-matrix.en';
+import { RELATIONSHIP_DESCRIPTIONS_EN, MONEY_DESCRIPTIONS_EN, CHAKRA_TASK_DESCRIPTIONS_EN, SELF_REALIZATION_DESCRIPTIONS_EN, COMFORT_ZONE_DESCRIPTIONS_EN, CLAN_LINE_DESCRIPTIONS_EN, YEAR_FORECAST_DESCRIPTIONS_EN, FATE_ENERGY_DESCRIPTIONS_EN } from './fate-matrix-part2.en';
+import { TALENT_DESCRIPTIONS_ES, PURPOSE_DESCRIPTIONS_ES, KARMIC_TAIL_DESCRIPTIONS_ES } from './fate-matrix.es';
+import { RELATIONSHIP_DESCRIPTIONS_ES, MONEY_DESCRIPTIONS_ES, SELF_REALIZATION_DESCRIPTIONS_ES, COMFORT_ZONE_DESCRIPTIONS_ES, YEAR_FORECAST_DESCRIPTIONS_ES, FATE_ENERGY_DESCRIPTIONS_ES } from './fate-matrix-part2.es';
+import { CHAKRA_TASK_DESCRIPTIONS_ES, CLAN_LINE_DESCRIPTIONS_ES } from './fate-matrix-part3.es';
 
 type CardOverlay = {
   nameRu?: string;
@@ -157,4 +163,52 @@ const MOON_PHASE_NAMES: Record<string, Record<string, string>> = {
 export function localizeMoonPhaseName(phase: string, phaseRu: string, lang: Lang): string {
   if (lang === 'ru') return phaseRu;
   return MOON_PHASE_NAMES[lang]?.[phase] ?? phaseRu;
+}
+
+export interface FateDescriptions {
+  talents: Record<number, TalentDesc>;
+  purpose: Record<number, PurposeDesc>;
+  karmicTail: Record<number, string>;
+  relationships: Record<number, RelationshipDesc>;
+  money: Record<number, MoneyDesc>;
+  chakraTasks: Record<number, ChakraTaskDesc>;
+  selfRealization: Record<number, string>;
+  comfortZone: Record<number, string>;
+  clanLines: Record<number, { father: string; mother: string; fatherMother: string; motherFather: string }>;
+  yearForecast: Record<number, string>;
+  energy: Record<number, { name: string; plus: string; minus: string }>;
+}
+
+const fateOverlays: Record<string, FateDescriptions> = {
+  en: {
+    talents: TALENT_DESCRIPTIONS_EN,
+    purpose: PURPOSE_DESCRIPTIONS_EN,
+    karmicTail: KARMIC_TAIL_DESCRIPTIONS_EN,
+    relationships: RELATIONSHIP_DESCRIPTIONS_EN,
+    money: MONEY_DESCRIPTIONS_EN,
+    chakraTasks: CHAKRA_TASK_DESCRIPTIONS_EN,
+    selfRealization: SELF_REALIZATION_DESCRIPTIONS_EN,
+    comfortZone: COMFORT_ZONE_DESCRIPTIONS_EN,
+    clanLines: CLAN_LINE_DESCRIPTIONS_EN,
+    yearForecast: YEAR_FORECAST_DESCRIPTIONS_EN,
+    energy: FATE_ENERGY_DESCRIPTIONS_EN,
+  },
+  es: {
+    talents: TALENT_DESCRIPTIONS_ES,
+    purpose: PURPOSE_DESCRIPTIONS_ES,
+    karmicTail: KARMIC_TAIL_DESCRIPTIONS_ES,
+    relationships: RELATIONSHIP_DESCRIPTIONS_ES,
+    money: MONEY_DESCRIPTIONS_ES,
+    chakraTasks: CHAKRA_TASK_DESCRIPTIONS_ES,
+    selfRealization: SELF_REALIZATION_DESCRIPTIONS_ES,
+    comfortZone: COMFORT_ZONE_DESCRIPTIONS_ES,
+    clanLines: CLAN_LINE_DESCRIPTIONS_ES,
+    yearForecast: YEAR_FORECAST_DESCRIPTIONS_ES,
+    energy: FATE_ENERGY_DESCRIPTIONS_ES,
+  },
+};
+
+export function getLocalizedFateDescriptions(lang: Lang): FateDescriptions | null {
+  if (lang === 'ru') return null;
+  return fateOverlays[lang] ?? null;
 }

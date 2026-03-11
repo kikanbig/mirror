@@ -41,7 +41,7 @@ export default function MoonPhase() {
         <MoonDisc illumination={moon.illumination} isWaxing={moon.isWaxing} />
       </div>
       <div className={styles.info}>
-        <h3 className={styles.phase}>{moon.phaseRu}</h3>
+        <h3 className={styles.phase}>{t(`moon.${moon.phase}`)}</h3>
         <p className={styles.detail}>
           {t('moon.illumination', { pct: Math.round(moon.illumination * 100) })}
         </p>

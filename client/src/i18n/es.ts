@@ -72,6 +72,14 @@ export const es: Record<string, string> = {
   'moon.age': 'Edad: {days} d.',
   'moon.waxing': 'Creciente',
   'moon.waning': 'Menguante',
+  'moon.new_moon': 'Luna Nueva',
+  'moon.waxing_crescent': 'Luna Creciente',
+  'moon.first_quarter': 'Cuarto Creciente',
+  'moon.waxing_gibbous': 'Gibosa Creciente',
+  'moon.full_moon': 'Luna Llena',
+  'moon.waning_gibbous': 'Gibosa Menguante',
+  'moon.last_quarter': 'Cuarto Menguante',
+  'moon.waning_crescent': 'Luna Menguante',
 
   // Lunar page
   'lunar.title': 'Calendario Lunar',
