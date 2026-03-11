@@ -3,7 +3,8 @@ import DailyCard from '../components/DailyCard/DailyCard';
 import MoonPhase from '../components/MoonPhase/MoonPhase';
 import { useUserStore } from '../stores/userStore';
 import { useAppStore } from '../stores/appStore';
-import { getDailyAffirmation } from '../data/affirmations';
+import { getDailyAffirmation, getDailyAffirmationIndex } from '../data/affirmations';
+import { localizeAffirmation } from '../i18n/data';
 import { useTranslation } from '../i18n';
 import styles from './HomePage.module.scss';
 
@@ -21,7 +22,9 @@ export default function HomePage() {
   const { setActiveSubPage } = useAppStore();
   const { t, lang } = useTranslation();
   const userId = String(profile.telegramId || 'guest');
-  const affirmation = getDailyAffirmation(userId, undefined, lang);
+  const baseAff = getDailyAffirmation(userId);
+  const affIndex = getDailyAffirmationIndex(userId);
+  const affirmation = { ...baseAff, text: localizeAffirmation(baseAff.text, affIndex, lang) };
   const levelName = t(`level.${Math.min(profile.level, 10)}`);
 
   const greetingName = profile.firstName || t('home.guest');
