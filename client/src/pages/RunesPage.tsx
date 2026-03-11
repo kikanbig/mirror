@@ -152,7 +152,7 @@ export default function RunesPage() {
         {phase === 'draw' && spread && (
           <motion.div key="draw" className={styles.drawPhase} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <p className={styles.drawProgress}>
-              {spread.positions[drawnRunes.length]?.name || 'Готово'} — {drawnRunes.length} / {spread.runeCount}
+              {spread.positions[drawnRunes.length]?.name || t('common.done')} — {drawnRunes.length} / {spread.runeCount}
             </p>
 
             {drawnRunes.length > 0 && (

@@ -102,17 +102,17 @@ export default function TarotPage() {
 
   const buildLocalInterpretation = useCallback((cards: DrawnCard[]): string => {
     const lines: string[] = [];
-    lines.push('Ваш расклад раскрывает следующие энергии:\n');
+    lines.push(t('tarot.localIntro') + '\n');
     cards.forEach((dc) => {
       const meaning = dc.reversed ? dc.card.meanings.reversed : dc.card.meanings.upright;
-      lines.push(`${dc.positionName} — ${dc.card.nameRu}${dc.reversed ? ' (перевёрнута)' : ''}`);
+      lines.push(`${dc.positionName} — ${dc.card.nameRu}${dc.reversed ? ` (${t('tarot.reversed')})` : ''}`);
       lines.push(meaning);
       lines.push('');
     });
-    if (cards.length > 1) lines.push(`Совет: ${cards[0].card.advice}`);
+    if (cards.length > 1) lines.push(`${t('tarot.advice')} ${cards[0].card.advice}`);
     lines.push(`\n«${cards[cards.length - 1].card.affirmation}»`);
     return lines.join('\n');
-  }, []);
+  }, [t]);
 
   const saveToHistory = useCallback((cards: DrawnCard[], spreadName: string, interp: string) => {
     addReading({

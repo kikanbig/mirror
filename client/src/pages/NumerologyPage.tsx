@@ -7,7 +7,7 @@ import {
   calculateBirthdayNumber, calculateMaturityNumber, findKarmicDebts,
   calculatePinnacles, calculateChallenges, calculateKarmicLessons,
   calculatePsychomatrix, getArcana, getPsychomatrixCellDescription,
-  PSYCHOMATRIX_CELL_NAMES, PSYCHOMATRIX_LINE_NAMES, getLineStrength, getLineDescription,
+  PSYCHOMATRIX_CELL_NAMES, PSYCHOMATRIX_LINE_NAMES, getLineDescription,
   KARMIC_DEBT_DESCRIPTIONS, KARMIC_LESSON_DESCRIPTIONS,
   PINNACLE_DESCRIPTIONS, CHALLENGE_DESCRIPTIONS,
   calculateFateMatrix,
@@ -15,6 +15,9 @@ import {
   type FateMatrixResult,
 } from '../data/numerology';
 import { useTranslation } from '../i18n';
+import {
+  getLocalizedNumerologyData, getLocalizedCellDescription, getLocalizedLineDescription,
+} from '../i18n/data';
 import { useAppStore } from '../stores/appStore';
 import { useUserStore } from '../stores/userStore';
 import FateMatrixView from '../components/FateMatrix/FateMatrixView';
@@ -69,9 +72,19 @@ export default function NumerologyPage() {
   const [detailNum, setDetailNum] = useState<number | null>(null);
   const { premiumStatus } = useUserStore();
   const { t, lang } = useTranslation();
+  const numL10n = useMemo(() => getLocalizedNumerologyData(lang), [lang]);
   const [partnerBirth, setPartnerBirth] = useState('');
   const [compatResult, setCompatResult] = useState<ReturnType<typeof calculateCompatibility> | null>(null);
   const [compatNums, setCompatNums] = useState<{ my: number; partner: number } | null>(null);
+
+  const SOURCE_MAP: Record<string, string> = useMemo(() => ({
+    'День рождения': t('num.source.birthday'),
+    'Число Жизненного Пути': t('num.source.lifePath'),
+    'День рождения (прямой)': t('num.source.birthdayDirect'),
+    'Число Судьбы': t('num.source.destiny'),
+    'Число Души': t('num.source.soul'),
+    'Число Личности': t('num.source.personality'),
+  }), [t]);
 
   const handleCalculate = useCallback(() => {
     if (!birthStr) return;
@@ -114,7 +127,12 @@ export default function NumerologyPage() {
     setCompatNums({ my: n1, partner: n2 });
   }, [birthStr, partnerBirth]);
 
-  const detail = useMemo(() => detailNum !== null ? getNumberDescription(detailNum) : null, [detailNum]);
+  const detail = useMemo(() => {
+    if (detailNum === null) return null;
+    const overlay = numL10n?.numberDescriptions[detailNum];
+    if (overlay) return { ...overlay, number: detailNum, compatibility: [] };
+    return getNumberDescription(detailNum);
+  }, [detailNum, numL10n]);
   const arcana = useMemo(() => result ? getArcana(result.arcanaNumber) : null, [result]);
 
   return (
@@ -184,13 +202,13 @@ export default function NumerologyPage() {
                   <div className={styles.karmicSection}>
                     <h2 className={styles.sectionTitle}>{t('num.karmicDebts')}</h2>
                     {result.karmicDebts.map((kd) => {
-                      const desc = KARMIC_DEBT_DESCRIPTIONS[kd.number];
+                      const desc = numL10n?.karmicDebt[kd.number] ?? KARMIC_DEBT_DESCRIPTIONS[kd.number];
                       return desc ? (
                         <div key={kd.number} className={styles.karmicCard}>
                           <span className={styles.karmicNumber}>{kd.number}</span>
                           <div className={styles.karmicInfo}>
                             <span className={styles.karmicTitle}>{desc.title}</span>
-                            <span className={styles.karmicSource}>{t('num.foundIn')}: {kd.source}</span>
+                            <span className={styles.karmicSource}>{t('num.foundIn')}: {SOURCE_MAP[kd.source] ?? kd.source}</span>
                             <p className={styles.karmicDesc}>{desc.description}</p>
                             <p className={styles.karmicLesson}>{desc.lesson}</p>
                           </div>
@@ -212,7 +230,7 @@ export default function NumerologyPage() {
                     {[1,4,7,2,5,8,3,6,9].map((d) => (
                       <div key={d} className={styles.psychoCell}>
                         <span className={styles.psychoCellDigit}>{String(d).repeat(result.psychomatrix.cells[d]) || '—'}</span>
-                        <span className={styles.psychoCellName}>{PSYCHOMATRIX_CELL_NAMES[d]}</span>
+                        <span className={styles.psychoCellName}>{numL10n?.cellNames[d] ?? PSYCHOMATRIX_CELL_NAMES[d]}</span>
                       </div>
                     ))}
                   </div>
@@ -220,12 +238,14 @@ export default function NumerologyPage() {
                   <h3 className={styles.subTitle}>{t('num.cellDecode')}</h3>
                   {[1,2,3,4,5,6,7,8,9].map((d) => {
                     const count = result.psychomatrix.cells[d];
-                    const desc = getPsychomatrixCellDescription(d, count);
+                    const desc = numL10n
+                      ? getLocalizedCellDescription(d, count, numL10n)
+                      : getPsychomatrixCellDescription(d, count);
                     if (!desc) return null;
                     return (
                       <div key={d} className={styles.psychoCellDesc}>
                         <span className={styles.psychoCellLabel}>
-                          {PSYCHOMATRIX_CELL_NAMES[d]} — {count > 0 ? String(d).repeat(count) : t('num.noCell')}
+                          {numL10n?.cellNames[d] ?? PSYCHOMATRIX_CELL_NAMES[d]} — {count > 0 ? String(d).repeat(count) : t('num.noCell')}
                         </span>
                         <p>{desc}</p>
                       </div>
@@ -233,15 +253,25 @@ export default function NumerologyPage() {
                   })}
 
                   <h3 className={styles.subTitle}>{t('num.matrixLines')}</h3>
-                  {Object.entries(result.psychomatrix.lines).map(([key, val]) => (
-                    <div key={key} className={styles.lineCard}>
-                      <div className={styles.lineHeader}>
-                        <span className={styles.lineName}>{PSYCHOMATRIX_LINE_NAMES[key]}</span>
-                        <span className={styles.lineVal}>{val} — {getLineStrength(val)}</span>
+                  {Object.entries(result.psychomatrix.lines).map(([key, val]) => {
+                    const strength = val === 0 ? t('num.strength.absent')
+                      : val <= 2 ? t('num.strength.weak')
+                      : val <= 4 ? t('num.strength.medium')
+                      : val <= 6 ? t('num.strength.strong')
+                      : t('num.strength.veryStrong');
+                    const lineDesc = numL10n
+                      ? getLocalizedLineDescription(key, val, numL10n)
+                      : getLineDescription(key, val);
+                    return (
+                      <div key={key} className={styles.lineCard}>
+                        <div className={styles.lineHeader}>
+                          <span className={styles.lineName}>{numL10n?.lineNames[key] ?? PSYCHOMATRIX_LINE_NAMES[key]}</span>
+                          <span className={styles.lineVal}>{val} — {strength}</span>
+                        </div>
+                        <p className={styles.lineDesc}>{lineDesc}</p>
                       </div>
-                      <p className={styles.lineDesc}>{getLineDescription(key, val)}</p>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
 
                 {/* Pinnacles & Challenges */}
@@ -252,9 +282,9 @@ export default function NumerologyPage() {
                       <div key={i} className={styles.timelineItem}>
                         <span className={styles.timelineNum}>{p.number}</span>
                         <div className={styles.timelineInfo}>
-                          <span className={styles.timelineLabel}>{p.label}</span>
+                          <span className={styles.timelineLabel}>{t(`num.pinnacleLabel.${i + 1}`)}</span>
                           <span className={styles.timelineAge}>{p.fromAge}–{p.toAge ?? '...'} {t('num.years')}</span>
-                          <p className={styles.timelineDesc}>{PINNACLE_DESCRIPTIONS[p.number] || ''}</p>
+                          <p className={styles.timelineDesc}>{numL10n?.pinnacle[p.number] ?? PINNACLE_DESCRIPTIONS[p.number] ?? ''}</p>
                         </div>
                       </div>
                     ))}
@@ -266,8 +296,8 @@ export default function NumerologyPage() {
                       <div key={i} className={styles.timelineItem}>
                         <span className={styles.timelineNum}>{c.number}</span>
                         <div className={styles.timelineInfo}>
-                          <span className={styles.timelineLabel}>{c.label}</span>
-                          <p className={styles.timelineDesc}>{CHALLENGE_DESCRIPTIONS[c.number] || ''}</p>
+                          <span className={styles.timelineLabel}>{t(`num.challengeLabel.${i + 1}`)}</span>
+                          <p className={styles.timelineDesc}>{numL10n?.challenge[c.number] ?? CHALLENGE_DESCRIPTIONS[c.number] ?? ''}</p>
                         </div>
                       </div>
                     ))}
@@ -299,7 +329,7 @@ export default function NumerologyPage() {
                 <h2 className={styles.sectionTitle}>{t('num.karmicLessons')}</h2>
                 <p className={styles.lessonsHint}>{t('num.karmicLessonsHint')}</p>
                 {result.karmicLessons.map((n) => {
-                  const desc = KARMIC_LESSON_DESCRIPTIONS[n];
+                  const desc = numL10n?.karmicLesson[n] ?? KARMIC_LESSON_DESCRIPTIONS[n];
                   return desc ? (
                     <div key={n} className={styles.lessonItem}>
                       <span className={styles.lessonNum}>{n}</span>

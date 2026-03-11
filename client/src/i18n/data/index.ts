@@ -17,6 +17,20 @@ import { runeSpreadsEn } from './rune-spreads.en';
 import { runeSpreadsEs } from './rune-spreads.es';
 import { affirmationsEn } from './affirmations.en';
 import { affirmationsEs } from './affirmations.es';
+import {
+  PSYCHOMATRIX_CELL_NAMES_EN, PSYCHOMATRIX_LINE_NAMES_EN,
+  PSYCHOMATRIX_CELL_DESCRIPTIONS_EN, LINE_DESCRIPTIONS_EN,
+  KARMIC_DEBT_DESCRIPTIONS_EN, KARMIC_LESSON_DESCRIPTIONS_EN,
+  PINNACLE_DESCRIPTIONS_EN, CHALLENGE_DESCRIPTIONS_EN,
+  NUMBER_DESCRIPTIONS_EN,
+} from './numerology.en';
+import {
+  PSYCHOMATRIX_CELL_NAMES_ES, PSYCHOMATRIX_LINE_NAMES_ES,
+  PSYCHOMATRIX_CELL_DESCRIPTIONS_ES, LINE_DESCRIPTIONS_ES,
+  KARMIC_DEBT_DESCRIPTIONS_ES, KARMIC_LESSON_DESCRIPTIONS_ES,
+  PINNACLE_DESCRIPTIONS_ES, CHALLENGE_DESCRIPTIONS_ES,
+  NUMBER_DESCRIPTIONS_ES,
+} from './numerology.es';
 import { TALENT_DESCRIPTIONS_EN, PURPOSE_DESCRIPTIONS_EN, KARMIC_TAIL_DESCRIPTIONS_EN } from './fate-matrix.en';
 import { RELATIONSHIP_DESCRIPTIONS_EN, MONEY_DESCRIPTIONS_EN, CHAKRA_TASK_DESCRIPTIONS_EN, SELF_REALIZATION_DESCRIPTIONS_EN, COMFORT_ZONE_DESCRIPTIONS_EN, CLAN_LINE_DESCRIPTIONS_EN, YEAR_FORECAST_DESCRIPTIONS_EN, FATE_ENERGY_DESCRIPTIONS_EN } from './fate-matrix-part2.en';
 import { TALENT_DESCRIPTIONS_ES, PURPOSE_DESCRIPTIONS_ES, KARMIC_TAIL_DESCRIPTIONS_ES } from './fate-matrix.es';
@@ -211,4 +225,74 @@ const fateOverlays: Record<string, FateDescriptions> = {
 export function getLocalizedFateDescriptions(lang: Lang): FateDescriptions | null {
   if (lang === 'ru') return null;
   return fateOverlays[lang] ?? null;
+}
+
+// ── Numerology overlay ──
+
+export interface NumerologyOverlay {
+  cellNames: Record<number, string>;
+  lineNames: Record<string, string>;
+  cellDescriptions: Record<number, string[]>;
+  lineDescriptions: Record<string, Record<string, string>>;
+  karmicDebt: Record<number, { title: string; description: string; lesson: string }>;
+  karmicLesson: Record<number, { title: string; description: string }>;
+  pinnacle: Record<number, string>;
+  challenge: Record<number, string>;
+  numberDescriptions: Record<number, {
+    name: string; title: string; description: string;
+    strengths: string[]; weaknesses: string[];
+    recommendations: string; celebrities: string[];
+    color: string; stone: string; planet: string;
+  }>;
+}
+
+const numOverlays: Record<string, NumerologyOverlay> = {
+  en: {
+    cellNames: PSYCHOMATRIX_CELL_NAMES_EN,
+    lineNames: PSYCHOMATRIX_LINE_NAMES_EN,
+    cellDescriptions: PSYCHOMATRIX_CELL_DESCRIPTIONS_EN,
+    lineDescriptions: LINE_DESCRIPTIONS_EN,
+    karmicDebt: KARMIC_DEBT_DESCRIPTIONS_EN,
+    karmicLesson: KARMIC_LESSON_DESCRIPTIONS_EN,
+    pinnacle: PINNACLE_DESCRIPTIONS_EN,
+    challenge: CHALLENGE_DESCRIPTIONS_EN,
+    numberDescriptions: NUMBER_DESCRIPTIONS_EN,
+  },
+  es: {
+    cellNames: PSYCHOMATRIX_CELL_NAMES_ES,
+    lineNames: PSYCHOMATRIX_LINE_NAMES_ES,
+    cellDescriptions: PSYCHOMATRIX_CELL_DESCRIPTIONS_ES,
+    lineDescriptions: LINE_DESCRIPTIONS_ES,
+    karmicDebt: KARMIC_DEBT_DESCRIPTIONS_ES,
+    karmicLesson: KARMIC_LESSON_DESCRIPTIONS_ES,
+    pinnacle: PINNACLE_DESCRIPTIONS_ES,
+    challenge: CHALLENGE_DESCRIPTIONS_ES,
+    numberDescriptions: NUMBER_DESCRIPTIONS_ES,
+  },
+};
+
+export function getLocalizedNumerologyData(lang: Lang): NumerologyOverlay | null {
+  if (lang === 'ru') return null;
+  return numOverlays[lang] ?? null;
+}
+
+export function getLocalizedCellDescription(
+  digit: number, count: number, overlay: NumerologyOverlay | null,
+): string {
+  const descs = overlay?.cellDescriptions[digit];
+  if (descs) {
+    const idx = Math.min(count, descs.length - 1);
+    return descs[idx];
+  }
+  return '';
+}
+
+export function getLocalizedLineDescription(
+  key: string, count: number, overlay: NumerologyOverlay | null,
+): string {
+  const lineDesc = overlay?.lineDescriptions[key];
+  if (!lineDesc) return '';
+  if (count <= 2) return lineDesc.weak;
+  if (count <= 4) return lineDesc.medium;
+  return lineDesc.strong;
 }

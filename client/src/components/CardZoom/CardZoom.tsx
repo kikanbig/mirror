@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { createPortal } from 'react-dom';
+import { useTranslation } from '../../i18n';
 import styles from './CardZoom.module.scss';
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function CardZoom({ src, name, reversed, onClose }: Props) {
+  const { t } = useTranslation();
   return createPortal(
     <motion.div
       className={styles.overlay}
@@ -37,11 +39,11 @@ export default function CardZoom({ src, name, reversed, onClose }: Props) {
         {name && (
           <div className={styles.cardName}>
             {name}
-            {reversed && <span className={styles.reversedTag}>(перевёрнута)</span>}
+            {reversed && <span className={styles.reversedTag}>({t('tarot.reversed')})</span>}
           </div>
         )}
       </motion.div>
-      <span className={styles.closeHint}>Нажмите, чтобы закрыть</span>
+      <span className={styles.closeHint}>{t('zoom.close')}</span>
     </motion.div>,
     document.body,
   );

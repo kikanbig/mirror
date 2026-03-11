@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '../../i18n';
 import styles from './SplashScreen.module.scss';
 
 interface SplashParticle {
@@ -120,6 +121,7 @@ function SplashParticles({ active }: { active: boolean }) {
 const TITLE = 'NUMA';
 
 export default function SplashScreen({ onComplete }: { onComplete: () => void }) {
+  const { t } = useTranslation();
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -164,11 +166,7 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
           </div>
 
           <span className={styles.subtitle}>
-            {new URLSearchParams(window.location.search).get('lang') === 'es'
-              ? 'Números. Cartas. Tú.'
-              : new URLSearchParams(window.location.search).get('lang') === 'en'
-                ? 'Numbers. Cards. You.'
-                : 'Числа. Карты. Ты.'}
+            {t('splash.slogan')}
           </span>
         </motion.div>
       )}

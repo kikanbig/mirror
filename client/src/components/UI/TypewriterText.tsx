@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from '../../i18n';
 import styles from './TypewriterText.module.scss';
 
 interface Props {
@@ -73,6 +74,7 @@ export default function TypewriterText({ text, speed = 25, className }: Props) {
 }
 
 export function ThinkingIndicator() {
+  const { t } = useTranslation();
   return (
     <motion.div
       className={styles.thinkingBlock}
@@ -96,7 +98,7 @@ export function ThinkingIndicator() {
           transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }}
         >&#10022;</motion.span>
       </div>
-      <p className={styles.thinkingText}>Оракул читает карты...</p>
+      <p className={styles.thinkingText}>{t('tarot.reading')}</p>
     </motion.div>
   );
 }

@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { TarotCard } from '../../data/tarot-types';
 import { useHaptic } from '../../hooks/useHaptic';
+import { useTranslation } from '../../i18n';
 import CardZoom from '../CardZoom/CardZoom';
 import styles from './CardReveal.module.scss';
 
@@ -83,6 +84,7 @@ export default function CardReveal({ card, reversed, positionName, delay = 0, on
   const [showBurst, setShowBurst] = useState(false);
   const [zoomed, setZoomed] = useState(false);
   const { impact, notification } = useHaptic();
+  const { t } = useTranslation();
 
   const handleTap = useCallback(() => {
     if (!isFlipped) {
@@ -124,7 +126,7 @@ export default function CardReveal({ card, reversed, positionName, delay = 0, on
         >
           <div className={styles.front}>
             <img src={card.image} alt={card.nameRu} className={styles.cardImg} />
-            {reversed && <div className={styles.reversedBadge}>Перевёрнута</div>}
+            {reversed && <div className={styles.reversedBadge}>{t('tarot.reversed')[0].toUpperCase() + t('tarot.reversed').slice(1)}</div>}
           </div>
           <div className={styles.back}>
             <img src="/cards/card_back.webp" alt="Card back" className={styles.cardImg} />
@@ -153,7 +155,7 @@ export default function CardReveal({ card, reversed, positionName, delay = 0, on
             transition={{ delay: 0.3, duration: 0.4 }}
           >
             <h3 className={styles.cardTitle}>
-              {card.nameRu} {reversed ? '(перевёрнута)' : ''}
+              {card.nameRu} {reversed ? `(${t('tarot.reversed')})` : ''}
             </h3>
             <p className={styles.meaning}>
               {reversed ? card.meanings.reversed : card.meanings.upright}
