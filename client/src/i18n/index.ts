@@ -13,7 +13,7 @@ export function detectLanguage(): Lang {
   const langParam = params.get('lang');
   if (langParam && langParam in locales) return langParam as Lang;
 
-  const tgLang = window.Telegram?.WebApp?.initDataUnsafe?.user?.language_code;
+  const tgLang = (window.Telegram?.WebApp as any)?.initDataUnsafe?.user?.language_code;
   if (tgLang) {
     if (tgLang.startsWith('es')) return 'es';
     if (tgLang.startsWith('en')) return 'en';
