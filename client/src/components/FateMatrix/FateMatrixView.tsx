@@ -24,18 +24,18 @@ const SECTION_IDS = [
   'health', 'relationships', 'money', 'clan', 'programs', 'yearForecast',
 ] as const;
 
-const SECTION_LABELS: Record<string, string> = {
-  talents: 'Личные качества (3 таланта)',
-  purpose: 'Предназначение',
-  karmicTail: 'Задачи из прошлых жизней',
-  comfort: 'Точка душевного комфорта',
-  selfReal: 'Самореализация',
-  health: 'Карта здоровья (7 чакр)',
-  relationships: 'Отношения',
-  money: 'Деньги и профессия',
-  clan: 'Сила рода',
-  programs: 'Кармические программы',
-  yearForecast: 'Прогноз на текущий год',
+const SECTION_I18N_KEYS: Record<string, string> = {
+  talents: 'fm.talents',
+  purpose: 'fm.purpose',
+  karmicTail: 'fm.karmic',
+  comfort: 'fm.comfort',
+  selfReal: 'fm.selfRealization',
+  health: 'fm.health',
+  relationships: 'fm.relationships',
+  money: 'fm.money',
+  clan: 'fm.clan',
+  programs: 'fm.karmicPrograms',
+  yearForecast: 'fm.yearForecast',
 };
 
 const SECTION_ICONS: Record<string, string> = {
@@ -239,7 +239,7 @@ export default function FateMatrixView({ matrix }: Props) {
             <button className={`${styles.accordionBtn} ${expanded === id ? styles.accordionOpen : ''}`}
               onClick={() => toggle(id)}>
               <span className={styles.accordionIcon}>{SECTION_ICONS[id]}</span>
-              <span className={styles.accordionLabel}>{SECTION_LABELS[id]}</span>
+              <span className={styles.accordionLabel}>{t(SECTION_I18N_KEYS[id])}</span>
               <span className={styles.accordionArrow}>{expanded === id ? '▾' : '▸'}</span>
             </button>
             <AnimatePresence initial={false}>
@@ -282,9 +282,9 @@ function renderSection(id: string, m: FateMatrixResult) {
 function TalentsSection({ m }: { m: FateMatrixResult }) {
   const { t } = useTranslation();
   const talents = [
-    { num: m.a, label: '1-й талант (от рождения)', sub: 'День рождения' },
-    { num: m.b, label: '2-й талант (раскрывается к 20 годам)', sub: 'Месяц рождения' },
-    { num: m.c, label: '3-й талант (раскрывается к 40 годам)', sub: 'Год рождения' },
+    { num: m.a, label: t('fm.talent1'), sub: t('fm.talent1sub') },
+    { num: m.b, label: t('fm.talent2'), sub: t('fm.talent2sub') },
+    { num: m.c, label: t('fm.talent3'), sub: t('fm.talent3sub') },
   ];
   return (
     <div className={styles.talentList}>
@@ -337,7 +337,7 @@ function PurposeSection({ m }: { m: FateMatrixResult }) {
               if (!desc) return null;
               return (
                 <div key={j} className={styles.purposeDesc}>
-                  <span className={styles.purposeDescNum}>Энергия {n}:</span>
+                  <span className={styles.purposeDescNum}>{t('fm.energyN', { n: String(n) })}</span>
                   <p>{desc[pKey as keyof typeof desc]}</p>
                 </div>
               );
@@ -353,11 +353,11 @@ function KarmicTailSection({ m }: { m: FateMatrixResult }) {
   return (
     <div className={styles.karmicTailList}>
       <p className={styles.karmicTailIntro}>
-        Кармический хвост — это задачи из прошлых жизней, которые необходимо проработать в этом воплощении.
+        {t('fm.karmicTailIntro')}
       </p>
       {m.karmicTail.map((num, i) => {
         const desc = KARMIC_TAIL_DESCRIPTIONS[num];
-        const labels = ['Главная кармическая задача', 'Промежуточная задача', 'Глубинная задача'];
+        const labels = [t('fm.karmicTask1'), t('fm.karmicTask2'), t('fm.karmicTask3')];
         return (
           <div key={i} className={styles.karmicTailCard}>
             <div className={styles.karmicTailHeader}>
@@ -390,7 +390,7 @@ function SelfRealSection({ m }: { m: FateMatrixResult }) {
   const desc = SELF_REALIZATION_DESCRIPTIONS[m.selfRealization];
   return (
     <div className={styles.selfRealCard}>
-      <EnergyCard num={m.selfRealization} context="Горловая чакра — самовыражение" />
+      <EnergyCard num={m.selfRealization} context={t('fm.selfRealContext')} />
       {desc && <p className={styles.selfRealDesc}>{desc}</p>}
     </div>
   );
@@ -449,7 +449,7 @@ function RelationshipsSection({ m }: { m: FateMatrixResult }) {
   if (!desc) return null;
   return (
     <div className={styles.relSection}>
-      <EnergyCard num={m.partnerTasks} context="Энергия отношений" />
+      <EnergyCard num={m.partnerTasks} context={t('fm.relContext')} />
       <div className={styles.relGrid}>
         <div className={styles.relItem}>
           <span className={styles.relItemLabel}>{t('fm.relTask')}</span>
@@ -460,11 +460,11 @@ function RelationshipsSection({ m }: { m: FateMatrixResult }) {
           <p>{desc.partnerType}</p>
         </div>
         <div className={styles.relItem}>
-          <span className={styles.relItemLabel}>Возможные проблемы</span>
+          <span className={styles.relItemLabel}>{t('fm.relProblems')}</span>
           <p>{desc.problems}</p>
         </div>
         <div className={styles.relItem}>
-          <span className={styles.relItemLabel}>Где знакомиться</span>
+          <span className={styles.relItemLabel}>{t('fm.relWhere')}</span>
           <p>{desc.meeting}</p>
         </div>
       </div>
@@ -478,18 +478,18 @@ function MoneySection({ m }: { m: FateMatrixResult }) {
   if (!desc) return null;
   return (
     <div className={styles.moneySection}>
-      <EnergyCard num={m.moneyProfession} context="Денежная энергия" />
+      <EnergyCard num={m.moneyProfession} context={t('fm.moneyContext')} />
       <div className={styles.moneyGrid}>
         <div className={styles.moneyItem}>
           <span className={styles.moneyItemLabel}>{t('fm.moneyProfessions')}</span>
           <p>{desc.professions}</p>
         </div>
         <div className={styles.moneyItem}>
-          <span className={styles.moneyItemLabel}>Что даёт деньги</span>
+          <span className={styles.moneyItemLabel}>{t('fm.moneyGives')}</span>
           <p>{desc.gives}</p>
         </div>
         <div className={styles.moneyItem}>
-          <span className={styles.moneyItemLabel}>Денежные блоки</span>
+          <span className={styles.moneyItemLabel}>{t('fm.moneyBlocks')}</span>
           <p>{desc.blocks}</p>
         </div>
       </div>
@@ -503,7 +503,7 @@ function ClanSection({ m }: { m: FateMatrixResult }) {
   if (!desc) return null;
   return (
     <div className={styles.clanSection}>
-      <EnergyCard num={m.clanStrength} context="Энергия рода" />
+      <EnergyCard num={m.clanStrength} context={t('fm.clanContext')} />
       <div className={styles.clanGrid}>
         <div className={styles.clanItem}>
           <span className={styles.clanItemLabel}>{t('fm.fatherLine')}</span>
@@ -514,11 +514,11 @@ function ClanSection({ m }: { m: FateMatrixResult }) {
           <p>{desc.mother}</p>
         </div>
         <div className={styles.clanItem}>
-          <span className={styles.clanItemLabel}>Бабушка по отцу</span>
+          <span className={styles.clanItemLabel}>{t('fm.clanGrandmaFather')}</span>
           <p>{desc.fatherMother}</p>
         </div>
         <div className={styles.clanItem}>
-          <span className={styles.clanItemLabel}>Дедушка по матери</span>
+          <span className={styles.clanItemLabel}>{t('fm.clanGrandpaMother')}</span>
           <p>{desc.motherFather}</p>
         </div>
       </div>
@@ -556,10 +556,10 @@ function YearForecastSection({ m }: { m: FateMatrixResult }) {
   return (
     <div className={styles.yearSection}>
       <div className={styles.yearHeader}>
-        <span className={styles.yearAge}>Ваш возраст: {m.currentAge}</span>
-        <span className={styles.yearEnergy}>Энергия года: {m.yearEnergy}</span>
+        <span className={styles.yearAge}>{t('fm.yourAge', { age: String(m.currentAge) })}</span>
+        <span className={styles.yearEnergy}>{t('fm.yearEnergy', { energy: String(m.yearEnergy) })}</span>
       </div>
-      <EnergyCard num={m.yearEnergy} context={`Прогноз на ${new Date().getFullYear()} год`} />
+      <EnergyCard num={m.yearEnergy} context={t('fm.yearForecastContext', { year: String(new Date().getFullYear()) })} />
       {desc && <p className={styles.yearDesc}>{desc}</p>}
     </div>
   );

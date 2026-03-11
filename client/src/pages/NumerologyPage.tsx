@@ -155,10 +155,10 @@ export default function NumerologyPage() {
               <div className={styles.arcanaSection}>
                 <h2 className={styles.sectionTitle}>{t('num.arcana')}</h2>
                 <div className={styles.arcanaCard}>
-                  <img src={arcana.image} alt={arcana.nameRu} className={styles.arcanaImg} />
+                  <img src={arcana.image} alt={lang === 'ru' ? arcana.nameRu : arcana.name} className={styles.arcanaImg} />
                   <div className={styles.arcanaInfo}>
-                    <span className={styles.arcanaName}>{t('num.arcanaLabel', { num: arcana.number, name: arcana.nameRu })}</span>
-                    <p className={styles.arcanaDesc}>{arcana.meaning}</p>
+                    <span className={styles.arcanaName}>{t('num.arcanaLabel', { num: arcana.number, name: lang === 'ru' ? arcana.nameRu : arcana.name })}</span>
+                    <p className={styles.arcanaDesc}>{t(`num.arcanaMeaning.${arcana.number}`)}</p>
                   </div>
                 </div>
               </div>
