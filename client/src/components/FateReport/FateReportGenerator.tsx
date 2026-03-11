@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { api } from '../../services/api';
 import { useUserStore } from '../../stores/userStore';
+import { useTranslation } from '../../i18n';
 import { PaywallBanner } from '../Paywall/Paywall';
 import FateReportView from './FateReportView';
 import styles from './FateReportGenerator.module.scss';
@@ -25,6 +26,7 @@ interface Props {
 }
 
 export default function FateReportGenerator({ birthDate }: Props) {
+  const { t } = useTranslation();
   const { premiumStatus } = useUserStore();
   const [report, setReport] = useState<ReportResponse | null>(null);
   const [loading, setLoading] = useState(false);
@@ -56,12 +58,12 @@ export default function FateReportGenerator({ birthDate }: Props) {
       if (err.message?.includes('Purchase required')) {
         setError('purchase_required');
       } else {
-        setError(err.message || 'Ошибка генерации отчёта');
+        setError(err.message || t('common.error'));
       }
     } finally {
       setLoading(false);
     }
-  }, [birthDate]);
+  }, [birthDate, t]);
 
   const handleLoadExisting = useCallback(async () => {
     try {
@@ -95,7 +97,7 @@ export default function FateReportGenerator({ birthDate }: Props) {
       <div className={styles.container}>
         <PaywallBanner
           product="fate_report"
-          label="Купить полный отчёт — 50+ страниц"
+          label={t('fr.buyFull')}
           onSuccess={handlePurchaseSuccess}
         />
       </div>
@@ -106,10 +108,9 @@ export default function FateReportGenerator({ birthDate }: Props) {
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.icon}>&#128218;</div>
-        <h3 className={styles.title}>Полный отчёт Матрицы Судьбы</h3>
+        <h3 className={styles.title}>{t('fr.title')}</h3>
         <p className={styles.description}>
-          25 глав, 50+ страниц персонального анализа: таланты, предназначение,
-          кармический хвост, здоровье по чакрам, отношения, деньги, сила рода и многое другое.
+          {t('fr.description')}
         </p>
 
         {loading ? (
@@ -122,10 +123,10 @@ export default function FateReportGenerator({ birthDate }: Props) {
               />
             </div>
             <p className={styles.progressText}>
-              Генерация отчёта... {Math.round(progress)}%
+              {t('fr.generating', { pct: Math.round(progress) })}
             </p>
             <p className={styles.progressHint}>
-              AI пишет 25 глав вашего персонального отчёта. Это займёт около минуты.
+              {t('fr.generatingHint')}
             </p>
           </div>
         ) : (
@@ -137,16 +138,16 @@ export default function FateReportGenerator({ birthDate }: Props) {
                   whileTap={{ scale: 0.96 }}
                   onClick={handleGenerate}
                 >
-                  Сгенерировать отчёт
+                  {t('fr.generate')}
                 </motion.button>
                 <button className={styles.loadBtn} onClick={handleLoadExisting}>
-                  Загрузить сохранённый
+                  {t('fr.loadSaved')}
                 </button>
               </>
             ) : (
               <PaywallBanner
                 product="fate_report"
-                label="Купить полный отчёт — 50+ страниц"
+                label={t('fr.buyFull')}
                 onSuccess={handlePurchaseSuccess}
               />
             )}

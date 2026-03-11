@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import type { Lang } from '../i18n';
 
 interface AppState {
   activeTab: string;
@@ -7,12 +8,14 @@ interface AppState {
   showOnboarding: boolean;
   soundEnabled: boolean;
   tabResetSignal: number;
+  lang: Lang;
 
   setActiveTab: (tab: string) => void;
   setActiveSubPage: (page: string | null) => void;
   setIsLoading: (v: boolean) => void;
   setShowOnboarding: (v: boolean) => void;
   toggleSound: () => void;
+  setLang: (lang: Lang) => void;
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -22,6 +25,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   showOnboarding: false,
   soundEnabled: true,
   tabResetSignal: 0,
+  lang: 'ru' as Lang,
 
   setActiveTab: (tab) => {
     if (get().activeTab === tab) {
@@ -38,4 +42,5 @@ export const useAppStore = create<AppState>((set, get) => ({
   setIsLoading: (v) => set({ isLoading: v }),
   setShowOnboarding: (v) => set({ showOnboarding: v }),
   toggleSound: () => set((s) => ({ soundEnabled: !s.soundEnabled })),
+  setLang: (lang) => set({ lang }),
 }));

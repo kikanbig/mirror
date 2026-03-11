@@ -7,6 +7,7 @@ import { useAppStore } from '../stores/appStore';
 import { useUserStore } from '../stores/userStore';
 import { useHistoryStore } from '../stores/historyStore';
 import { useHaptic } from '../hooks/useHaptic';
+import { useTranslation } from '../i18n';
 import { api } from '../services/api';
 import CardZoom from '../components/CardZoom/CardZoom';
 import styles from './RunesPage.module.scss';
@@ -24,6 +25,7 @@ export default function RunesPage() {
   const { profile, addExperience } = useUserStore();
   const { addReading } = useHistoryStore();
   const { impact, notification } = useHaptic();
+  const { t } = useTranslation();
 
   const [phase, setPhase] = useState<Phase>('choose');
   const [spread, setSpread] = useState<RuneSpread | null>(null);
@@ -84,7 +86,7 @@ export default function RunesPage() {
       }
     } catch {
       const lines = runes.map((dr) =>
-        `${dr.positionName}: ${dr.rune.nameRu} ${dr.rune.symbol} ${dr.reversed ? '(перевёрнута)' : ''}\n${dr.reversed ? dr.rune.meaning.reversed : dr.rune.meaning.upright}`
+        `${dr.positionName}: ${dr.rune.nameRu} ${dr.rune.symbol} ${dr.reversed ? `(${t('runes.reversed')})` : ''}\n${dr.reversed ? dr.rune.meaning.reversed : dr.rune.meaning.upright}`
       );
       setInterpretation(lines.join('\n\n'));
     } finally {
@@ -102,7 +104,7 @@ export default function RunesPage() {
         })),
       });
     }
-  }, [addExperience, addReading]);
+  }, [addExperience, addReading, t]);
 
   const handleReveal = useCallback((idx: number) => {
     impact('medium');
@@ -121,9 +123,9 @@ export default function RunesPage() {
     <motion.div className={styles.page} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <div className={styles.topBar}>
         <button className={styles.backBtn} onClick={() => phase === 'choose' ? setActiveSubPage(null) : handleReset()}>
-          &#8592; {phase === 'choose' ? 'Назад' : 'К раскладам'}
+          &#8592; {phase === 'choose' ? t('runes.back') : t('runes.toSpreads')}
         </button>
-        <h1 className={styles.title}>Руны Футарка</h1>
+        <h1 className={styles.title}>{t('runes.title')}</h1>
       </div>
 
       <AnimatePresence mode="wait">
@@ -139,7 +141,7 @@ export default function RunesPage() {
                 <span className={styles.spreadRune}>ᚱ</span>
                 <div className={styles.spreadInfo}>
                   <span className={styles.spreadName}>{s.name}</span>
-                  <span className={styles.spreadCount}>{s.runeCount} {s.runeCount === 1 ? 'руна' : s.runeCount < 5 ? 'руны' : 'рун'}</span>
+                  <span className={styles.spreadCount}>{s.runeCount} {s.runeCount === 1 ? t('runes.rune.1') : s.runeCount < 5 ? t('runes.rune.2-4') : t('runes.rune.5+')}</span>
                   <p className={styles.spreadDesc}>{s.description}</p>
                 </div>
               </motion.div>
@@ -166,7 +168,7 @@ export default function RunesPage() {
 
             {drawnRunes.length < spread.runeCount && (
               <div className={styles.bag}>
-                <p className={styles.bagHint}>Вытяните руну из мешка</p>
+                <p className={styles.bagHint}>{t('runes.draw')}</p>
                 <div className={styles.bagStones}>
                   {bagRunes.map((id, i) => (
                     <div
@@ -185,7 +187,7 @@ export default function RunesPage() {
 
         {phase === 'result' && (
           <motion.div key="result" className={styles.resultPhase} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-            <h2 className={styles.resultTitle}>Ваш Рунический Расклад</h2>
+            <h2 className={styles.resultTitle}>{t('runes.result')}</h2>
 
             <div className={styles.runeResults}>
               {drawnRunes.map((dr, i) => {
@@ -215,14 +217,14 @@ export default function RunesPage() {
                       {isRevealed && (
                         <>
                           <span className={styles.runeName}>
-                            {dr.rune.nameRu} {dr.reversed ? '(перевёрнута)' : ''}
+                            {dr.rune.nameRu} {dr.reversed ? `(${t('runes.reversed')})` : ''}
                           </span>
                           <p className={styles.runeMeaning}>
                             {dr.reversed ? dr.rune.meaning.reversed : dr.rune.meaning.upright}
                           </p>
                         </>
                       )}
-                      {!isRevealed && <span className={styles.runeTapHint}>Нажмите, чтобы раскрыть</span>}
+                      {!isRevealed && <span className={styles.runeTapHint}>{t('runes.tapReveal')}</span>}
                     </div>
                   </motion.div>
                 );
@@ -231,13 +233,13 @@ export default function RunesPage() {
 
             {isInterpreting && (
               <div className={styles.interpreting}>
-                <p>Руны складывают свой ответ...</p>
+                <p>{t('runes.interpreting')}</p>
               </div>
             )}
 
             {interpretation && !isInterpreting && (
               <div className={styles.interpSection}>
-                <h3 className={styles.interpTitle}>Толкование</h3>
+                <h3 className={styles.interpTitle}>{t('runes.interpretation')}</h3>
                 {interpretation.split('\n\n').map((p, i) => (
                   <p key={i} className={styles.interpText}>{p}</p>
                 ))}
@@ -245,7 +247,7 @@ export default function RunesPage() {
             )}
 
             <motion.button className={styles.resetBtn} whileTap={{ scale: 0.96 }} onClick={handleReset}>
-              Новый расклад
+              {t('runes.newSpread')}
             </motion.button>
           </motion.div>
         )}
@@ -271,16 +273,16 @@ export default function RunesPage() {
                 {zoomRune.rune.symbol}
               </span>
               <h3 className={styles.zoomName}>{zoomRune.rune.nameRu} ({zoomRune.rune.name})</h3>
-              {zoomRune.reversed && <span className={styles.zoomReversed}>Перевёрнута</span>}
+              {zoomRune.reversed && <span className={styles.zoomReversed}>{t('runes.reversed')}</span>}
               <p className={styles.zoomMeaning}>
                 {zoomRune.reversed ? zoomRune.rune.meaning.reversed : zoomRune.rune.meaning.upright}
               </p>
               <div className={styles.zoomMeta}>
-                <span>Стихия: {zoomRune.rune.element}</span>
-                <span>Божество: {zoomRune.rune.deity}</span>
+                <span>{t('runes.element')}: {zoomRune.rune.element}</span>
+                <span>{t('runes.deity')}: {zoomRune.rune.deity}</span>
               </div>
               <p className={styles.zoomAdvice}>{zoomRune.rune.advice}</p>
-              <button className={styles.zoomClose} onClick={() => setZoomRune(null)}>Закрыть</button>
+              <button className={styles.zoomClose} onClick={() => setZoomRune(null)}>{t('runes.close')}</button>
             </motion.div>
           </motion.div>
         )}

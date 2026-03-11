@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { fullDeck } from '../../data/tarot-deck';
 import { hashSeed, seededShuffle } from '../../utils/shuffle';
 import { useHaptic } from '../../hooks/useHaptic';
+import { useTranslation } from '../../i18n';
 import { useUserStore } from '../../stores/userStore';
 import CardZoom from '../CardZoom/CardZoom';
 import styles from './DailyCard.module.scss';
@@ -14,6 +15,8 @@ export default function DailyCard() {
   const [revealed, setRevealed] = useState(false);
   const [zoomed, setZoomed] = useState(false);
   const { impact, notification } = useHaptic();
+  const { t, lang } = useTranslation();
+  const dateLocale = lang === 'es' ? 'es-ES' : lang === 'en' ? 'en-US' : 'ru-RU';
 
   const dailyResult = useMemo(() => {
     const seed = hashSeed(userId, today);
@@ -37,9 +40,9 @@ export default function DailyCard() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <h2 className={styles.title}>Карта Дня</h2>
+      <h2 className={styles.title}>{t('daily.title')}</h2>
       <p className={styles.date}>
-        {new Date().toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long' })}
+        {new Date().toLocaleDateString(dateLocale, { weekday: 'long', day: 'numeric', month: 'long' })}
       </p>
 
       <div className={styles.cardArea}>
@@ -59,7 +62,7 @@ export default function DailyCard() {
                 animate={{ opacity: [0.5, 1, 0.5] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                Нажмите, чтобы открыть
+                {t('daily.tap')}
               </motion.span>
             </motion.div>
           ) : (
@@ -76,7 +79,7 @@ export default function DailyCard() {
                 <img src={dailyResult.card.image} alt={dailyResult.card.nameRu} className={styles.cardImg} />
               </div>
               {dailyResult.reversed && (
-                <div className={styles.reversedLabel}>&#8593; Перевёрнута</div>
+                <div className={styles.reversedLabel}>{t('daily.reversed')}</div>
               )}
               <motion.div
                 className={styles.revealGlow}

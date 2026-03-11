@@ -9,7 +9,7 @@ router.use(authMiddleware);
 
 router.post('/', rateLimit(5, 60 * 60 * 1000), async (req: AuthRequest, res) => {
   try {
-    const { spreadType, cards, question, area, userProfile } = req.body;
+    const { spreadType, cards, question, area, userProfile, lang } = req.body;
 
     const interpretation = await generateTarotInterpretation({
       spreadType,
@@ -18,18 +18,19 @@ router.post('/', rateLimit(5, 60 * 60 * 1000), async (req: AuthRequest, res) => 
       area,
       userProfile,
       telegramId: req.telegramUser?.id,
+      lang: lang || req.botLang || 'ru',
     });
 
     res.json({ interpretation });
   } catch (error) {
     console.error('Interpretation error:', error);
-    res.status(500).json({ message: 'Ошибка генерации интерпретации. Попробуйте позже.' });
+    res.status(500).json({ message: 'Generation error. Please try again later.' });
   }
 });
 
 router.post('/synthesis', rateLimit(1, 7 * 24 * 60 * 60 * 1000), async (req: AuthRequest, res) => {
   try {
-    const { card, rune, zodiac, lifePathNumber, moonPhase, personalYear } = req.body;
+    const { card, rune, zodiac, lifePathNumber, moonPhase, personalYear, lang } = req.body;
 
     const interpretation = await generateSynthesis({
       card,
@@ -39,29 +40,31 @@ router.post('/synthesis', rateLimit(1, 7 * 24 * 60 * 60 * 1000), async (req: Aut
       moonPhase,
       personalYear,
       telegramId: req.telegramUser?.id,
+      lang: lang || req.botLang || 'ru',
     });
 
     res.json({ interpretation });
   } catch (error) {
     console.error('Synthesis error:', error);
-    res.status(500).json({ message: 'Ошибка генерации синтеза. Попробуйте позже.' });
+    res.status(500).json({ message: 'Generation error. Please try again later.' });
   }
 });
 
 router.post('/runes', rateLimit(5, 60 * 60 * 1000), async (req: AuthRequest, res) => {
   try {
-    const { spread, runes } = req.body;
+    const { spread, runes, lang } = req.body;
 
     const interpretation = await generateRuneInterpretation({
       spread,
       runes,
       telegramId: req.telegramUser?.id,
+      lang: lang || req.botLang || 'ru',
     });
 
     res.json({ interpretation });
   } catch (error) {
     console.error('Rune interpretation error:', error);
-    res.status(500).json({ message: 'Ошибка генерации рунического толкования. Попробуйте позже.' });
+    res.status(500).json({ message: 'Generation error. Please try again later.' });
   }
 });
 

@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 // POST /api/fate-report/generate
 router.post('/generate', authMiddleware, async (req: AuthRequest, res) => {
   try {
-    const { birthDate } = req.body as { birthDate: string };
+    const { birthDate, lang } = req.body as { birthDate: string; lang?: string };
     if (!birthDate) {
       res.status(400).json({ message: 'birthDate is required' });
       return;
@@ -70,7 +70,8 @@ router.post('/generate', authMiddleware, async (req: AuthRequest, res) => {
     });
 
     // Generate report (this takes 40-60 seconds)
-    const result = await generateFateReport(bdDate, user.id, telegramId);
+    const reportLang = lang || req.botLang || 'ru';
+    const result = await generateFateReport(bdDate, user.id, telegramId, reportLang);
 
     res.json({
       id: result.id,

@@ -163,7 +163,13 @@ export default function SplashScreen({ onComplete }: { onComplete: () => void })
             ))}
           </div>
 
-          <span className={styles.subtitle}>Числа. Карты. Ты.</span>
+          <span className={styles.subtitle}>
+            {new URLSearchParams(window.location.search).get('lang') === 'es'
+              ? 'Números. Cartas. Tú.'
+              : new URLSearchParams(window.location.search).get('lang') === 'en'
+                ? 'Numbers. Cards. You.'
+                : 'Числа. Карты. Ты.'}
+          </span>
         </motion.div>
       )}
     </AnimatePresence>

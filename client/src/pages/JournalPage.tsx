@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHistoryStore, SavedReading } from '../stores/historyStore';
 import { useUserStore } from '../stores/userStore';
+import { useAppStore } from '../stores/appStore';
+import { useTranslation } from '../i18n';
 import { useHaptic } from '../hooks/useHaptic';
 import { api } from '../services/api';
 import FateReportView from '../components/FateReport/FateReportView';
@@ -9,7 +11,9 @@ import styles from './JournalPage.module.scss';
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
-  return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+  const lang = useAppStore.getState().lang;
+  const locale = lang === 'es' ? 'es-ES' : lang === 'en' ? 'en-US' : 'ru-RU';
+  return d.toLocaleDateString(locale, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
 }
 
 const stagger = {
@@ -38,6 +42,7 @@ interface FateReportFull {
 }
 
 export default function JournalPage() {
+  const { t, lang } = useTranslation();
   const { readings, toggleBookmark, deleteReading } = useHistoryStore();
   const { premiumStatus } = useUserStore();
   const { impact } = useHaptic();
@@ -108,17 +113,17 @@ export default function JournalPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      <h1 className={styles.title}>Дневник Предсказаний</h1>
+      <h1 className={styles.title}>{t('journal.title')}</h1>
 
       {(readings.length > 0 || fateReports.length > 0) && (
         <div className={styles.filters}>
           {([
-            ['all', 'Все'],
-            ['tarot', 'Таро'],
-            ['rune', 'Руны'],
-            ['synthesis', 'Синтез'],
-            ...(fateReports.length > 0 ? [['reports', 'Отчёты'] as const] : []),
-            ['bookmarked', 'Избранное'],
+            ['all', t('journal.all')],
+            ['tarot', t('journal.tarot')],
+            ['rune', t('journal.runes')],
+            ['synthesis', t('journal.synthesis')],
+            ...(fateReports.length > 0 ? [['reports', t('journal.reports')] as const] : []),
+            ['bookmarked', t('journal.bookmarked')],
           ] as const).map(([key, label]) => (
             <motion.button
               key={key}
@@ -155,14 +160,14 @@ export default function JournalPage() {
                     <span style={{ fontSize: '1.1rem' }}>&#128218;</span>
                   </span>
                   <div>
-                    <span className={styles.cardTitle}>Матрица Судьбы — полный отчёт</span>
+                    <span className={styles.cardTitle}>{t('journal.fateReport')}</span>
                     <span className={styles.cardDate}>
-                      {new Date(r.birthDate).toLocaleDateString('ru-RU')} · {r.wordCount.toLocaleString()} слов
+                      {new Date(r.birthDate).toLocaleDateString(lang === 'es' ? 'es-ES' : lang === 'en' ? 'en-US' : 'ru-RU')} · {r.wordCount.toLocaleString()} {t('fr.words')}
                     </span>
                   </div>
                 </div>
               </div>
-              {loadingReport && <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', padding: '8px 16px' }}>Загрузка...</p>}
+              {loadingReport && <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.8rem', padding: '8px 16px' }}>{t('journal.loading')}</p>}
             </motion.div>
           ))}
         </motion.div>
@@ -183,12 +188,12 @@ export default function JournalPage() {
             style={{ filter: 'drop-shadow(0 0 16px rgba(139,92,246,0.3))' }}
           />
           <p className={styles.emptyText}>
-            {readings.length === 0 ? 'Ваш дневник пока пуст' : 'Нет записей в этой категории'}
+            {readings.length === 0 ? t('journal.empty') : t('journal.noCategory')}
           </p>
           <p className={styles.emptyHint}>
             {readings.length === 0
-              ? 'Сделайте расклад или синтез, и он появится здесь'
-              : 'Попробуйте другой фильтр'}
+              ? t('journal.emptyHint')
+              : t('journal.noHint')}
           </p>
         </motion.div>
       ) : (
@@ -208,7 +213,7 @@ export default function JournalPage() {
 
       {readings.length > 0 && (
         <p className={styles.count}>
-          {readings.length} {readings.length === 1 ? 'запись' : readings.length < 5 ? 'записи' : 'записей'}
+          {readings.length} {readings.length === 1 ? t('journal.count.1') : readings.length < 5 ? t('journal.count.2-4') : t('journal.count.5+')}
         </p>
       )}
     </motion.div>
@@ -228,6 +233,7 @@ function ReadingCard({
   onBookmark: (e: React.MouseEvent) => void;
   onDelete: (e: React.MouseEvent) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <motion.div
       className={`${styles.card} ${isExpanded ? styles.cardExpanded : ''}`}
@@ -316,7 +322,7 @@ function ReadingCard({
             {reading.cards.map((c, i) => (
               <div key={i} className={styles.interpCard}>
                 <span className={styles.interpPos}>{c.positionName}</span>
-                <span className={styles.interpName}>{c.cardName}{c.reversed ? ' (перевёрнута)' : ''}</span>
+                <span className={styles.interpName}>{c.cardName}{c.reversed ? ` (${t('tarot.reversed')})` : ''}</span>
               </div>
             ))}
             <div className={styles.interpText}>

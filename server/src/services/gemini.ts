@@ -147,7 +147,14 @@ async function generateWithFallback(prompt: string, endpoint: string, telegramId
   throw new Error('All AI providers failed');
 }
 
-const TAROT_SYSTEM_PROMPT = `Ты — мудрый и проницательный таролог с 30-летним опытом. Ты интерпретируешь расклады таро глубоко, эмпатично и с практической мудростью.
+const LANG_NAMES: Record<string, string> = { ru: 'Russian', en: 'English', es: 'Spanish' };
+
+function langInstruction(lang: string): string {
+  const name = LANG_NAMES[lang] || 'Russian';
+  return lang === 'ru' ? 'Отвечай на русском языке' : `Respond in ${name}`;
+}
+
+const TAROT_SYSTEM_PROMPT = (lang: string) => `Ты — мудрый и проницательный таролог с 30-летним опытом. Ты интерпретируешь расклады таро глубоко, эмпатично и с практической мудростью.
 
 Правила:
 1. Начни с общей энергии расклада
@@ -161,7 +168,7 @@ const TAROT_SYSTEM_PROMPT = `Ты — мудрый и проницательны
 9. Заверши вдохновляющим посланием
 10. Используй образный, но не перегруженный язык
 11. НЕ давай медицинских, юридических или финансовых советов
-12. Отвечай на русском языке
+12. ${langInstruction(lang)}
 13. Длина ответа: 200-400 слов`;
 
 interface TarotInterpretationRequest {
@@ -179,14 +186,18 @@ interface TarotInterpretationRequest {
     moonPhase?: string;
   };
   telegramId?: number | bigint;
+  lang?: string;
 }
 
 export async function generateTarotInterpretation(req: TarotInterpretationRequest): Promise<string> {
+  const lang = req.lang || 'ru';
+  const reversed = lang === 'es' ? '(invertida)' : lang === 'en' ? '(reversed)' : '(перевёрнута)';
+
   const cardsDescription = req.cards
-    .map((c) => `- Позиция "${c.position}": ${c.cardName}${c.reversed ? ' (перевёрнута)' : ''}`)
+    .map((c) => `- "${c.position}": ${c.cardName}${c.reversed ? ' ' + reversed : ''}`)
     .join('\n');
 
-  let prompt = `${TAROT_SYSTEM_PROMPT}\n\nРасклад: ${req.spreadType}\n\nКарты:\n${cardsDescription}`;
+  let prompt = `${TAROT_SYSTEM_PROMPT(lang)}\n\nРасклад: ${req.spreadType}\n\nКарты:\n${cardsDescription}`;
 
   if (req.question) prompt += `\n\nВопрос пользователя: ${req.question}`;
   if (req.area) prompt += `\n\nОбласть вопроса: ${req.area}`;
@@ -197,7 +208,7 @@ export async function generateTarotInterpretation(req: TarotInterpretationReques
   return generateWithFallback(prompt, 'tarot', req.telegramId);
 }
 
-const RUNES_SYSTEM_PROMPT = `Ты — древний рунический мудрец, знаток Старшего Футарка. Ты толкуешь расклады рун с глубокой мудростью, опираясь на скандинавскую традицию.
+const RUNES_SYSTEM_PROMPT = (lang: string) => `Ты — древний рунический мудрец, знаток Старшего Футарка. Ты толкуешь расклады рун с глубокой мудростью, опираясь на скандинавскую традицию.
 
 Правила:
 1. Начни с общей энергии расклада
@@ -208,7 +219,7 @@ const RUNES_SYSTEM_PROMPT = `Ты — древний рунический муд
 6. Заверши мудрым напутствием в духе скандинавских преданий
 7. Используй образный, но не перегруженный язык
 8. НЕ давай медицинских, юридических или финансовых советов
-9. Отвечай на русском языке
+9. ${langInstruction(lang)}
 10. Длина ответа: 200-400 слов`;
 
 interface RuneInterpretationRequest {
@@ -219,14 +230,18 @@ interface RuneInterpretationRequest {
     reversed: boolean;
   }>;
   telegramId?: number | bigint;
+  lang?: string;
 }
 
 export async function generateRuneInterpretation(req: RuneInterpretationRequest): Promise<string> {
+  const lang = req.lang || 'ru';
+  const reversed = lang === 'es' ? '(invertida)' : lang === 'en' ? '(reversed)' : '(перевёрнута)';
+
   const runesDescription = req.runes
-    .map((r) => `- Позиция "${r.position}": ${r.name}${r.reversed ? ' (перевёрнута)' : ''}`)
+    .map((r) => `- "${r.position}": ${r.name}${r.reversed ? ' ' + reversed : ''}`)
     .join('\n');
 
-  const prompt = `${RUNES_SYSTEM_PROMPT}\n\nРасклад: ${req.spread}\n\nРуны:\n${runesDescription}`;
+  const prompt = `${RUNES_SYSTEM_PROMPT(lang)}\n\nРасклад: ${req.spread}\n\nРуны:\n${runesDescription}`;
 
   return generateWithFallback(prompt, 'runes', req.telegramId);
 }
@@ -239,7 +254,9 @@ export async function generateSynthesis(data: {
   moonPhase: string;
   personalYear: number;
   telegramId?: number | bigint;
+  lang?: string;
 }): Promise<string> {
+  const lang = data.lang || 'ru';
   const prompt = `Ты — мудрый оракул, объединяющий знания таро, рун, нумерологии и астрологии. Создай единое глубокое предсказание на основе всех данных.
 
 Данные:
@@ -250,7 +267,7 @@ export async function generateSynthesis(data: {
 - Фаза луны: ${data.moonPhase}
 - Персональный год: ${data.personalYear}
 
-Создай ЕДИНУЮ интерпретацию, объединяющую все системы. Покажи, как они перекликаются и дополняют друг друга. Дай практический совет и вдохновляющее послание. Отвечай на русском. 300-500 слов.`;
+Создай ЕДИНУЮ интерпретацию, объединяющую все системы. Покажи, как они перекликаются и дополняют друг друга. Дай практический совет и вдохновляющее послание. ${langInstruction(lang)}. 300-500 слов.`;
 
   return generateWithFallback(prompt, 'synthesis', data.telegramId);
 }

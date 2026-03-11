@@ -1,8 +1,8 @@
 import { motion } from 'framer-motion';
 import { useUserStore } from '../stores/userStore';
+import { useTranslation } from '../i18n';
 import styles from './ProfilePage.module.scss';
 
-const LEVELS = ['Неофит', 'Ученик', 'Адепт', 'Мистик', 'Оракул', 'Провидец', 'Мастер Арканов', 'Хранитель Тайн', 'Архимаг', 'Просветлённый'];
 const XP_PER_LEVEL = 100;
 
 const stagger = {
@@ -16,7 +16,8 @@ const fadeUp = {
 
 export default function ProfilePage() {
   const { profile } = useUserStore();
-  const levelName = LEVELS[Math.min(profile.level - 1, LEVELS.length - 1)];
+  const { t } = useTranslation();
+  const levelName = t(`level.${Math.min(profile.level, 10)}`);
   const xpInLevel = profile.experience % XP_PER_LEVEL;
   const progress = (xpInLevel / XP_PER_LEVEL) * 100;
 
@@ -27,7 +28,7 @@ export default function ProfilePage() {
       animate="animate"
       variants={stagger}
     >
-      <motion.h1 className={styles.title} variants={fadeUp}>Духовный Профиль</motion.h1>
+      <motion.h1 className={styles.title} variants={fadeUp}>{t('profile.title')}</motion.h1>
 
       <motion.div className={styles.card} variants={fadeUp}>
         <div className={styles.avatarWrapper}>
@@ -46,7 +47,7 @@ export default function ProfilePage() {
             </svg>
           </div>
         </div>
-        <h2 className={styles.name}>{profile.firstName || 'Путник'}</h2>
+        <h2 className={styles.name}>{profile.firstName || t('home.guest')}</h2>
         {profile.zodiacSign && (
           <span className={styles.zodiac}>{profile.zodiacSign}</span>
         )}
@@ -54,7 +55,7 @@ export default function ProfilePage() {
 
       <motion.div className={styles.levelCard} variants={fadeUp}>
         <div className={styles.levelHeader}>
-          <span className={styles.levelLabel}>Уровень {profile.level}</span>
+          <span className={styles.levelLabel}>{t('profile.level', { level: profile.level })}</span>
           <span className={styles.levelName}>{levelName}</span>
         </div>
         <div className={styles.progressBar}>
@@ -77,12 +78,12 @@ export default function ProfilePage() {
 
       <motion.div className={styles.statsGrid} variants={stagger}>
         {[
-          { value: profile.experience, label: 'Общий XP' },
-          { value: profile.streak, label: 'Дней подряд' },
-          { value: profile.lifePathNumber || '—', label: 'Число Пути' },
+          { value: profile.experience, label: t('profile.totalXP'), key: 'xp' },
+          { value: profile.streak, label: t('profile.streakDays'), key: 'streak' },
+          { value: profile.lifePathNumber || '—', label: t('profile.pathNumber'), key: 'path' },
         ].map((stat, i) => (
           <motion.div
-            key={stat.label}
+            key={stat.key}
             className={styles.stat}
             variants={fadeUp}
             whileHover={{ borderColor: 'rgba(212,175,55,0.2)' }}
@@ -102,11 +103,11 @@ export default function ProfilePage() {
 
       {profile.lifePathNumber && (
         <motion.div className={styles.numbersCard} variants={fadeUp}>
-          <h3 className={styles.sectionTitle}>Нумерология</h3>
+          <h3 className={styles.sectionTitle}>{t('profile.numerology')}</h3>
           {[
-            { label: 'Число Жизненного Пути', value: profile.lifePathNumber },
-            profile.soulNumber ? { label: 'Число Души', value: profile.soulNumber } : null,
-            profile.destinyNumber ? { label: 'Число Судьбы', value: profile.destinyNumber } : null,
+            { label: t('profile.lifePathNum'), value: profile.lifePathNumber },
+            profile.soulNumber ? { label: t('profile.soulNum'), value: profile.soulNumber } : null,
+            profile.destinyNumber ? { label: t('profile.destinyNum'), value: profile.destinyNumber } : null,
           ].filter(Boolean).map((item, i) => (
             <motion.div
               key={item!.label}

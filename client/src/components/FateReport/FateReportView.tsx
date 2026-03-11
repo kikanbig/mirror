@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from '../../i18n';
 import styles from './FateReportView.module.scss';
 
 interface Chapter {
@@ -17,8 +18,11 @@ interface FateReportViewProps {
 }
 
 export default function FateReportView({ chapters, wordCount, birthDate, createdAt, onClose }: FateReportViewProps) {
+  const { t, lang } = useTranslation();
   const [activeChapter, setActiveChapter] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  const dateLocale = lang === 'es' ? 'es-ES' : lang === 'en' ? 'en-US' : 'ru-RU';
 
   const sorted = Object.values(chapters).sort((a, b) => a.id - b.id);
   const pageEstimate = Math.ceil(wordCount / 250);
@@ -31,19 +35,19 @@ export default function FateReportView({ chapters, wordCount, birthDate, created
     <div className={styles.report}>
       <div className={styles.header}>
         {onClose && (
-          <button className={styles.closeBtn} onClick={onClose}>&#8592; Назад</button>
+          <button className={styles.closeBtn} onClick={onClose}>{t('fr.back')}</button>
         )}
-        <h1 className={styles.mainTitle}>Полный отчёт Матрицы Судьбы</h1>
+        <h1 className={styles.mainTitle}>{t('fr.title')}</h1>
         <div className={styles.meta}>
-          <span>Дата рождения: {new Date(birthDate).toLocaleDateString('ru-RU')}</span>
-          <span>{wordCount.toLocaleString()} слов / ~{pageEstimate} страниц</span>
-          {createdAt && <span>Создан: {new Date(createdAt).toLocaleDateString('ru-RU')}</span>}
+          <span>{t('fr.birthDate')}: {new Date(birthDate).toLocaleDateString(dateLocale)}</span>
+          <span>{wordCount.toLocaleString()} {t('fr.words')} / ~{pageEstimate} {t('fr.pages')}</span>
+          {createdAt && <span>{t('fr.created')}: {new Date(createdAt).toLocaleDateString(dateLocale)}</span>}
         </div>
       </div>
 
       {/* Table of contents */}
       <div className={styles.toc}>
-        <h3 className={styles.tocTitle}>Содержание</h3>
+        <h3 className={styles.tocTitle}>{t('fr.toc')}</h3>
         <div className={styles.tocList}>
           {sorted.map((ch) => (
             <button

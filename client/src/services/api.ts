@@ -1,4 +1,10 @@
+import { useAppStore } from '../stores/appStore';
+
 const API_BASE = '/api';
+
+function getCurrentLang(): string {
+  try { return useAppStore.getState().lang || 'ru'; } catch { return 'ru'; }
+}
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
   const initData = window.Telegram?.WebApp?.initData || '';
@@ -22,8 +28,11 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 export const api = {
   get: <T>(path: string) => request<T>(path),
-  post: <T>(path: string, body?: unknown) =>
-    request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
+  post: <T>(path: string, body?: unknown) => {
+    const lang = getCurrentLang();
+    const bodyWithLang = body && typeof body === 'object' ? { ...body, lang } : body;
+    return request<T>(path, { method: 'POST', body: JSON.stringify(bodyWithLang) });
+  },
   put: <T>(path: string, body?: unknown) =>
     request<T>(path, { method: 'PUT', body: JSON.stringify(body) }),
 };

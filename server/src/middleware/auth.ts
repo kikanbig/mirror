@@ -1,7 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 import crypto from 'crypto';
 
-const BOT_TOKEN = process.env.BOT_TOKEN || '';
+export function getAllBotTokens(): { token: string; lang: string }[] {
+  const tokens: { token: string; lang: string }[] = [];
+
+  const ru = process.env.BOT_TOKEN_RU || process.env.BOT_TOKEN;
+  if (ru) tokens.push({ token: ru, lang: 'ru' });
+
+  const en = process.env.BOT_TOKEN_EN;
+  if (en) tokens.push({ token: en, lang: 'en' });
+
+  const es = process.env.BOT_TOKEN_ES;
+  if (es) tokens.push({ token: es, lang: 'es' });
+
+  return tokens;
+}
 
 export function validateTelegramData(initData: string, botToken: string): { valid: boolean; user?: any } {
   try {
@@ -37,6 +50,15 @@ export function validateTelegramData(initData: string, botToken: string): { vali
   }
 }
 
+function validateWithAnyToken(initData: string): { valid: boolean; user?: any; botToken?: string; lang?: string } {
+  const tokens = getAllBotTokens();
+  for (const { token, lang } of tokens) {
+    const result = validateTelegramData(initData, token);
+    if (result.valid) return { ...result, botToken: token, lang };
+  }
+  return { valid: false };
+}
+
 export interface AuthRequest extends Request {
   telegramUser?: {
     id: number;
@@ -44,6 +66,8 @@ export interface AuthRequest extends Request {
     last_name?: string;
     username?: string;
   };
+  botToken?: string;
+  botLang?: string;
 }
 
 export function authMiddleware(req: AuthRequest, res: Response, next: NextFunction): void {
@@ -51,6 +75,8 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
 
   if (process.env.NODE_ENV === 'development' && !initData) {
     req.telegramUser = { id: 12345, first_name: 'Dev' };
+    req.botToken = process.env.BOT_TOKEN_RU || process.env.BOT_TOKEN || '';
+    req.botLang = 'ru';
     next();
     return;
   }
@@ -60,12 +86,14 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
     return;
   }
 
-  const result = validateTelegramData(initData, BOT_TOKEN);
+  const result = validateWithAnyToken(initData);
   if (!result.valid || !result.user) {
     res.status(401).json({ message: 'Invalid init data' });
     return;
   }
 
   req.telegramUser = result.user;
+  req.botToken = result.botToken;
+  req.botLang = result.lang;
   next();
 }

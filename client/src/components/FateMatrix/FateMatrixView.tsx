@@ -8,6 +8,7 @@ import {
   SELF_REALIZATION_DESCRIPTIONS, COMFORT_ZONE_DESCRIPTIONS,
   CLAN_LINE_DESCRIPTIONS, YEAR_FORECAST_DESCRIPTIONS,
 } from '../../data/fate-matrix-descriptions';
+import { useTranslation } from '../../i18n';
 import styles from './FateMatrixView.module.scss';
 
 interface Props {
@@ -72,6 +73,7 @@ function EnergyCard({ num, context }: { num: number; context: string }) {
 }
 
 export default function FateMatrixView({ matrix }: Props) {
+  const { t } = useTranslation();
   const [activeNode, setActiveNode] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
   const accordionRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -161,10 +163,10 @@ export default function FateMatrixView({ matrix }: Props) {
   })() : null;
 
   const cornerLabels = [
-    { x: 4, y: cy - 5, text: 'Личность', anchor: 'start' },
-    { x: cx, y: 15, text: 'Общество', anchor: 'middle' },
-    { x: 396, y: cy - 5, text: 'Миссия', anchor: 'end' },
-    { x: cx, y: 395, text: 'Род / Карма', anchor: 'middle' },
+    { x: 4, y: cy - 5, text: t('fm.personality'), anchor: 'start' },
+    { x: cx, y: 15, text: t('fm.society'), anchor: 'middle' },
+    { x: 396, y: cy - 5, text: t('fm.mission'), anchor: 'end' },
+    { x: cx, y: 395, text: t('fm.clanKarma'), anchor: 'middle' },
   ];
 
   return (
@@ -278,6 +280,7 @@ function renderSection(id: string, m: FateMatrixResult) {
 // ── Section Components ──
 
 function TalentsSection({ m }: { m: FateMatrixResult }) {
+  const { t } = useTranslation();
   const talents = [
     { num: m.a, label: '1-й талант (от рождения)', sub: 'День рождения' },
     { num: m.b, label: '2-й талант (раскрывается к 20 годам)', sub: 'Месяц рождения' },
@@ -285,23 +288,23 @@ function TalentsSection({ m }: { m: FateMatrixResult }) {
   ];
   return (
     <div className={styles.talentList}>
-      {talents.map((t, i) => {
-        const desc = TALENT_DESCRIPTIONS[t.num];
+      {talents.map((tal, i) => {
+        const desc = TALENT_DESCRIPTIONS[tal.num];
         if (!desc) return null;
         return (
           <div key={i} className={styles.talentCard}>
             <div className={styles.talentHeader}>
-              <span className={styles.talentNum}>{t.num}</span>
+              <span className={styles.talentNum}>{tal.num}</span>
               <div>
-                <span className={styles.talentLabel}>{t.label}</span>
-                <span className={styles.talentSub}>{desc.name} · {t.sub}</span>
+                <span className={styles.talentLabel}>{tal.label}</span>
+                <span className={styles.talentSub}>{desc.name} · {tal.sub}</span>
               </div>
             </div>
             <div className={styles.talentBody}>
               <div className={styles.energyPlus}><span className={styles.plusIcon}>+</span><p>{desc.plus}</p></div>
               <div className={styles.energyMinus}><span className={styles.minusIcon}>−</span><p>{desc.minus}</p></div>
               <div className={styles.talentProf}>
-                <span className={styles.profLabel}>Профессии:</span>
+                <span className={styles.profLabel}>{t('fm.professions')}:</span>
                 <p>{desc.professions}</p>
               </div>
             </div>
@@ -373,10 +376,11 @@ function KarmicTailSection({ m }: { m: FateMatrixResult }) {
 }
 
 function ComfortSection({ m }: { m: FateMatrixResult }) {
+  const { t } = useTranslation();
   const desc = COMFORT_ZONE_DESCRIPTIONS[m.center];
   return (
     <div className={styles.comfortCard}>
-      <EnergyCard num={m.center} context="Точка комфорта" />
+      <EnergyCard num={m.center} context={t('fm.comfortZone')} />
       {desc && <p className={styles.comfortDesc}>{desc}</p>}
     </div>
   );
@@ -393,15 +397,16 @@ function SelfRealSection({ m }: { m: FateMatrixResult }) {
 }
 
 function HealthSection({ m }: { m: FateMatrixResult }) {
+  const { t } = useTranslation();
   const chakraColors = ['#9333EA', '#6366F1', '#06B6D4', '#22C55E', '#EAB308', '#F97316', '#EF4444'];
   return (
     <div className={styles.healthSection}>
       <div className={styles.chakraTable}>
         <div className={styles.chakraHeaderRow}>
-          <span>Чакра</span>
-          <span>Физика</span>
-          <span>Энергия</span>
-          <span>Эмоции</span>
+          <span>{t('fm.chakra')}</span>
+          <span>{t('fm.physical')}</span>
+          <span>{t('fm.energyLabel')}</span>
+          <span>{t('fm.emotions')}</span>
         </div>
         {m.chakras.map((ch, i) => (
           <div key={i} className={styles.chakraRow} style={{ borderLeftColor: chakraColors[i] }}>
@@ -412,14 +417,14 @@ function HealthSection({ m }: { m: FateMatrixResult }) {
           </div>
         ))}
         <div className={styles.chakraTotalRow}>
-          <span>ИТОГО</span>
+          <span>{t('fm.total')}</span>
           <span className={styles.chakraTotalVal}>{m.chakraTotals.physical}</span>
           <span className={styles.chakraTotalVal}>{m.chakraTotals.energy}</span>
           <span className={styles.chakraTotalVal}>{m.chakraTotals.emotions}</span>
         </div>
       </div>
 
-      <h4 className={styles.healthSubTitle}>Задачи по чакрам</h4>
+      <h4 className={styles.healthSubTitle}>{t('fm.chakraTasks')}</h4>
       {m.chakras.map((ch, i) => {
         const desc = CHAKRA_TASK_DESCRIPTIONS[ch.physical];
         if (!desc) return null;
@@ -427,9 +432,9 @@ function HealthSection({ m }: { m: FateMatrixResult }) {
           <div key={i} className={styles.chakraTaskCard} style={{ borderLeftColor: chakraColors[i] }}>
             <span className={styles.chakraTaskName}>{ch.nameRu} ({ch.physical}-{ch.energy}-{ch.emotions})</span>
             <div className={styles.chakraTaskBody}>
-              <p><b>Физика:</b> {desc.physical}</p>
-              <p><b>Энергия:</b> {desc.energy}</p>
-              <p><b>Эмоции:</b> {desc.emotions}</p>
+              <p><b>{t('fm.physical')}:</b> {desc.physical}</p>
+              <p><b>{t('fm.energyLabel')}:</b> {desc.energy}</p>
+              <p><b>{t('fm.emotions')}:</b> {desc.emotions}</p>
             </div>
           </div>
         );
@@ -439,6 +444,7 @@ function HealthSection({ m }: { m: FateMatrixResult }) {
 }
 
 function RelationshipsSection({ m }: { m: FateMatrixResult }) {
+  const { t } = useTranslation();
   const desc = RELATIONSHIP_DESCRIPTIONS[m.partnerTasks];
   if (!desc) return null;
   return (
@@ -446,11 +452,11 @@ function RelationshipsSection({ m }: { m: FateMatrixResult }) {
       <EnergyCard num={m.partnerTasks} context="Энергия отношений" />
       <div className={styles.relGrid}>
         <div className={styles.relItem}>
-          <span className={styles.relItemLabel}>Задача в отношениях</span>
+          <span className={styles.relItemLabel}>{t('fm.relTask')}</span>
           <p>{desc.task}</p>
         </div>
         <div className={styles.relItem}>
-          <span className={styles.relItemLabel}>Тип партнёра</span>
+          <span className={styles.relItemLabel}>{t('fm.partnerType')}</span>
           <p>{desc.partnerType}</p>
         </div>
         <div className={styles.relItem}>
@@ -467,6 +473,7 @@ function RelationshipsSection({ m }: { m: FateMatrixResult }) {
 }
 
 function MoneySection({ m }: { m: FateMatrixResult }) {
+  const { t } = useTranslation();
   const desc = MONEY_DESCRIPTIONS[m.moneyProfession];
   if (!desc) return null;
   return (
@@ -474,7 +481,7 @@ function MoneySection({ m }: { m: FateMatrixResult }) {
       <EnergyCard num={m.moneyProfession} context="Денежная энергия" />
       <div className={styles.moneyGrid}>
         <div className={styles.moneyItem}>
-          <span className={styles.moneyItemLabel}>Профессии для заработка</span>
+          <span className={styles.moneyItemLabel}>{t('fm.moneyProfessions')}</span>
           <p>{desc.professions}</p>
         </div>
         <div className={styles.moneyItem}>
@@ -491,6 +498,7 @@ function MoneySection({ m }: { m: FateMatrixResult }) {
 }
 
 function ClanSection({ m }: { m: FateMatrixResult }) {
+  const { t } = useTranslation();
   const desc = CLAN_LINE_DESCRIPTIONS[m.clanStrength];
   if (!desc) return null;
   return (
@@ -498,11 +506,11 @@ function ClanSection({ m }: { m: FateMatrixResult }) {
       <EnergyCard num={m.clanStrength} context="Энергия рода" />
       <div className={styles.clanGrid}>
         <div className={styles.clanItem}>
-          <span className={styles.clanItemLabel}>Линия отца</span>
+          <span className={styles.clanItemLabel}>{t('fm.fatherLine')}</span>
           <p>{desc.father}</p>
         </div>
         <div className={styles.clanItem}>
-          <span className={styles.clanItemLabel}>Линия матери</span>
+          <span className={styles.clanItemLabel}>{t('fm.motherLine')}</span>
           <p>{desc.mother}</p>
         </div>
         <div className={styles.clanItem}>
@@ -519,11 +527,12 @@ function ClanSection({ m }: { m: FateMatrixResult }) {
 }
 
 function ProgramsSection({ m }: { m: FateMatrixResult }) {
+  const { t } = useTranslation();
   if (m.programs.length === 0) {
     return (
       <div className={styles.noProgramsCard}>
         <span className={styles.noProgramsIcon}>✓</span>
-        <p>Кармических программ не обнаружено. Это хороший знак — значительных блокировок в вашей матрице нет.</p>
+        <p>{t('fm.noKarmic')}</p>
       </div>
     );
   }

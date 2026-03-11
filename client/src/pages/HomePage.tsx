@@ -4,9 +4,8 @@ import MoonPhase from '../components/MoonPhase/MoonPhase';
 import { useUserStore } from '../stores/userStore';
 import { useAppStore } from '../stores/appStore';
 import { getDailyAffirmation } from '../data/affirmations';
+import { useTranslation } from '../i18n';
 import styles from './HomePage.module.scss';
-
-const LEVELS = ['Неофит', 'Ученик', 'Адепт', 'Мистик', 'Оракул', 'Провидец', 'Мастер Арканов', 'Хранитель Тайн', 'Архимаг', 'Просветлённый'];
 
 const stagger = {
   animate: { transition: { staggerChildren: 0.1 } },
@@ -17,20 +16,21 @@ const fadeUp = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] } },
 };
 
-const featureCards = [
-  { id: 'runes', icon: 'ᚱ', title: 'Руны', subtitle: 'Древняя мудрость Футарка' },
-  { id: 'numerology', icon: '∞', title: 'Нумерология', subtitle: 'Числа Судьбы' },
-  { id: 'lunar', icon: '🌙', title: 'Луна', subtitle: 'Лунный Календарь' },
-];
-
 export default function HomePage() {
   const { profile } = useUserStore();
   const { setActiveSubPage } = useAppStore();
+  const { t, lang } = useTranslation();
   const userId = String(profile.telegramId || 'guest');
-  const affirmation = getDailyAffirmation(userId);
-  const levelName = LEVELS[Math.min(profile.level - 1, LEVELS.length - 1)];
+  const affirmation = getDailyAffirmation(userId, undefined, lang);
+  const levelName = t(`level.${Math.min(profile.level, 10)}`);
 
-  const greetingName = profile.firstName || 'Путник';
+  const greetingName = profile.firstName || t('home.guest');
+
+  const featureCards = [
+    { id: 'runes', icon: 'ᚱ', title: t('home.runes'), subtitle: t('home.runes.sub') },
+    { id: 'numerology', icon: '∞', title: t('home.numerology'), subtitle: t('home.numerology.sub') },
+    { id: 'lunar', icon: '🌙', title: t('home.lunar'), subtitle: t('home.lunar.sub') },
+  ];
 
   return (
     <motion.div
@@ -55,10 +55,10 @@ export default function HomePage() {
             ))}
             <span className={styles.greetingComma}>,</span>
           </h1>
-          <p className={styles.subtitle}>Числа. Карты. Ты.</p>
+          <p className={styles.subtitle}>{t('home.slogan')}</p>
         </div>
         <div className={styles.level}>
-          <span className={styles.levelBadge}>Ур. {profile.level}</span>
+          <span className={styles.levelBadge}>{t('home.level', { level: profile.level })}</span>
           <span className={styles.levelName}>{levelName}</span>
         </div>
       </motion.header>
@@ -78,13 +78,13 @@ export default function HomePage() {
             transition={{ duration: 1.5, repeat: Infinity }}
           />
           <span>
-            Серия: {profile.streak} {profile.streak === 1 ? 'день' : profile.streak < 5 ? 'дня' : 'дней'}
+            {t('home.streak', { count: profile.streak, days: profile.streak === 1 ? t('home.streak.1') : profile.streak < 5 ? t('home.streak.2-4') : t('home.streak.5+') })}
           </span>
         </motion.div>
       )}
 
       <motion.div className={styles.affirmation} variants={fadeUp}>
-        <span className={styles.affirmationLabel}>Послание дня</span>
+        <span className={styles.affirmationLabel}>{t('home.affirmation')}</span>
         <p className={styles.affirmationText}>&#171;{affirmation.text}&#187;</p>
       </motion.div>
 

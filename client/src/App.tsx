@@ -14,6 +14,7 @@ import NumerologyPage from './pages/NumerologyPage';
 import LunarPage from './pages/LunarPage';
 import { useCallback, useEffect, useState } from 'react';
 import { useUserStore } from './stores/userStore';
+import { detectLanguage } from './i18n';
 
 const pageVariants = {
   initial: { opacity: 0, scale: 0.96, filter: 'blur(4px)' },
@@ -70,7 +71,12 @@ function PageRouter() {
 export default function App() {
   const { user, isReady, initData } = useTelegram();
   const { setProfile, setPremiumStatus } = useUserStore();
+  const { setLang } = useAppStore();
   const [splashDone, setSplashDone] = useState(false);
+
+  useEffect(() => {
+    setLang(detectLanguage());
+  }, [setLang]);
 
   useEffect(() => {
     if (user) {

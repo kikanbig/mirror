@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { getMoonPhase } from '../../data/moon-phases';
+import { useTranslation } from '../../i18n';
 import styles from './MoonPhase.module.scss';
 
 function MoonDisc({ illumination, isWaxing }: { illumination: number; isWaxing: boolean }) {
@@ -22,6 +23,7 @@ function MoonDisc({ illumination, isWaxing }: { illumination: number; isWaxing: 
 
 export default function MoonPhase() {
   const moon = useMemo(() => getMoonPhase(), []);
+  const { t } = useTranslation();
 
   return (
     <motion.div
@@ -41,10 +43,10 @@ export default function MoonPhase() {
       <div className={styles.info}>
         <h3 className={styles.phase}>{moon.phaseRu}</h3>
         <p className={styles.detail}>
-          Освещённость: {Math.round(moon.illumination * 100)}%
+          {t('moon.illumination', { pct: Math.round(moon.illumination * 100) })}
         </p>
         <p className={styles.detail}>
-          Возраст: {Math.round(moon.age)} дн. &#183; {moon.isWaxing ? 'Растущая' : 'Убывающая'}
+          {t('moon.age', { days: Math.round(moon.age) })} &#183; {moon.isWaxing ? t('moon.waxing') : t('moon.waning')}
         </p>
       </div>
     </motion.div>

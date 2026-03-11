@@ -14,6 +14,7 @@ import {
   type PinnacleInfo, type ChallengeInfo, type KarmicDebtInfo, type PsychomatrixResult,
   type FateMatrixResult,
 } from '../data/numerology';
+import { useTranslation } from '../i18n';
 import { useAppStore } from '../stores/appStore';
 import { useUserStore } from '../stores/userStore';
 import FateMatrixView from '../components/FateMatrix/FateMatrixView';
@@ -67,6 +68,7 @@ export default function NumerologyPage() {
   const [result, setResult] = useState<FullResult | null>(null);
   const [detailNum, setDetailNum] = useState<number | null>(null);
   const { premiumStatus } = useUserStore();
+  const { t } = useTranslation();
   const [partnerBirth, setPartnerBirth] = useState('');
   const [compatResult, setCompatResult] = useState<ReturnType<typeof calculateCompatibility> | null>(null);
   const [compatNums, setCompatNums] = useState<{ my: number; partner: number } | null>(null);
@@ -118,18 +120,18 @@ export default function NumerologyPage() {
   return (
     <motion.div className={styles.page} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
       <div className={styles.topBar}>
-        <button className={styles.backBtn} onClick={() => setActiveSubPage(null)}>&#8592; Назад</button>
-        <h1 className={styles.title}>Нумерология</h1>
+        <button className={styles.backBtn} onClick={() => setActiveSubPage(null)}>{t('num.back')}</button>
+        <h1 className={styles.title}>{t('num.title')}</h1>
       </div>
 
       {/* Input Form */}
       <div className={styles.form}>
-        <label className={styles.fieldLabel}>Дата рождения</label>
+        <label className={styles.fieldLabel}>{t('num.birthDate')}</label>
         <input type="date" className={styles.input} value={birthStr} onChange={(e) => setBirthStr(e.target.value)} />
-        <label className={styles.fieldLabel}>Полное имя (по-русски, для глубокого анализа)</label>
-        <input type="text" className={styles.input} placeholder="Фамилия Имя Отчество" value={fullName} onChange={(e) => setFullName(e.target.value)} />
+        <label className={styles.fieldLabel}>{t('num.fullName')}</label>
+        <input type="text" className={styles.input} placeholder={t('num.namePlaceholder')} value={fullName} onChange={(e) => setFullName(e.target.value)} />
         <motion.button className={styles.calcBtn} onClick={handleCalculate} whileTap={{ scale: 0.96 }}>
-          Рассчитать полный портрет
+          {t('num.calculate')}
         </motion.button>
       </div>
 
@@ -138,24 +140,24 @@ export default function NumerologyPage() {
           <motion.div className={styles.results} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
 
             {/* Section 1: Core Numbers */}
-            <h2 className={styles.sectionTitle}>Основные Числа</h2>
+            <h2 className={styles.sectionTitle}>{t('num.coreNumbers')}</h2>
             <div className={styles.numGrid}>
-              <NumberCard label="Жизненный Путь" value={result.lifePath} color="#D4AF37" delay={0} onTap={() => setDetailNum(result.lifePath)} />
-              <NumberCard label="День Рождения" value={result.birthday} color="#F59E0B" delay={0.05} onTap={() => setDetailNum(result.birthday)} />
-              {result.soul !== null && <NumberCard label="Число Души" value={result.soul} color="#8B5CF6" delay={0.1} onTap={() => setDetailNum(result.soul!)} />}
-              {result.destiny !== null && <NumberCard label="Число Судьбы" value={result.destiny} color="#EC4899" delay={0.15} onTap={() => setDetailNum(result.destiny!)} />}
-              {result.personality !== null && <NumberCard label="Личность" value={result.personality} color="#06B6D4" delay={0.2} onTap={() => setDetailNum(result.personality!)} />}
-              {result.maturity !== null && <NumberCard label="Зрелость" value={result.maturity} color="#10B981" delay={0.25} onTap={() => setDetailNum(result.maturity!)} />}
+              <NumberCard label={t('num.lifePath')} value={result.lifePath} color="#D4AF37" delay={0} onTap={() => setDetailNum(result.lifePath)} />
+              <NumberCard label={t('num.birthday')} value={result.birthday} color="#F59E0B" delay={0.05} onTap={() => setDetailNum(result.birthday)} />
+              {result.soul !== null && <NumberCard label={t('num.soul')} value={result.soul} color="#8B5CF6" delay={0.1} onTap={() => setDetailNum(result.soul!)} />}
+              {result.destiny !== null && <NumberCard label={t('num.destiny')} value={result.destiny} color="#EC4899" delay={0.15} onTap={() => setDetailNum(result.destiny!)} />}
+              {result.personality !== null && <NumberCard label={t('num.personality')} value={result.personality} color="#06B6D4" delay={0.2} onTap={() => setDetailNum(result.personality!)} />}
+              {result.maturity !== null && <NumberCard label={t('num.maturity')} value={result.maturity} color="#10B981" delay={0.25} onTap={() => setDetailNum(result.maturity!)} />}
             </div>
 
             {/* Section 2: Tarot Arcana */}
             {arcana && (
               <div className={styles.arcanaSection}>
-                <h2 className={styles.sectionTitle}>Ваш Аркан Таро</h2>
+                <h2 className={styles.sectionTitle}>{t('num.arcana')}</h2>
                 <div className={styles.arcanaCard}>
                   <img src={arcana.image} alt={arcana.nameRu} className={styles.arcanaImg} />
                   <div className={styles.arcanaInfo}>
-                    <span className={styles.arcanaName}>Аркан {arcana.number} — {arcana.nameRu}</span>
+                    <span className={styles.arcanaName}>{t('num.arcanaLabel', { num: arcana.number, name: arcana.nameRu })}</span>
                     <p className={styles.arcanaDesc}>{arcana.meaning}</p>
                   </div>
                 </div>
@@ -165,14 +167,14 @@ export default function NumerologyPage() {
             {/* Premium gate — one block for all premium sections */}
             {premiumStatus.tier !== 'premium' ? (
               <>
-                <h2 className={styles.sectionTitle}>Матрица Судьбы</h2>
-                <PaywallOverlay feature="Матрица Судьбы, Психоматрица, Вершины и Испытания" />
+                <h2 className={styles.sectionTitle}>{t('num.fateMatrix')}</h2>
+                <PaywallOverlay feature={t('num.fateMatrix')} />
                 <FateReportGenerator birthDate={birthStr} />
               </>
             ) : (
               <>
                 {/* Fate Matrix — full product */}
-                <h2 className={styles.sectionTitle}>Матрица Судьбы</h2>
+                <h2 className={styles.sectionTitle}>{t('num.fateMatrix')}</h2>
                 <FateMatrixView matrix={result.fateMatrix} />
 
                 <FateReportGenerator birthDate={birthStr} />
@@ -180,7 +182,7 @@ export default function NumerologyPage() {
                 {/* Karmic Debts */}
                 {result.karmicDebts.length > 0 && (
                   <div className={styles.karmicSection}>
-                    <h2 className={styles.sectionTitle}>Кармические Долги</h2>
+                    <h2 className={styles.sectionTitle}>{t('num.karmicDebts')}</h2>
                     {result.karmicDebts.map((kd) => {
                       const desc = KARMIC_DEBT_DESCRIPTIONS[kd.number];
                       return desc ? (
@@ -188,7 +190,7 @@ export default function NumerologyPage() {
                           <span className={styles.karmicNumber}>{kd.number}</span>
                           <div className={styles.karmicInfo}>
                             <span className={styles.karmicTitle}>{desc.title}</span>
-                            <span className={styles.karmicSource}>Найден в: {kd.source}</span>
+                            <span className={styles.karmicSource}>{t('num.foundIn')}: {kd.source}</span>
                             <p className={styles.karmicDesc}>{desc.description}</p>
                             <p className={styles.karmicLesson}>{desc.lesson}</p>
                           </div>
@@ -200,11 +202,11 @@ export default function NumerologyPage() {
 
                 {/* Psychomatrix */}
                 <div className={styles.psychoSection}>
-                  <h2 className={styles.sectionTitle}>Психоматрица (Квадрат Пифагора)</h2>
+                  <h2 className={styles.sectionTitle}>{t('num.psychomatrix')}</h2>
                   <div className={styles.psychoWorking}>
-                    <div>Рабочие числа: <strong>{result.psychomatrix.workingNumbers.join(' · ')}</strong></div>
-                    <div className={styles.psychoDigits}>Все цифры: {result.psychomatrix.allDigits.split('').join(' ')}</div>
-                    <div className={styles.psychoTotal}>Общее количество цифр: {result.psychomatrix.allDigits.length}</div>
+                    <div>{t('num.workingNumbers')}: <strong>{result.psychomatrix.workingNumbers.join(' · ')}</strong></div>
+                    <div className={styles.psychoDigits}>{t('num.allDigits')}: {result.psychomatrix.allDigits.split('').join(' ')}</div>
+                    <div className={styles.psychoTotal}>{t('num.totalDigits')}: {result.psychomatrix.allDigits.length}</div>
                   </div>
                   <div className={styles.psychoGrid}>
                     {[1,4,7,2,5,8,3,6,9].map((d) => (
@@ -215,7 +217,7 @@ export default function NumerologyPage() {
                     ))}
                   </div>
 
-                  <h3 className={styles.subTitle}>Расшифровка ячеек</h3>
+                  <h3 className={styles.subTitle}>{t('num.cellDecode')}</h3>
                   {[1,2,3,4,5,6,7,8,9].map((d) => {
                     const count = result.psychomatrix.cells[d];
                     const desc = getPsychomatrixCellDescription(d, count);
@@ -223,14 +225,14 @@ export default function NumerologyPage() {
                     return (
                       <div key={d} className={styles.psychoCellDesc}>
                         <span className={styles.psychoCellLabel}>
-                          {PSYCHOMATRIX_CELL_NAMES[d]} — {count > 0 ? String(d).repeat(count) : 'нет'}
+                          {PSYCHOMATRIX_CELL_NAMES[d]} — {count > 0 ? String(d).repeat(count) : t('num.noCell')}
                         </span>
                         <p>{desc}</p>
                       </div>
                     );
                   })}
 
-                  <h3 className={styles.subTitle}>Линии матрицы</h3>
+                  <h3 className={styles.subTitle}>{t('num.matrixLines')}</h3>
                   {Object.entries(result.psychomatrix.lines).map(([key, val]) => (
                     <div key={key} className={styles.lineCard}>
                       <div className={styles.lineHeader}>
@@ -244,21 +246,21 @@ export default function NumerologyPage() {
 
                 {/* Pinnacles & Challenges */}
                 <div className={styles.timelineSection}>
-                  <h2 className={styles.sectionTitle}>Вершины Жизни</h2>
+                  <h2 className={styles.sectionTitle}>{t('num.pinnacles')}</h2>
                   <div className={styles.timeline}>
                     {result.pinnacles.map((p, i) => (
                       <div key={i} className={styles.timelineItem}>
                         <span className={styles.timelineNum}>{p.number}</span>
                         <div className={styles.timelineInfo}>
                           <span className={styles.timelineLabel}>{p.label}</span>
-                          <span className={styles.timelineAge}>{p.fromAge}–{p.toAge ?? '...'} лет</span>
+                          <span className={styles.timelineAge}>{p.fromAge}–{p.toAge ?? '...'} {t('num.years')}</span>
                           <p className={styles.timelineDesc}>{PINNACLE_DESCRIPTIONS[p.number] || ''}</p>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  <h2 className={styles.sectionTitle}>Числа Испытания</h2>
+                  <h2 className={styles.sectionTitle}>{t('num.challenges')}</h2>
                   <div className={styles.timeline}>
                     {result.challenges.map((c, i) => (
                       <div key={i} className={styles.timelineItem}>
@@ -275,27 +277,27 @@ export default function NumerologyPage() {
             )}
 
             {/* Section 6: Personal Cycles */}
-            <h2 className={styles.sectionTitle}>Персональные Циклы</h2>
+            <h2 className={styles.sectionTitle}>{t('num.personalCycles')}</h2>
             <div className={styles.cyclesRow}>
               <div className={styles.cycleCard}>
                 <span className={styles.cycleValue}>{result.personalYear}</span>
-                <span className={styles.cycleLabel}>Персональный Год</span>
+                <span className={styles.cycleLabel}>{t('num.personalYear')}</span>
               </div>
               <div className={styles.cycleCard}>
                 <span className={styles.cycleValue}>{result.personalMonth}</span>
-                <span className={styles.cycleLabel}>Месяц</span>
+                <span className={styles.cycleLabel}>{t('num.personalMonth')}</span>
               </div>
               <div className={styles.cycleCard}>
                 <span className={styles.cycleValue}>{result.personalDay}</span>
-                <span className={styles.cycleLabel}>День</span>
+                <span className={styles.cycleLabel}>{t('num.personalDay')}</span>
               </div>
             </div>
 
             {/* Section 7: Karmic Lessons */}
             {result.karmicLessons.length > 0 && (
               <div className={styles.lessonsSection}>
-                <h2 className={styles.sectionTitle}>Кармические Уроки</h2>
-                <p className={styles.lessonsHint}>Цифры, отсутствующие в вашем имени — ваши уроки для проработки</p>
+                <h2 className={styles.sectionTitle}>{t('num.karmicLessons')}</h2>
+                <p className={styles.lessonsHint}>{t('num.karmicLessonsHint')}</p>
                 {result.karmicLessons.map((n) => {
                   const desc = KARMIC_LESSON_DESCRIPTIONS[n];
                   return desc ? (
@@ -322,29 +324,29 @@ export default function NumerologyPage() {
             <h3 className={styles.detailTitle}>{detail.name} — {detail.title}</h3>
             <p className={styles.detailDesc}>{detail.description}</p>
             <div className={styles.detailMeta}>
-              <span className={styles.metaItem}>Цвет: {detail.color}</span>
-              <span className={styles.metaItem}>Камень: {detail.stone}</span>
-              <span className={styles.metaItem}>Планета: {detail.planet}</span>
+              <span className={styles.metaItem}>{t('num.color')}: {detail.color}</span>
+              <span className={styles.metaItem}>{t('num.stone')}: {detail.stone}</span>
+              <span className={styles.metaItem}>{t('num.planet')}: {detail.planet}</span>
             </div>
-            <h4 className={styles.detailSub}>Сильные стороны</h4>
+            <h4 className={styles.detailSub}>{t('num.strengths')}</h4>
             <ul className={styles.detailList}>{detail.strengths.map((s, i) => <li key={i}>{s}</li>)}</ul>
-            <h4 className={styles.detailSub}>Слабые стороны</h4>
+            <h4 className={styles.detailSub}>{t('num.weaknesses')}</h4>
             <ul className={styles.detailList}>{detail.weaknesses.map((w, i) => <li key={i}>{w}</li>)}</ul>
-            <h4 className={styles.detailSub}>Рекомендации</h4>
+            <h4 className={styles.detailSub}>{t('num.recommendations')}</h4>
             <p className={styles.detailDesc}>{detail.recommendations}</p>
-            <h4 className={styles.detailSub}>Знаменитости</h4>
+            <h4 className={styles.detailSub}>{t('num.celebrities')}</h4>
             <p className={styles.detailDesc}>{detail.celebrities.join(', ')}</p>
-            <button className={styles.closeDetail} onClick={() => setDetailNum(null)}>Закрыть</button>
+            <button className={styles.closeDetail} onClick={() => setDetailNum(null)}>{t('num.close')}</button>
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Section 8: Compatibility */}
       <div className={styles.compatSection}>
-        <h2 className={styles.sectionTitle}>Совместимость</h2>
-        <label className={styles.fieldLabel}>Дата рождения партнёра</label>
+        <h2 className={styles.sectionTitle}>{t('num.compatibility')}</h2>
+        <label className={styles.fieldLabel}>{t('num.partnerBirth')}</label>
         <input type="date" className={styles.input} value={partnerBirth} onChange={(e) => setPartnerBirth(e.target.value)} />
-        <motion.button className={styles.calcBtn} onClick={handleCompatibility} whileTap={{ scale: 0.96 }}>Проверить совместимость</motion.button>
+        <motion.button className={styles.calcBtn} onClick={handleCompatibility} whileTap={{ scale: 0.96 }}>{t('num.checkCompat')}</motion.button>
       </div>
 
       <AnimatePresence>
@@ -361,11 +363,11 @@ export default function NumerologyPage() {
               <span className={styles.compatNums}>{compatNums.my} + {compatNums.partner}</span>
             </div>
             <p className={styles.compatDesc}>{compatResult.description}</p>
-            <h4 className={styles.detailSub}>Сильные стороны</h4>
+            <h4 className={styles.detailSub}>{t('num.strengths')}</h4>
             <ul className={styles.detailList}>{compatResult.strengths.map((s, i) => <li key={i}>{s}</li>)}</ul>
-            <h4 className={styles.detailSub}>Вызовы</h4>
+            <h4 className={styles.detailSub}>{t('num.challengesLabel')}</h4>
             <ul className={styles.detailList}>{compatResult.challenges.map((c, i) => <li key={i}>{c}</li>)}</ul>
-            <h4 className={styles.detailSub}>Совет</h4>
+            <h4 className={styles.detailSub}>{t('num.advice')}</h4>
             <p className={styles.detailDesc}>{compatResult.advice}</p>
           </motion.div>
         )}

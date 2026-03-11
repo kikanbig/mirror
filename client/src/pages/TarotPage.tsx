@@ -11,6 +11,7 @@ import CardReveal from '../components/CardReveal/CardReveal';
 import CardZoom from '../components/CardZoom/CardZoom';
 import { PaywallOverlay } from '../components/Paywall/Paywall';
 import { useHaptic } from '../hooks/useHaptic';
+import { useTranslation } from '../i18n';
 import { api } from '../services/api';
 import styles from './TarotPage.module.scss';
 
@@ -34,6 +35,7 @@ export default function TarotPage() {
   const { profile, addExperience, premiumStatus } = useUserStore();
   const { addReading } = useHistoryStore();
   const { impact, notification } = useHaptic();
+  const { t } = useTranslation();
   const [showPaywall, setShowPaywall] = useState(false);
 
   const spread = spreads.find((s) => s.id === spreadType);
@@ -207,7 +209,7 @@ export default function TarotPage() {
 
   return (
     <motion.div className={styles.page} initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-      <h1 className={styles.title}>Гадание на Таро</h1>
+      <h1 className={styles.title}>{t('tarot.title')}</h1>
 
       <AnimatePresence mode="wait">
         {/* CHOOSE SPREAD */}
@@ -220,7 +222,7 @@ export default function TarotPage() {
             exit={{ opacity: 0 }}
             variants={staggerContainer}
           >
-            <p className={styles.subtitle}>Выберите расклад</p>
+            <p className={styles.subtitle}>{t('tarot.choose')}</p>
             <motion.div className={styles.spreadGrid} variants={staggerContainer} initial="initial" animate="animate">
               {spreads.map((s) => (
                 <motion.button
@@ -233,7 +235,7 @@ export default function TarotPage() {
                   <img className={styles.spreadIcon} src={s.icon} alt={s.name} />
                   <span className={styles.spreadName}>{s.name}</span>
                   <span className={styles.spreadCount}>
-                    {s.cardCount} {s.cardCount === 1 ? 'карта' : s.cardCount < 5 ? 'карты' : 'карт'}
+                    {s.cardCount} {s.cardCount === 1 ? t('tarot.card.1') : s.cardCount < 5 ? t('tarot.card.2-4') : t('tarot.card.5+')}
                   </span>
                   {s.isPremium && <span className={styles.premiumBadge}>PRO</span>}
                 </motion.button>
@@ -256,7 +258,7 @@ export default function TarotPage() {
 
             {spread.category === 'general' ? (
               <div className={styles.areaSelect}>
-                <p className={styles.areaLabel}>Область вопроса:</p>
+                <p className={styles.areaLabel}>{t('tarot.area')}</p>
                 <div className={styles.areaOptions}>
                   {(['general', 'love', 'career', 'health'] as const).map((a) => (
                     <button
@@ -264,7 +266,7 @@ export default function TarotPage() {
                       className={`${styles.areaBtn} ${area === a ? styles.areaActive : ''}`}
                       onClick={() => { setArea(a); impact('light'); }}
                     >
-                      {a === 'general' ? 'Общее' : a === 'love' ? 'Любовь' : a === 'career' ? 'Карьера' : 'Здоровье'}
+                      {t(`tarot.area.${a}`)}
                     </button>
                   ))}
                 </div>
@@ -272,14 +274,14 @@ export default function TarotPage() {
             ) : (
               <div className={styles.areaFixed}>
                 <span className={styles.areaFixedText}>
-                  {spread.category === 'love' ? 'Любовь и отношения' : spread.category === 'career' ? 'Карьера и финансы' : 'Общее'}
+                  {spread.category === 'love' ? t('tarot.area.love_rel') : spread.category === 'career' ? t('tarot.area.career_fin') : t('tarot.area.general')}
                 </span>
               </div>
             )}
 
             <textarea
               className={styles.questionInput}
-              placeholder="Задайте вопрос (необязательно)..."
+              placeholder={t('tarot.question')}
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               rows={3}
@@ -291,7 +293,7 @@ export default function TarotPage() {
               onClick={handleStartDraw}
               whileHover={{ boxShadow: '0 0 30px rgba(212,175,55,0.4)' }}
             >
-              Начать расклад
+              {t('tarot.start')}
             </motion.button>
           </motion.div>
         )}
@@ -305,7 +307,7 @@ export default function TarotPage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <p className={styles.shuffleText}>Перетасовка колоды...</p>
+            <p className={styles.shuffleText}>{t('tarot.shuffling')}</p>
             <div className={styles.shuffleDeck}>
               {[0, 1, 2, 3, 4].map((i) => (
                 <motion.div
@@ -343,7 +345,7 @@ export default function TarotPage() {
             exit={{ opacity: 0 }}
           >
             <p className={styles.drawProgress}>
-              {spread.positions[drawIndex]?.name || 'Готово'} — {drawnCards.length} / {spread.cardCount}
+              {spread.positions[drawIndex]?.name || t('tarot.done')} — {drawnCards.length} / {spread.cardCount}
             </p>
 
             {/* Drawn cards area */}
@@ -363,7 +365,7 @@ export default function TarotPage() {
             {/* Fan of cards to choose from */}
             {drawIndex < spread.cardCount && (
               <div ref={fanRef} className={styles.fanContainer}>
-                <p className={styles.fanHint}>Выберите карту</p>
+                <p className={styles.fanHint}>{t('tarot.pick')}</p>
                 <div className={styles.fan}>
                   {fanCards.map((cardId, i) => {
                     const total = fanCards.length;
@@ -401,7 +403,7 @@ export default function TarotPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h2 className={styles.resultTitle}>Ваш расклад</h2>
+            <h2 className={styles.resultTitle}>{t('tarot.result')}</h2>
 
             <div className={styles.resultCards}>
               {drawnCards.map((dc, i) => (
@@ -422,7 +424,7 @@ export default function TarotPage() {
                     <div className={styles.resultCardBody}>
                       <span className={styles.resultPos}>{dc.positionName}</span>
                       <span className={styles.resultName}>
-                        {dc.card.nameRu} {dc.reversed ? '(перевёрнута)' : ''}
+                        {dc.card.nameRu} {dc.reversed ? `(${t('tarot.reversed')})` : ''}
                       </span>
                       <p className={styles.resultMeaning}>
                         {dc.reversed ? dc.card.meanings.reversed : dc.card.meanings.upright}
@@ -434,7 +436,7 @@ export default function TarotPage() {
             </div>
 
             <div className={styles.aiSection}>
-              <h3 className={styles.aiTitle}>Интерпретация</h3>
+              <h3 className={styles.aiTitle}>{t('tarot.interpretation')}</h3>
               {isInterpreting ? (
                 <div className={styles.aiLoading}>
                   <motion.div
@@ -446,7 +448,7 @@ export default function TarotPage() {
                     <span className={styles.thinkingDot} />
                     <span className={styles.thinkingDot} />
                   </motion.div>
-                  <p>Оракул читает карты...</p>
+                  <p>{t('tarot.reading')}</p>
                 </div>
               ) : interpretation ? (
                 <motion.div
@@ -476,7 +478,7 @@ export default function TarotPage() {
               whileTap={{ scale: 0.96 }}
               onClick={handleReset}
             >
-              Новый расклад
+              {t('tarot.newSpread')}
             </motion.button>
           </motion.div>
         )}
@@ -508,7 +510,7 @@ export default function TarotPage() {
               exit={{ scale: 0.9, y: 20 }}
             >
               <PaywallOverlay
-                feature="премиум расклады"
+                feature={t('pay.features.allSpreads')}
                 onClose={() => setShowPaywall(false)}
                 onSuccess={() => setShowPaywall(false)}
               />

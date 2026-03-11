@@ -43,7 +43,7 @@ router.post('/create-invoice', authMiddleware, async (req: AuthRequest, res) => 
       return;
     }
 
-    const BOT_TOKEN = process.env.BOT_TOKEN;
+    const BOT_TOKEN = req.botToken || process.env.BOT_TOKEN_RU || process.env.BOT_TOKEN;
     if (!BOT_TOKEN) {
       res.status(500).json({ message: 'Bot not configured' });
       return;

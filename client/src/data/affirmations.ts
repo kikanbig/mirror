@@ -86,7 +86,7 @@ export function getRandomAffirmation(category?: string): Affirmation {
   return pool[Math.floor(Math.random() * pool.length)];
 }
 
-export function getDailyAffirmation(userId: string, date?: Date): Affirmation {
+export function getDailyAffirmation(userId: string, date?: Date, lang?: string): Affirmation {
   const now = date ?? new Date();
   const daysSinceEpoch = Math.floor(now.getTime() / (1000 * 60 * 60 * 24));
 
@@ -96,5 +96,13 @@ export function getDailyAffirmation(userId: string, date?: Date): Affirmation {
   }
 
   const index = Math.abs((hash + daysSinceEpoch) % affirmations.length);
-  return affirmations[index];
+  const aff = affirmations[index];
+
+  if (lang && lang !== 'ru') {
+    const { localizeAffirmation } = require('../i18n/data');
+    const localizedText = localizeAffirmation(aff.text, index, lang as any);
+    return { ...aff, text: localizedText };
+  }
+
+  return aff;
 }

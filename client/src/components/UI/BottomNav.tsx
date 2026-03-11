@@ -1,20 +1,23 @@
 import { motion } from 'framer-motion';
 import { useAppStore } from '../../stores/appStore';
 import { useHaptic } from '../../hooks/useHaptic';
+import { useTranslation } from '../../i18n';
 import { HomeIcon, TarotIcon, SynthesisIcon, JournalIcon, ProfileIcon } from '../icons/NavIcons';
 import styles from './BottomNav.module.scss';
 
-const tabs = [
-  { id: 'home', label: 'Главная', Icon: HomeIcon },
-  { id: 'tarot', label: 'Таро', Icon: TarotIcon },
-  { id: 'synthesis', label: 'Синтез', Icon: SynthesisIcon, center: true },
-  { id: 'journal', label: 'Дневник', Icon: JournalIcon },
-  { id: 'profile', label: 'Профиль', Icon: ProfileIcon },
+const tabDefs = [
+  { id: 'home', key: 'nav.home', Icon: HomeIcon },
+  { id: 'tarot', key: 'nav.tarot', Icon: TarotIcon },
+  { id: 'synthesis', key: 'nav.synthesis', Icon: SynthesisIcon, center: true },
+  { id: 'journal', key: 'nav.journal', Icon: JournalIcon },
+  { id: 'profile', key: 'nav.profile', Icon: ProfileIcon },
 ];
 
 export default function BottomNav() {
   const { activeTab, setActiveTab } = useAppStore();
   const { selection } = useHaptic();
+  const { t } = useTranslation();
+  const tabs = tabDefs.map((d) => ({ ...d, label: t(d.key) }));
 
   return (
     <nav className={styles.nav}>

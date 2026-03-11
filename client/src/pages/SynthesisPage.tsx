@@ -7,6 +7,7 @@ import { hashSeed, seededShuffle } from '../utils/shuffle';
 import { useUserStore, UserProfile } from '../stores/userStore';
 import { useHistoryStore } from '../stores/historyStore';
 import { useHaptic } from '../hooks/useHaptic';
+import { useTranslation } from '../i18n';
 import { api } from '../services/api';
 import { moonPhases } from '../data/moon-phases';
 import type { TarotCard } from '../data/tarot-types';
@@ -136,6 +137,7 @@ export default function SynthesisPage() {
   const { profile, addExperience } = useUserStore();
   const { addReading } = useHistoryStore();
   const { impact, notification } = useHaptic();
+  const { t } = useTranslation();
 
   const userId = String(profile.telegramId || 'guest');
   const today = new Date().toISOString().split('T')[0];
@@ -165,12 +167,12 @@ export default function SynthesisPage() {
           cardName: synthesis.card.nameRu,
           cardImage: synthesis.card.image,
           reversed: false,
-          positionName: 'Карта таро',
+          positionName: t('synth.tarotCard'),
         },
       ],
       interpretation: interp,
     });
-  }, [addReading, synthesis]);
+  }, [addReading, synthesis, t]);
 
   const handleSynthesize = useCallback(async () => {
     impact('heavy');
@@ -222,10 +224,10 @@ export default function SynthesisPage() {
                 animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
                 transition={{ duration: 3, repeat: Infinity }}
               />
-              <h1 className={styles.title}>Синтез Судьбы</h1>
+              <h1 className={styles.title}>{t('synth.title')}</h1>
             </div>
             <p className={styles.description}>
-              Уникальная функция, объединяющая таро, нумерологию, астрологию и руны в единое предсказание, созданное специально для вас.
+              {t('synth.description')}
             </p>
 
             <div className={styles.elements}>
@@ -235,7 +237,7 @@ export default function SynthesisPage() {
                     <>
                       <img src={synthesis.card.image} alt={synthesis.card.nameRu} className={styles.elementImg} />
                       <div className={styles.elementInfo}>
-                        <span className={styles.elementLabel}>Карта таро</span>
+                        <span className={styles.elementLabel}>{t('synth.tarotCard')}</span>
                         <span className={styles.elementValue}>{synthesis.card.nameRu}</span>
                       </div>
                     </>
@@ -246,7 +248,7 @@ export default function SynthesisPage() {
                     <>
                       <div className={styles.runeSymbol}>{synthesis.rune.symbol}</div>
                       <div className={styles.elementInfo}>
-                        <span className={styles.elementLabel}>Руна дня</span>
+                        <span className={styles.elementLabel}>{t('synth.runeOfDay')}</span>
                         <span className={styles.elementValue}>{synthesis.rune.nameRu}</span>
                       </div>
                     </>
@@ -257,7 +259,7 @@ export default function SynthesisPage() {
                     <>
                       <div className={styles.moonSymbol}>{synthesis.moon.emoji}</div>
                       <div className={styles.elementInfo}>
-                        <span className={styles.elementLabel}>Фаза луны</span>
+                        <span className={styles.elementLabel}>{t('synth.moonPhase')}</span>
                         <span className={styles.elementValue}>{synthesis.moon.phaseRu}</span>
                       </div>
                     </>
@@ -268,8 +270,8 @@ export default function SynthesisPage() {
                     <>
                       <div className={styles.numberSymbol}>{synthesis.personalYear}</div>
                       <div className={styles.elementInfo}>
-                        <span className={styles.elementLabel}>Персональный год</span>
-                        <span className={styles.elementValue}>Число {synthesis.personalYear}</span>
+                        <span className={styles.elementLabel}>{t('synth.personalYear')}</span>
+                        <span className={styles.elementValue}>{t('synth.number', { num: synthesis.personalYear })}</span>
                       </div>
                     </>
                   ),
@@ -299,9 +301,9 @@ export default function SynthesisPage() {
               onClick={handleSynthesize}
               whileHover={{ boxShadow: '0 0 40px rgba(139,92,246,0.4)' }}
             >
-              Получить Синтез
+              {t('synth.generate')}
             </motion.button>
-            <p className={styles.hint}>Доступно 1 раз в неделю бесплатно</p>
+            <p className={styles.hint}>{t('synth.hint')}</p>
           </motion.div>
         )}
 
@@ -327,8 +329,8 @@ export default function SynthesisPage() {
             >
               <span>✨</span>
             </motion.div>
-            <p className={styles.loadingText}>Соединяем потоки судьбы...</p>
-            <p className={styles.loadingHint}>Таро, руны, звёзды и числа сплетаются в единое послание</p>
+            <p className={styles.loadingText}>{t('synth.loading')}</p>
+            <p className={styles.loadingHint}>{t('synth.loadingHint')}</p>
           </motion.div>
         )}
 
@@ -339,14 +341,14 @@ export default function SynthesisPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h2 className={styles.resultTitle}>Ваш Синтез Судьбы</h2>
+            <h2 className={styles.resultTitle}>{t('synth.result')}</h2>
 
             <div className={styles.resultSymbols}>
               {[
                 { text: '\u{1F0CF}', title: synthesis.card.nameRu },
                 { text: synthesis.rune.symbol, title: synthesis.rune.nameRu },
                 { text: synthesis.moon.emoji, title: synthesis.moon.phaseRu },
-                { text: String(synthesis.personalYear), title: `Число ${synthesis.personalYear}` },
+                { text: String(synthesis.personalYear), title: t('synth.number', { num: synthesis.personalYear }) },
               ].map((s, i) => (
                 <motion.span
                   key={i}
@@ -376,7 +378,7 @@ export default function SynthesisPage() {
             </div>
 
             <motion.button className={styles.resetBtn} whileTap={{ scale: 0.96 }} onClick={handleReset}>
-              Вернуться
+              {t('synth.back')}
             </motion.button>
           </motion.div>
         )}

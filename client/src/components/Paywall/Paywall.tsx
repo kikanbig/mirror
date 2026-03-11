@@ -2,6 +2,7 @@ import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useUserStore, type PremiumStatus } from '../../stores/userStore';
 import { api } from '../../services/api';
+import { useTranslation } from '../../i18n';
 import styles from './Paywall.module.scss';
 
 type Product = 'premium_month' | 'fate_report';
@@ -12,34 +13,36 @@ interface PaywallProps {
   feature?: string;
 }
 
-const PRODUCT_INFO = {
-  premium_month: {
-    title: 'Premium подписка',
-    price: '149 Stars/мес',
-    successMsg: 'PRO подписка активирована!',
-    successHint: 'Все функции приложения теперь доступны без ограничений',
-    features: [
-      'Все расклады таро (Кельтский крест, Любовь, Карьера, Неделя)',
-      'Полная нумерология с психоматрицей',
-      'Матрица Судьбы — интерактивная с описаниями',
-      'Все рунные расклады',
-      'Полный лунный календарь',
-      'AI-интерпретации без лимитов',
-    ],
-  },
-  fate_report: {
-    title: 'Полный отчёт Матрицы Судьбы',
-    price: '499 Stars (разово)',
-    successMsg: 'Отчёт Матрицы Судьбы оплачен!',
-    successHint: 'Откройте раздел Нумерологии и нажмите «Сгенерировать отчёт»',
-    features: [
-      'Персональный отчёт на 50+ страниц',
-      '25 глав: таланты, карма, здоровье, деньги, отношения',
-      'Генерируется AI по вашей дате рождения',
-      'Сохраняется навсегда в дневнике',
-    ],
-  },
-};
+function getProductInfo(t: (key: string, replacements?: Record<string, string | number>) => string) {
+  return {
+    premium_month: {
+      title: t('pay.premium'),
+      price: t('pay.premiumPrice'),
+      successMsg: t('pay.premiumSuccess'),
+      successHint: t('pay.premiumHint'),
+      features: [
+        t('pay.features.allSpreads'),
+        t('pay.features.fullNum'),
+        t('pay.features.fateMatrix'),
+        t('pay.features.allRunes'),
+        t('pay.features.fullLunar'),
+        t('pay.features.aiUnlimited'),
+      ],
+    },
+    fate_report: {
+      title: t('pay.report'),
+      price: t('pay.reportPrice'),
+      successMsg: t('pay.reportSuccess'),
+      successHint: t('pay.reportHint'),
+      features: [
+        t('pay.features.50pages'),
+        t('pay.features.25chapters'),
+        t('pay.features.aiGenerated'),
+        t('pay.features.savedForever'),
+      ],
+    },
+  };
+}
 
 type VerifyResult = { tier: string; hasFateReport: boolean; premiumUntil: string | null };
 
@@ -91,11 +94,12 @@ interface OverlayProps {
 }
 
 export function PaywallOverlay({ product = 'premium_month', feature, onSuccess, onClose }: OverlayProps) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const { premiumStatus, setPremiumStatus } = useUserStore();
-  const info = PRODUCT_INFO[product];
+  const info = getProductInfo(t)[product];
   const verifiedStatusRef = useRef<PremiumStatus | null>(null);
 
   const handlePurchase = useCallback(async () => {
@@ -106,7 +110,7 @@ export function PaywallOverlay({ product = 'premium_month', feature, onSuccess, 
 
       const WebApp = window.Telegram?.WebApp;
       if (!WebApp?.openInvoice) {
-        setError('Откройте приложение через Telegram');
+        setError(t('pay.openTelegram'));
         setLoading(false);
         return;
       }
@@ -126,7 +130,7 @@ export function PaywallOverlay({ product = 'premium_month', feature, onSuccess, 
             onSuccess?.();
           }, 2000);
         } else if (status === 'failed') {
-          setError('Платёж не прошёл. Попробуйте снова.');
+          setError(t('pay.failed'));
           setLoading(false);
         } else if (status === 'cancelled') {
           setLoading(false);
@@ -135,10 +139,10 @@ export function PaywallOverlay({ product = 'premium_month', feature, onSuccess, 
         }
       });
     } catch (err: any) {
-      setError(err.message || 'Ошибка создания платежа');
+      setError(err.message || t('pay.error'));
       setLoading(false);
     }
-  }, [product, premiumStatus, setPremiumStatus, onSuccess]);
+  }, [product, premiumStatus, setPremiumStatus, onSuccess, t]);
 
   return (
     <motion.div
@@ -164,7 +168,7 @@ export function PaywallOverlay({ product = 'premium_month', feature, onSuccess, 
             <motion.div key="form" exit={{ opacity: 0 }}>
               <div className={styles.badge}>PRO</div>
               <h3 className={styles.title}>{info.title}</h3>
-              {feature && <p className={styles.featureText}>Для доступа к «{feature}» нужна подписка</p>}
+              {feature && <p className={styles.featureText}>{t('pay.needSub', { feature })}</p>}
 
               <ul className={styles.features}>
                 {info.features.map((f, i) => (
@@ -181,11 +185,11 @@ export function PaywallOverlay({ product = 'premium_month', feature, onSuccess, 
                 onClick={handlePurchase}
                 disabled={loading}
               >
-                {loading ? 'Обработка оплаты...' : `Подключить за ${info.price}`}
+                {loading ? t('pay.processing') : t('pay.subscribe', { price: info.price })}
               </motion.button>
 
               {onClose && (
-                <button className={styles.closeBtn} onClick={onClose}>Закрыть</button>
+                <button className={styles.closeBtn} onClick={onClose}>{t('pay.close')}</button>
               )}
 
               <AnimatePresence>
@@ -215,10 +219,11 @@ interface BannerProps {
 }
 
 export function PaywallBanner({ product = 'premium_month', label, onSuccess }: BannerProps) {
+  const { t } = useTranslation();
   const { premiumStatus, setPremiumStatus } = useUserStore();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const info = PRODUCT_INFO[product];
+  const info = getProductInfo(t)[product];
 
   if (premiumStatus.tier === 'premium' && product === 'premium_month') return null;
   if (premiumStatus.hasFateReport && product === 'fate_report') return null;
@@ -277,7 +282,7 @@ export function PaywallBanner({ product = 'premium_month', label, onSuccess }: B
     >
       <span className={styles.bannerBadge}>PRO</span>
       <span className={styles.bannerText}>{label || info.title}</span>
-      <span className={styles.bannerPrice}>{loading ? 'Оплата...' : info.price}</span>
+      <span className={styles.bannerPrice}>{loading ? t('pay.paying') : info.price}</span>
     </motion.button>
   );
 }

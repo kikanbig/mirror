@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { getMoonPhase, moonPhases, MoonPhaseInfo } from '../data/moon-phases';
 import { useAppStore } from '../stores/appStore';
+import { useTranslation } from '../i18n';
 import styles from './LunarPage.module.scss';
 
 const fadeUp = {
@@ -35,6 +36,7 @@ function CalendarGrid({ year, month, selectedDay, onSelect }: {
   selectedDay: number | null;
   onSelect: (day: number) => void;
 }) {
+  const { t } = useTranslation();
   const firstDay = new Date(year, month, 1).getDay();
   const offset = firstDay === 0 ? 6 : firstDay - 1;
   const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -47,7 +49,7 @@ function CalendarGrid({ year, month, selectedDay, onSelect }: {
 
   return (
     <div className={styles.calGrid}>
-      {['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((d) => (
+      {[t('lunar.mon'), t('lunar.tue'), t('lunar.wed'), t('lunar.thu'), t('lunar.fri'), t('lunar.sat'), t('lunar.sun')].map((d) => (
         <div key={d} className={styles.calHeader}>{d}</div>
       ))}
       {days.map((day, i) => {
@@ -71,10 +73,10 @@ function CalendarGrid({ year, month, selectedDay, onSelect }: {
   );
 }
 
-const MONTHS_RU = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-
 export default function LunarPage() {
+  const { t, lang } = useTranslation();
   const { setActiveSubPage } = useAppStore();
+  const MONTHS = [t('lunar.jan'), t('lunar.feb'), t('lunar.mar'), t('lunar.apr'), t('lunar.may'), t('lunar.jun'), t('lunar.jul'), t('lunar.aug'), t('lunar.sep'), t('lunar.oct'), t('lunar.nov'), t('lunar.dec')];
   const now = new Date();
   const [viewMonth, setViewMonth] = useState(now.getMonth());
   const [viewYear, setViewYear] = useState(now.getFullYear());
@@ -106,28 +108,28 @@ export default function LunarPage() {
   return (
     <motion.div className={styles.page} initial="initial" animate="animate">
       <motion.div className={styles.topBar} variants={fadeUp}>
-        <button className={styles.backBtn} onClick={() => setActiveSubPage(null)}>&#8592; Назад</button>
-        <h1 className={styles.title}>Лунный Календарь</h1>
+        <button className={styles.backBtn} onClick={() => setActiveSubPage(null)}>{t('lunar.back')}</button>
+        <h1 className={styles.title}>{t('lunar.title')}</h1>
       </motion.div>
 
       <motion.div className={styles.hero} variants={fadeUp}>
         <MoonVisual illumination={todayMoon.illumination} isWaxing={todayMoon.isWaxing} />
         <div className={styles.heroInfo}>
           <span className={styles.heroPhase}>{todayMoon.emoji} {todayMoon.phaseRu}</span>
-          <span className={styles.heroAge}>Лунный день: {Math.floor(todayMoon.age) + 1}</span>
+          <span className={styles.heroAge}>{t('lunar.day', { day: Math.floor(todayMoon.age) + 1 })}</span>
         </div>
       </motion.div>
 
       {todayInfo && (
         <motion.div className={styles.section} variants={fadeUp}>
-          <h2 className={styles.sectionTitle}>Энергия Сегодня</h2>
+          <h2 className={styles.sectionTitle}>{t('lunar.energy')}</h2>
           <p className={styles.sectionText}>{todayInfo.energy}</p>
         </motion.div>
       )}
 
       {todayInfo && (
         <motion.div className={styles.section} variants={fadeUp}>
-          <h2 className={styles.sectionTitle}>Рекомендации</h2>
+          <h2 className={styles.sectionTitle}>{t('lunar.recommendations')}</h2>
           <ul className={styles.recList}>
             {todayInfo.recommendations.map((r, i) => (
               <li key={i} className={styles.recItem}>{r}</li>
@@ -138,7 +140,7 @@ export default function LunarPage() {
 
       {todayInfo && (
         <motion.div className={styles.section} variants={fadeUp}>
-          <h2 className={styles.sectionTitle}>Ритуалы</h2>
+          <h2 className={styles.sectionTitle}>{t('lunar.rituals')}</h2>
           <ul className={styles.recList}>
             {todayInfo.rituals.map((r, i) => (
               <li key={i} className={styles.recItem}>{r}</li>
@@ -149,7 +151,7 @@ export default function LunarPage() {
 
       {todayInfo && (
         <motion.div className={styles.section} variants={fadeUp}>
-          <h2 className={styles.sectionTitle}>Связь с Таро</h2>
+          <h2 className={styles.sectionTitle}>{t('lunar.tarot')}</h2>
           <p className={styles.sectionText}>{todayInfo.tarotConnection}</p>
         </motion.div>
       )}
@@ -157,7 +159,7 @@ export default function LunarPage() {
       <motion.div className={styles.calSection} variants={fadeUp}>
         <div className={styles.calNav}>
           <button className={styles.calArrow} onClick={prevMonth}>&#8249;</button>
-          <span className={styles.calMonth}>{MONTHS_RU[viewMonth]} {viewYear}</span>
+          <span className={styles.calMonth}>{MONTHS[viewMonth]} {viewYear}</span>
           <button className={styles.calArrow} onClick={nextMonth}>&#8250;</button>
         </div>
         <CalendarGrid
