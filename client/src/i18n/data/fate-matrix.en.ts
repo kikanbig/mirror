@@ -242,7 +242,7 @@ export const PURPOSE_DESCRIPTIONS_EN: Record<number, { personal: string; social:
   22: {
     personal: 'Embrace the freedom to begin anew and trust in the unfolding path.',
     social: 'Show others that stepping into the unknown is the first act of true courage.',
-    spiritual: 'Realize that the soul's journey is infinite and every ending is a fresh beginning.',
+    spiritual: 'Realize that the soul\'s journey is infinite and every ending is a fresh beginning.',
   },
 };
 
