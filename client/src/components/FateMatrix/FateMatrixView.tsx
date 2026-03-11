@@ -316,23 +316,24 @@ function TalentsSection({ m }: { m: FateMatrixResult }) {
 }
 
 function PurposeSection({ m }: { m: FateMatrixResult }) {
+  const { t } = useTranslation();
   const triples = [m.personalPurpose, m.socialPurpose, m.spiritualPurpose];
   return (
     <div className={styles.purposeList}>
-      {triples.map((t, i) => {
+      {triples.map((triple, i) => {
         const pKey = i === 0 ? 'personal' : i === 1 ? 'social' : 'spiritual';
         return (
           <div key={i} className={styles.purposeCard}>
             <div className={styles.purposeHeader}>
-              <span className={styles.purposeRange}>{t.ageRange}</span>
-              <span className={styles.purposeLabel}>{t.label}</span>
+              <span className={styles.purposeRange}>{triple.ageRange}</span>
+              <span className={styles.purposeLabel}>{triple.label}</span>
             </div>
             <div className={styles.purposeNums}>
-              {t.numbers.map((n, j) => (
+              {triple.numbers.map((n, j) => (
                 <span key={j} className={styles.purposeNum}>{n}</span>
               ))}
             </div>
-            {t.numbers.map((n, j) => {
+            {triple.numbers.map((n, j) => {
               const desc = PURPOSE_DESCRIPTIONS[n];
               if (!desc) return null;
               return (
@@ -350,6 +351,7 @@ function PurposeSection({ m }: { m: FateMatrixResult }) {
 }
 
 function KarmicTailSection({ m }: { m: FateMatrixResult }) {
+  const { t } = useTranslation();
   return (
     <div className={styles.karmicTailList}>
       <p className={styles.karmicTailIntro}>
@@ -387,6 +389,7 @@ function ComfortSection({ m }: { m: FateMatrixResult }) {
 }
 
 function SelfRealSection({ m }: { m: FateMatrixResult }) {
+  const { t } = useTranslation();
   const desc = SELF_REALIZATION_DESCRIPTIONS[m.selfRealization];
   return (
     <div className={styles.selfRealCard}>
@@ -552,6 +555,7 @@ function ProgramsSection({ m }: { m: FateMatrixResult }) {
 }
 
 function YearForecastSection({ m }: { m: FateMatrixResult }) {
+  const { t } = useTranslation();
   const desc = YEAR_FORECAST_DESCRIPTIONS[m.yearEnergy];
   return (
     <div className={styles.yearSection}>

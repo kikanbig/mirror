@@ -68,7 +68,7 @@ export default function NumerologyPage() {
   const [result, setResult] = useState<FullResult | null>(null);
   const [detailNum, setDetailNum] = useState<number | null>(null);
   const { premiumStatus } = useUserStore();
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const [partnerBirth, setPartnerBirth] = useState('');
   const [compatResult, setCompatResult] = useState<ReturnType<typeof calculateCompatibility> | null>(null);
   const [compatNums, setCompatNums] = useState<{ my: number; partner: number } | null>(null);
