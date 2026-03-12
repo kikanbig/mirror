@@ -200,7 +200,7 @@ export const tarotEn: Record<string, any> = {
   },
 
   // ===================== WANDS =====================
-  wands_ace: {
+  wands_1: {
     nameRu: 'Ace of Wands',
     keywords: { upright: ['inspiration', 'potential', 'creation', 'spark'], reversed: ['delays', 'blocked creativity', 'hesitation', 'false starts'] },
     meanings: { upright: 'A powerful spark of creative inspiration ignites a new venture.', reversed: 'Creative blocks or lack of motivation prevent a promising start.' },
@@ -290,7 +290,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Share your burdens; you do not have to carry everything alone.',
     affirmation: 'I release what is not mine to carry and lighten my load.',
   },
-  wands_11: {
+  wands_page: {
     nameRu: 'Page of Wands',
     keywords: { upright: ['enthusiasm', 'exploration', 'discovery', 'free spirit'], reversed: ['impatience', 'lack of direction', 'setbacks', 'boredom'] },
     meanings: { upright: 'An enthusiastic message or new adventure sparks your creative curiosity.', reversed: 'Scattered energy or lack of follow-through leads to missed opportunities.' },
@@ -299,7 +299,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Follow your curiosity with enthusiasm but commit to seeing things through.',
     affirmation: 'I explore the world with wonder and embrace every new adventure.',
   },
-  wands_12: {
+  wands_knight: {
     nameRu: 'Knight of Wands',
     keywords: { upright: ['action', 'adventure', 'passion', 'boldness'], reversed: ['impulsiveness', 'recklessness', 'haste', 'scattered focus'] },
     meanings: { upright: 'Charge forward with passion and fearless energy toward your goals.', reversed: 'Impulsive action or reckless haste leads to avoidable mistakes.' },
@@ -308,7 +308,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Channel your fiery energy with intention rather than reckless abandon.',
     affirmation: 'I charge toward my dreams with courage and focused passion.',
   },
-  wands_13: {
+  wands_queen: {
     nameRu: 'Queen of Wands',
     keywords: { upright: ['confidence', 'warmth', 'determination', 'magnetism'], reversed: ['jealousy', 'selfishness', 'insecurity', 'demanding'] },
     meanings: { upright: 'Radiate confidence and warmth; your magnetic presence inspires all around you.', reversed: 'Jealousy, insecurity, or domineering behavior dims your inner fire.' },
@@ -317,7 +317,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Lead with warmth and let your authentic confidence inspire others.',
     affirmation: 'I shine with fierce confidence and inspire with my warmth.',
   },
-  wands_14: {
+  wands_king: {
     nameRu: 'King of Wands',
     keywords: { upright: ['leadership', 'vision', 'entrepreneurship', 'honor'], reversed: ['impulsiveness', 'tyranny', 'vagueness', 'ruthlessness'] },
     meanings: { upright: 'Visionary leadership and bold entrepreneurship turn your dreams into reality.', reversed: 'Tyrannical behavior or lack of clear direction undermines your authority.' },
@@ -328,7 +328,7 @@ export const tarotEn: Record<string, any> = {
   },
 
   // ===================== CUPS =====================
-  cups_ace: {
+  cups_1: {
     nameRu: 'Ace of Cups',
     keywords: { upright: ['love', 'new feelings', 'compassion', 'emotional awakening'], reversed: ['emotional loss', 'blocked feelings', 'emptiness', 'repression'] },
     meanings: { upright: 'A new wave of love, compassion, and emotional abundance fills your heart.', reversed: 'Emotional numbness or blocked feelings prevent you from receiving love.' },
@@ -418,7 +418,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Cherish your loved ones and build a life of genuine emotional richness.',
     affirmation: 'My home is filled with love, joy, and lasting harmony.',
   },
-  cups_11: {
+  cups_page: {
     nameRu: 'Page of Cups',
     keywords: { upright: ['creativity', 'intuition', 'curiosity', 'sensitivity'], reversed: ['emotional immaturity', 'escapism', 'insecurity', 'blocked creativity'] },
     meanings: { upright: 'A gentle message of love, creative inspiration, or intuitive insight arrives.', reversed: 'Emotional immaturity or escapism prevents meaningful expression.' },
@@ -427,7 +427,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Stay open to gentle surprises and follow your creative intuition.',
     affirmation: 'I welcome tender messages from my heart and creative spirit.',
   },
-  cups_12: {
+  cups_knight: {
     nameRu: 'Knight of Cups',
     keywords: { upright: ['romance', 'charm', 'imagination', 'idealism'], reversed: ['moodiness', 'unrealistic expectations', 'jealousy', 'disappointment'] },
     meanings: { upright: 'A romantic idealist arrives bearing emotional proposals and creative vision.', reversed: 'Unrealistic expectations or emotional volatility lead to disappointment.' },
@@ -436,7 +436,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Follow your heart but keep one foot grounded in reality.',
     affirmation: 'I pursue my dreams with passion while staying grounded in truth.',
   },
-  cups_13: {
+  cups_queen: {
     nameRu: 'Queen of Cups',
     keywords: { upright: ['compassion', 'empathy', 'intuition', 'emotional depth'], reversed: ['codependency', 'martyrdom', 'emotional manipulation', 'insecurity'] },
     meanings: { upright: 'Deep emotional intelligence and compassion make you a source of healing.', reversed: 'Absorbing others\' pain or emotional manipulation drains your spirit.' },
@@ -445,7 +445,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Nurture others from a full cup, never from an empty one.',
     affirmation: 'I give and receive love with deep compassion and wisdom.',
   },
-  cups_14: {
+  cups_king: {
     nameRu: 'King of Cups',
     keywords: { upright: ['emotional mastery', 'diplomacy', 'wisdom', 'calm'], reversed: ['emotional manipulation', 'coldness', 'moodiness', 'volatility'] },
     meanings: { upright: 'Mastery over emotions brings calm wisdom and diplomatic grace.', reversed: 'Suppressed emotions or manipulative behavior betray your composed exterior.' },
@@ -456,7 +456,7 @@ export const tarotEn: Record<string, any> = {
   },
 
   // ===================== SWORDS =====================
-  swords_ace: {
+  swords_1: {
     nameRu: 'Ace of Swords',
     keywords: { upright: ['clarity', 'breakthrough', 'truth', 'new idea'], reversed: ['confusion', 'misinformation', 'brutality', 'chaos'] },
     meanings: { upright: 'A brilliant breakthrough cuts through confusion with piercing clarity.', reversed: 'Muddled thinking or harsh truths wielded without compassion cause harm.' },
@@ -546,7 +546,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'This ending is also a beginning; the only way from here is up.',
     affirmation: 'I rise from every fall, stronger and wiser than before.',
   },
-  swords_11: {
+  swords_page: {
     nameRu: 'Page of Swords',
     keywords: { upright: ['curiosity', 'mental agility', 'communication', 'vigilance'], reversed: ['gossip', 'deception', 'all talk', 'cynicism'] },
     meanings: { upright: 'Sharp mental energy and curiosity drive you to seek truth and knowledge.', reversed: 'Gossip, empty promises, or cynical thinking undermine your credibility.' },
@@ -555,7 +555,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Stay curious and observant, but think before you speak.',
     affirmation: 'I wield my intellect wisely and communicate with integrity.',
   },
-  swords_12: {
+  swords_knight: {
     nameRu: 'Knight of Swords',
     keywords: { upright: ['ambition', 'assertiveness', 'speed', 'direct action'], reversed: ['aggression', 'impatience', 'reckless speech', 'conflict'] },
     meanings: { upright: 'Charge forward with intellectual conviction and decisive, swift action.', reversed: 'Reckless haste or aggressive communication cuts down allies and enemies alike.' },
@@ -564,7 +564,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Move swiftly but with precision; a sharp sword needs a steady hand.',
     affirmation: 'I act decisively and communicate with clarity and respect.',
   },
-  swords_13: {
+  swords_queen: {
     nameRu: 'Queen of Swords',
     keywords: { upright: ['perception', 'independence', 'clear boundaries', 'honest communication'], reversed: ['cold-hearted', 'bitter', 'overly critical', 'closed off'] },
     meanings: { upright: 'Sharp perception and clear boundaries protect your truth and independence.', reversed: 'Bitterness or excessive criticism pushes others away and isolates you.' },
@@ -573,7 +573,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Speak the truth with compassion and maintain your boundaries with grace.',
     affirmation: 'I see clearly, speak honestly, and protect my peace with dignity.',
   },
-  swords_14: {
+  swords_king: {
     nameRu: 'King of Swords',
     keywords: { upright: ['intellectual authority', 'truth', 'discipline', 'fair judgment'], reversed: ['manipulation', 'cruelty', 'abuse of power', 'cold logic'] },
     meanings: { upright: 'Clear, disciplined thinking and fair judgment command respect and authority.', reversed: 'Intellect used as a weapon; cold logic without compassion causes suffering.' },
@@ -584,7 +584,7 @@ export const tarotEn: Record<string, any> = {
   },
 
   // ===================== PENTACLES =====================
-  pentacles_ace: {
+  pentacles_1: {
     nameRu: 'Ace of Pentacles',
     keywords: { upright: ['opportunity', 'prosperity', 'new venture', 'manifestation'], reversed: ['missed opportunity', 'scarcity', 'poor planning', 'instability'] },
     meanings: { upright: 'A golden opportunity for material abundance and tangible new beginnings.', reversed: 'A missed opportunity or financial instability threatens your security.' },
@@ -674,7 +674,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Build something that endures beyond your lifetime and honors your roots.',
     affirmation: 'I create lasting prosperity that blesses my family for generations.',
   },
-  pentacles_11: {
+  pentacles_page: {
     nameRu: 'Page of Pentacles',
     keywords: { upright: ['ambition', 'diligence', 'new opportunity', 'studiousness'], reversed: ['laziness', 'procrastination', 'missed chances', 'lack of progress'] },
     meanings: { upright: 'A promising new opportunity for learning, growth, or material advancement arrives.', reversed: 'Procrastination or lack of ambition causes you to miss a valuable chance.' },
@@ -683,7 +683,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Approach this new opportunity with diligence and a willing heart.',
     affirmation: 'I am ready to learn, grow, and manifest new opportunities.',
   },
-  pentacles_12: {
+  pentacles_knight: {
     nameRu: 'Knight of Pentacles',
     keywords: { upright: ['reliability', 'hard work', 'patience', 'routine'], reversed: ['stagnation', 'laziness', 'boredom', 'stubbornness'] },
     meanings: { upright: 'Slow, steady, and reliable effort methodically advances your goals.', reversed: 'Stubbornness or dull routine stifles progress and breeds stagnation.' },
@@ -692,7 +692,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Stay the course with steady determination; slow progress is still progress.',
     affirmation: 'I build my success through patience, reliability, and steady effort.',
   },
-  pentacles_13: {
+  pentacles_queen: {
     nameRu: 'Queen of Pentacles',
     keywords: { upright: ['nurturing', 'abundance', 'practicality', 'comfort'], reversed: ['neglect', 'smothering', 'financial insecurity', 'work-life imbalance'] },
     meanings: { upright: 'Practical nurturing creates a warm, abundant home and secure life.', reversed: 'Neglecting self-care or smothering others disrupts your sense of security.' },
@@ -701,7 +701,7 @@ export const tarotEn: Record<string, any> = {
     advice: 'Create abundance through practical care for yourself and those you love.',
     affirmation: 'I nurture abundance in my home, career, and heart with practical love.',
   },
-  pentacles_14: {
+  pentacles_king: {
     nameRu: 'King of Pentacles',
     keywords: { upright: ['wealth', 'security', 'discipline', 'prosperity'], reversed: ['greed', 'materialism', 'financial mismanagement', 'stubbornness'] },
     meanings: { upright: 'Disciplined management of resources creates lasting wealth and security.', reversed: 'Greed, financial mismanagement, or obsession with status corrupts your success.' },
