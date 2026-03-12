@@ -486,7 +486,7 @@ function HealthSection({ m }: { m: FateMatrixResult }) {
         </div>
         {m.chakras.map((ch, i) => (
           <div key={i} className={styles.chakraRow} style={{ borderLeftColor: chakraColors[i] }}>
-            <span className={styles.chakraName}>{ch.nameRu}</span>
+            <span className={styles.chakraName}>{t(`fm.chakra.${i + 1}`)}</span>
             <span className={styles.chakraVal}>{ch.physical}</span>
             <span className={styles.chakraVal}>{ch.energy}</span>
             <span className={styles.chakraVal}>{ch.emotions}</span>
@@ -506,7 +506,7 @@ function HealthSection({ m }: { m: FateMatrixResult }) {
         if (!desc) return null;
         return (
           <div key={i} className={styles.chakraTaskCard} style={{ borderLeftColor: chakraColors[i] }}>
-            <span className={styles.chakraTaskName}>{ch.nameRu} ({ch.physical}-{ch.energy}-{ch.emotions})</span>
+            <span className={styles.chakraTaskName}>{t(`fm.chakra.${i + 1}`)} ({ch.physical}-{ch.energy}-{ch.emotions})</span>
             <div className={styles.chakraTaskBody}>
               <p><b>{t('fm.physical')}:</b> {desc.physical}</p>
               <p><b>{t('fm.energyLabel')}:</b> {desc.energy}</p>

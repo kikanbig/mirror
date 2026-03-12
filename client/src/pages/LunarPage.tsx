@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { getMoonPhase, moonPhases, MoonPhaseInfo } from '../data/moon-phases';
 import { useAppStore } from '../stores/appStore';
 import { useTranslation } from '../i18n';
+import { localizeMoon, localizeMoonPhaseName } from '../i18n/data';
 import styles from './LunarPage.module.scss';
 
 const fadeUp = {
@@ -83,15 +84,20 @@ export default function LunarPage() {
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
 
   const todayMoon = useMemo(() => getMoonPhase(), []);
-  const todayInfo = useMemo(() => moonPhases.find((p) => p.phase === todayMoon.phase), [todayMoon]);
+  const todayPhaseName = useMemo(() => localizeMoonPhaseName(todayMoon.phase, todayMoon.phaseRu, lang), [todayMoon, lang]);
+  const todayInfo = useMemo(() => {
+    const raw = moonPhases.find((p) => p.phase === todayMoon.phase);
+    return raw ? localizeMoon(raw, lang) : undefined;
+  }, [todayMoon, lang]);
 
   const selectedInfo = useMemo<{ moon: ReturnType<typeof getMoonPhase>; info: MoonPhaseInfo } | null>(() => {
     if (selectedDay === null) return null;
     const date = new Date(viewYear, viewMonth, selectedDay, 12);
     const moon = getMoonPhase(date);
-    const info = moonPhases.find((p) => p.phase === moon.phase)!;
+    const rawInfo = moonPhases.find((p) => p.phase === moon.phase)!;
+    const info = localizeMoon(rawInfo, lang);
     return { moon, info };
-  }, [selectedDay, viewMonth, viewYear]);
+  }, [selectedDay, viewMonth, viewYear, lang]);
 
   const prevMonth = () => {
     if (viewMonth === 0) { setViewMonth(11); setViewYear(viewYear - 1); }
@@ -115,7 +121,7 @@ export default function LunarPage() {
       <motion.div className={styles.hero} variants={fadeUp}>
         <MoonVisual illumination={todayMoon.illumination} isWaxing={todayMoon.isWaxing} />
         <div className={styles.heroInfo}>
-          <span className={styles.heroPhase}>{todayMoon.emoji} {todayMoon.phaseRu}</span>
+          <span className={styles.heroPhase}>{todayMoon.emoji} {todayPhaseName}</span>
           <span className={styles.heroAge}>{t('lunar.day', { day: Math.floor(todayMoon.age) + 1 })}</span>
         </div>
       </motion.div>
@@ -176,7 +182,7 @@ export default function LunarPage() {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
         >
-          <h3 className={styles.selectedTitle}>{selectedInfo.moon.emoji} {selectedInfo.info.phaseRu}</h3>
+          <h3 className={styles.selectedTitle}>{selectedInfo.moon.emoji} {localizeMoonPhaseName(selectedInfo.info.phase, selectedInfo.info.phaseRu, lang)}</h3>
           <p className={styles.selectedDesc}>{selectedInfo.info.description}</p>
         </motion.div>
       )}

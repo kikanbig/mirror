@@ -12,6 +12,7 @@ import CardZoom from '../components/CardZoom/CardZoom';
 import { PaywallOverlay } from '../components/Paywall/Paywall';
 import { useHaptic } from '../hooks/useHaptic';
 import { useTranslation } from '../i18n';
+import { localizeSpread, localizeCard } from '../i18n/data';
 import { api } from '../services/api';
 import styles from './TarotPage.module.scss';
 
@@ -35,10 +36,12 @@ export default function TarotPage() {
   const { profile, addExperience, premiumStatus } = useUserStore();
   const { addReading } = useHistoryStore();
   const { impact, notification } = useHaptic();
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const [showPaywall, setShowPaywall] = useState(false);
 
   const spread = spreads.find((s) => s.id === spreadType);
+  const localizedSpreads = useMemo(() => spreads.map((s) => localizeSpread(s, lang)), [lang]);
+  const localizedSpread = useMemo(() => spread ? localizeSpread(spread, lang) : null, [spread, lang]);
   const [shuffledDeck, setShuffledDeck] = useState(fullDeck);
   const [drawIndex, setDrawIndex] = useState(0);
   const [fanCards, setFanCards] = useState<number[]>([]);
@@ -160,12 +163,13 @@ export default function TarotPage() {
   }, [question, area, profile, setInterpretation, setIsInterpreting, buildLocalInterpretation, saveToHistory]);
 
   const handleFanCardSelect = useCallback((fanIndex: number) => {
-    if (!spread || drawIndex >= spread.cardCount) return;
+    if (!spread || !localizedSpread || drawIndex >= spread.cardCount) return;
     impact('heavy');
 
-    const card = shuffledDeck[drawIndex + fanIndex];
+    const rawCard = shuffledDeck[drawIndex + fanIndex];
+    const card = localizeCard(rawCard, lang);
     const reversed = Math.random() < 0.3;
-    const position = spread.positions[drawIndex];
+    const position = localizedSpread.positions[drawIndex];
 
     const drawn: DrawnCard = {
       card,
@@ -189,10 +193,10 @@ export default function TarotPage() {
         addExperience(25);
         setPhase('result');
         const allCards = [...useReadingStore.getState().drawnCards];
-        requestInterpretation(allCards, spread.name);
+        requestInterpretation(allCards, localizedSpread.name);
       }, 800);
     }
-  }, [spread, drawIndex, shuffledDeck, impact, notification, addDrawnCard, addExperience, requestInterpretation]);
+  }, [spread, localizedSpread, drawIndex, shuffledDeck, impact, notification, addDrawnCard, addExperience, requestInterpretation, lang]);
 
   const handleReset = () => {
     reset();
@@ -224,7 +228,7 @@ export default function TarotPage() {
           >
             <p className={styles.subtitle}>{t('tarot.choose')}</p>
             <motion.div className={styles.spreadGrid} variants={staggerContainer} initial="initial" animate="animate">
-              {spreads.map((s) => (
+              {localizedSpreads.map((s) => (
                 <motion.button
                   key={s.id}
                   className={styles.spreadCard}
@@ -245,7 +249,7 @@ export default function TarotPage() {
         )}
 
         {/* QUESTION PHASE */}
-        {phase === 'question' && spread && (
+        {phase === 'question' && localizedSpread && (
           <motion.div
             key="question"
             className={styles.questionPhase}
@@ -253,10 +257,10 @@ export default function TarotPage() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
           >
-            <h2 className={styles.spreadTitle}>{spread.name}</h2>
-            <p className={styles.spreadDesc}>{spread.description}</p>
+            <h2 className={styles.spreadTitle}>{localizedSpread.name}</h2>
+            <p className={styles.spreadDesc}>{localizedSpread.description}</p>
 
-            {spread.category === 'general' ? (
+            {localizedSpread.category === 'general' ? (
               <div className={styles.areaSelect}>
                 <p className={styles.areaLabel}>{t('tarot.area')}</p>
                 <div className={styles.areaOptions}>
@@ -274,7 +278,7 @@ export default function TarotPage() {
             ) : (
               <div className={styles.areaFixed}>
                 <span className={styles.areaFixedText}>
-                  {spread.category === 'love' ? t('tarot.area.love_rel') : spread.category === 'career' ? t('tarot.area.career_fin') : t('tarot.area.general')}
+                  {localizedSpread.category === 'love' ? t('tarot.area.love_rel') : localizedSpread.category === 'career' ? t('tarot.area.career_fin') : t('tarot.area.general')}
                 </span>
               </div>
             )}
@@ -336,7 +340,7 @@ export default function TarotPage() {
         )}
 
         {/* DRAW PHASE — FAN */}
-        {phase === 'draw' && spread && (
+        {phase === 'draw' && localizedSpread && (
           <motion.div
             key="draw"
             className={styles.drawPhase}
@@ -345,7 +349,7 @@ export default function TarotPage() {
             exit={{ opacity: 0 }}
           >
             <p className={styles.drawProgress}>
-              {spread.positions[drawIndex]?.name || t('tarot.done')} — {drawnCards.length} / {spread.cardCount}
+              {localizedSpread.positions[drawIndex]?.name || t('tarot.done')} — {drawnCards.length} / {localizedSpread.cardCount}
             </p>
 
             {/* Drawn cards area */}
@@ -363,7 +367,7 @@ export default function TarotPage() {
             </div>
 
             {/* Fan of cards to choose from */}
-            {drawIndex < spread.cardCount && (
+            {drawIndex < localizedSpread.cardCount && (
               <div ref={fanRef} className={styles.fanContainer}>
                 <p className={styles.fanHint}>{t('tarot.pick')}</p>
                 <div className={styles.fan}>

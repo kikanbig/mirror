@@ -8,6 +8,8 @@ import { useUserStore, UserProfile } from '../stores/userStore';
 import { useHistoryStore } from '../stores/historyStore';
 import { useHaptic } from '../hooks/useHaptic';
 import { useTranslation } from '../i18n';
+import type { Lang } from '../i18n';
+import { localizeCard, localizeRune, localizeMoon, localizeMoonPhaseName } from '../i18n/data';
 import { api } from '../services/api';
 import { moonPhases } from '../data/moon-phases';
 import type { TarotCard } from '../data/tarot-types';
@@ -20,8 +22,12 @@ function buildLocalSynthesis(
   synth: { card: TarotCard; rune: Rune; moon: { phaseRu: string; phase: string }; personalYear: number },
   profile: UserProfile,
   t: TranslateFn,
+  lang: Lang,
 ): string {
-  const moonInfo = moonPhases.find((m) => m.phase === synth.moon.phase);
+  const lCard = localizeCard(synth.card, lang);
+  const lRune = localizeRune(synth.rune, lang);
+  const rawMoonInfo = moonPhases.find((m) => m.phase === synth.moon.phase);
+  const moonInfo = rawMoonInfo ? localizeMoon(rawMoonInfo, lang) : null;
   const yearTheme = t(`synth.yearTheme.${synth.personalYear}`);
 
   const cardElement = synth.card.element;
@@ -35,13 +41,13 @@ function buildLocalSynthesis(
   lines.push(t('synth.local.intro'));
   lines.push('');
 
-  lines.push(t('synth.local.cardAndRune', { card: synth.card.nameRu, rune: synth.rune.nameRu, symbol: synth.rune.symbol, synergy }));
+  lines.push(t('synth.local.cardAndRune', { card: lCard.nameRu, rune: lRune.nameRu, symbol: lRune.symbol, synergy }));
   lines.push('');
 
-  lines.push(t('synth.local.cardSpeaks', { card: synth.card.nameRu, meaning: synth.card.meanings.upright }));
+  lines.push(t('synth.local.cardSpeaks', { card: lCard.nameRu, meaning: lCard.meanings.upright }));
   lines.push('');
 
-  lines.push(t('synth.local.runeReinforces', { symbol: synth.rune.symbol, rune: synth.rune.nameRu, meaning: synth.rune.meaning.upright }));
+  lines.push(t('synth.local.runeReinforces', { symbol: lRune.symbol, rune: lRune.nameRu, meaning: lRune.meaning.upright }));
   lines.push('');
 
   if (moonInfo) {
@@ -49,12 +55,12 @@ function buildLocalSynthesis(
     lines.push('');
   }
 
-  lines.push(t('synth.local.personalYear', { year: synth.personalYear, theme: yearTheme, card: synth.card.nameRu, rune: synth.rune.nameRu }));
+  lines.push(t('synth.local.personalYear', { year: synth.personalYear, theme: yearTheme, card: lCard.nameRu, rune: lRune.nameRu }));
   lines.push('');
 
-  lines.push(`💫 ${synth.card.advice}`);
+  lines.push(`💫 ${lCard.advice}`);
   lines.push('');
-  lines.push(`✨ ${synth.rune.advice}`);
+  lines.push(`✨ ${lRune.advice}`);
   lines.push('');
 
   if (moonInfo && moonInfo.recommendations.length > 0) {
@@ -65,7 +71,7 @@ function buildLocalSynthesis(
   const name = profile.firstName || t('synth.wanderer');
   lines.push(t('synth.local.closing', { name }));
   lines.push('');
-  lines.push(t('synth.local.affirmation', { text: synth.card.affirmation }));
+  lines.push(t('synth.local.affirmation', { text: lCard.affirmation }));
 
   return lines.join('\n');
 }
@@ -91,7 +97,7 @@ export default function SynthesisPage() {
   const { profile, addExperience } = useUserStore();
   const { addReading } = useHistoryStore();
   const { impact, notification } = useHaptic();
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
 
   const userId = String(profile.telegramId || 'guest');
   const today = new Date().toISOString().split('T')[0];
@@ -111,6 +117,10 @@ export default function SynthesisPage() {
     return { card, rune, moon, personalYear };
   }, [userId, today, profile.birthDate]);
 
+  const lCard = useMemo(() => localizeCard(synthesis.card, lang), [synthesis.card, lang]);
+  const lRune = useMemo(() => localizeRune(synthesis.rune, lang), [synthesis.rune, lang]);
+  const lMoonPhase = useMemo(() => localizeMoonPhaseName(synthesis.moon.phase, synthesis.moon.phaseRu, lang), [synthesis.moon, lang]);
+
   const saveSynthesisToHistory = useCallback((interp: string) => {
     addReading({
       type: 'synthesis',
@@ -118,7 +128,7 @@ export default function SynthesisPage() {
       cards: [
         {
           cardId: synthesis.card.id,
-          cardName: synthesis.card.nameRu,
+          cardName: lCard.nameRu,
           cardImage: synthesis.card.image,
           reversed: false,
           positionName: t('synth.tarotCard'),
@@ -126,7 +136,7 @@ export default function SynthesisPage() {
       ],
       interpretation: interp,
     });
-  }, [addReading, synthesis, t]);
+  }, [addReading, synthesis, lCard, t]);
 
   const handleSynthesize = useCallback(async () => {
     impact('heavy');
@@ -149,14 +159,14 @@ export default function SynthesisPage() {
       notification('success');
       setPhase('result');
     } catch {
-      const fallback = buildLocalSynthesis(synthesis, profile, t);
+      const fallback = buildLocalSynthesis(synthesis, profile, t, lang);
       setInterpretation(fallback);
       saveSynthesisToHistory(fallback);
       addExperience(30);
       notification('success');
       setPhase('result');
     }
-  }, [impact, notification, synthesis, profile, addExperience, t, saveSynthesisToHistory]);
+  }, [impact, notification, synthesis, profile, addExperience, t, lang, saveSynthesisToHistory]);
 
   const handleReset = () => {
     setPhase('intro');
@@ -189,10 +199,10 @@ export default function SynthesisPage() {
                 {
                   content: (
                     <>
-                      <img src={synthesis.card.image} alt={synthesis.card.nameRu} className={styles.elementImg} />
+                      <img src={synthesis.card.image} alt={lCard.nameRu} className={styles.elementImg} />
                       <div className={styles.elementInfo}>
                         <span className={styles.elementLabel}>{t('synth.tarotCard')}</span>
-                        <span className={styles.elementValue}>{synthesis.card.nameRu}</span>
+                        <span className={styles.elementValue}>{lCard.nameRu}</span>
                       </div>
                     </>
                   ),
@@ -203,7 +213,7 @@ export default function SynthesisPage() {
                       <div className={styles.runeSymbol}>{synthesis.rune.symbol}</div>
                       <div className={styles.elementInfo}>
                         <span className={styles.elementLabel}>{t('synth.runeOfDay')}</span>
-                        <span className={styles.elementValue}>{synthesis.rune.nameRu}</span>
+                        <span className={styles.elementValue}>{lRune.nameRu}</span>
                       </div>
                     </>
                   ),
@@ -214,7 +224,7 @@ export default function SynthesisPage() {
                       <div className={styles.moonSymbol}>{synthesis.moon.emoji}</div>
                       <div className={styles.elementInfo}>
                         <span className={styles.elementLabel}>{t('synth.moonPhase')}</span>
-                        <span className={styles.elementValue}>{synthesis.moon.phaseRu}</span>
+                        <span className={styles.elementValue}>{lMoonPhase}</span>
                       </div>
                     </>
                   ),
@@ -299,9 +309,9 @@ export default function SynthesisPage() {
 
             <div className={styles.resultSymbols}>
               {[
-                { text: '\u{1F0CF}', title: synthesis.card.nameRu },
-                { text: synthesis.rune.symbol, title: synthesis.rune.nameRu },
-                { text: synthesis.moon.emoji, title: synthesis.moon.phaseRu },
+                { text: '\u{1F0CF}', title: lCard.nameRu },
+                { text: synthesis.rune.symbol, title: lRune.nameRu },
+                { text: synthesis.moon.emoji, title: lMoonPhase },
                 { text: String(synthesis.personalYear), title: t('synth.number', { num: synthesis.personalYear }) },
               ].map((s, i) => (
                 <motion.span

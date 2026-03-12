@@ -8,6 +8,7 @@ import { useUserStore } from '../stores/userStore';
 import { useHistoryStore } from '../stores/historyStore';
 import { useHaptic } from '../hooks/useHaptic';
 import { useTranslation } from '../i18n';
+import { localizeRuneSpread, localizeRune } from '../i18n/data';
 import { api } from '../services/api';
 import CardZoom from '../components/CardZoom/CardZoom';
 import styles from './RunesPage.module.scss';
@@ -25,7 +26,7 @@ export default function RunesPage() {
   const { profile, addExperience } = useUserStore();
   const { addReading } = useHistoryStore();
   const { impact, notification } = useHaptic();
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
 
   const [phase, setPhase] = useState<Phase>('choose');
   const [spread, setSpread] = useState<RuneSpread | null>(null);
@@ -35,6 +36,8 @@ export default function RunesPage() {
   const [interpretation, setInterpretation] = useState('');
   const [isInterpreting, setIsInterpreting] = useState(false);
   const [zoomRune, setZoomRune] = useState<DrawnRune | null>(null);
+
+  const localizedRuneSpreads = useMemo(() => runeSpreads.map(s => localizeRuneSpread(s, lang)), [lang]);
 
   const handleSelectSpread = useCallback((s: RuneSpread) => {
     impact('light');
@@ -74,20 +77,24 @@ export default function RunesPage() {
     try {
       const res = await api.post<{ interpretation: string }>('/interpret/runes', {
         spread: sp.name,
-        runes: runes.map((dr) => ({
-          name: `${dr.rune.nameRu} (${dr.rune.name}) — ${dr.rune.symbol}`,
-          position: dr.positionName,
-          reversed: dr.reversed,
-        })),
+        runes: runes.map((dr) => {
+          const lr = localizeRune(dr.rune, lang);
+          return {
+            name: `${lr.nameRu} (${dr.rune.name}) — ${dr.rune.symbol}`,
+            position: dr.positionName,
+            reversed: dr.reversed,
+          };
+        }),
       });
       if (res.interpretation) {
         setInterpretation(res.interpretation);
         addExperience(30);
       }
     } catch {
-      const lines = runes.map((dr) =>
-        `${dr.positionName}: ${dr.rune.nameRu} ${dr.rune.symbol} ${dr.reversed ? `(${t('runes.reversed')})` : ''}\n${dr.reversed ? dr.rune.meaning.reversed : dr.rune.meaning.upright}`
-      );
+      const lines = runes.map((dr) => {
+        const lr = localizeRune(dr.rune, lang);
+        return `${dr.positionName}: ${lr.nameRu} ${dr.rune.symbol} ${dr.reversed ? `(${t('runes.reversed')})` : ''}\n${dr.reversed ? lr.meaning.reversed : lr.meaning.upright}`;
+      });
       setInterpretation(lines.join('\n\n'));
     } finally {
       setIsInterpreting(false);
@@ -95,16 +102,19 @@ export default function RunesPage() {
         type: 'rune' as any,
         title: sp.name,
         spreadName: sp.name,
-        cards: runes.map((dr) => ({
-          cardId: dr.rune.id,
-          cardName: `${dr.rune.nameRu} ${dr.rune.symbol}`,
-          cardImage: '',
-          reversed: dr.reversed,
-          positionName: dr.positionName,
-        })),
+        cards: runes.map((dr) => {
+          const lr = localizeRune(dr.rune, lang);
+          return {
+            cardId: dr.rune.id,
+            cardName: `${lr.nameRu} ${dr.rune.symbol}`,
+            cardImage: '',
+            reversed: dr.reversed,
+            positionName: dr.positionName,
+          };
+        }),
       });
     }
-  }, [addExperience, addReading, t]);
+  }, [addExperience, addReading, t, lang]);
 
   const handleReveal = useCallback((idx: number) => {
     impact('medium');
@@ -131,7 +141,7 @@ export default function RunesPage() {
       <AnimatePresence mode="wait">
         {phase === 'choose' && (
           <motion.div key="choose" className={styles.spreadList} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            {runeSpreads.map((s) => (
+            {localizedRuneSpreads.map((s) => (
               <motion.div
                 key={s.id}
                 className={styles.spreadCard}
@@ -192,6 +202,7 @@ export default function RunesPage() {
             <div className={styles.runeResults}>
               {drawnRunes.map((dr, i) => {
                 const isRevealed = revealedIdx.has(i);
+                const lr = localizeRune(dr.rune, lang);
                 return (
                   <motion.div
                     key={i}
@@ -217,10 +228,10 @@ export default function RunesPage() {
                       {isRevealed && (
                         <>
                           <span className={styles.runeName}>
-                            {dr.rune.nameRu} {dr.reversed ? `(${t('runes.reversed')})` : ''}
+                            {lr.nameRu} {dr.reversed ? `(${t('runes.reversed')})` : ''}
                           </span>
                           <p className={styles.runeMeaning}>
-                            {dr.reversed ? dr.rune.meaning.reversed : dr.rune.meaning.upright}
+                            {dr.reversed ? lr.meaning.reversed : lr.meaning.upright}
                           </p>
                         </>
                       )}
@@ -254,38 +265,41 @@ export default function RunesPage() {
       </AnimatePresence>
 
       <AnimatePresence>
-        {zoomRune && (
-          <motion.div
-            className={styles.zoomOverlay}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setZoomRune(null)}
-          >
+        {zoomRune && (() => {
+          const zr = localizeRune(zoomRune.rune, lang);
+          return (
             <motion.div
-              className={styles.zoomContent}
-              initial={{ scale: 0.7 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.7 }}
-              onClick={(e) => e.stopPropagation()}
+              className={styles.zoomOverlay}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setZoomRune(null)}
             >
-              <span className={`${styles.zoomSymbol} ${zoomRune.reversed ? styles.reversed : ''}`}>
-                {zoomRune.rune.symbol}
-              </span>
-              <h3 className={styles.zoomName}>{zoomRune.rune.nameRu} ({zoomRune.rune.name})</h3>
-              {zoomRune.reversed && <span className={styles.zoomReversed}>{t('runes.reversed')}</span>}
-              <p className={styles.zoomMeaning}>
-                {zoomRune.reversed ? zoomRune.rune.meaning.reversed : zoomRune.rune.meaning.upright}
-              </p>
-              <div className={styles.zoomMeta}>
-                <span>{t('runes.element')}: {zoomRune.rune.element}</span>
-                <span>{t('runes.deity')}: {zoomRune.rune.deity}</span>
-              </div>
-              <p className={styles.zoomAdvice}>{zoomRune.rune.advice}</p>
-              <button className={styles.zoomClose} onClick={() => setZoomRune(null)}>{t('runes.close')}</button>
+              <motion.div
+                className={styles.zoomContent}
+                initial={{ scale: 0.7 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.7 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className={`${styles.zoomSymbol} ${zoomRune.reversed ? styles.reversed : ''}`}>
+                  {zoomRune.rune.symbol}
+                </span>
+                <h3 className={styles.zoomName}>{zr.nameRu} ({zoomRune.rune.name})</h3>
+                {zoomRune.reversed && <span className={styles.zoomReversed}>{t('runes.reversed')}</span>}
+                <p className={styles.zoomMeaning}>
+                  {zoomRune.reversed ? zr.meaning.reversed : zr.meaning.upright}
+                </p>
+                <div className={styles.zoomMeta}>
+                  <span>{t('runes.element')}: {zr.element}</span>
+                  <span>{t('runes.deity')}: {zr.deity}</span>
+                </div>
+                <p className={styles.zoomAdvice}>{zr.advice}</p>
+                <button className={styles.zoomClose} onClick={() => setZoomRune(null)}>{t('runes.close')}</button>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
+          );
+        })()}
       </AnimatePresence>
     </motion.div>
   );

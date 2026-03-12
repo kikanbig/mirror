@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TarotCard } from '../../data/tarot-types';
 import { useHaptic } from '../../hooks/useHaptic';
 import { useTranslation } from '../../i18n';
+import { localizeCard } from '../../i18n/data';
 import CardZoom from '../CardZoom/CardZoom';
 import styles from './CardReveal.module.scss';
 
@@ -84,7 +85,8 @@ export default function CardReveal({ card, reversed, positionName, delay = 0, on
   const [showBurst, setShowBurst] = useState(false);
   const [zoomed, setZoomed] = useState(false);
   const { impact, notification } = useHaptic();
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
+  const lCard = localizeCard(card, lang);
 
   const handleTap = useCallback(() => {
     if (!isFlipped) {
@@ -125,7 +127,7 @@ export default function CardReveal({ card, reversed, positionName, delay = 0, on
           style={{ transformStyle: 'preserve-3d' }}
         >
           <div className={styles.front}>
-            <img src={card.image} alt={card.nameRu} className={styles.cardImg} />
+            <img src={card.image} alt={lCard.nameRu} className={styles.cardImg} />
             {reversed && <div className={styles.reversedBadge}>{t('tarot.reversed')[0].toUpperCase() + t('tarot.reversed').slice(1)}</div>}
           </div>
           <div className={styles.back}>
@@ -155,10 +157,10 @@ export default function CardReveal({ card, reversed, positionName, delay = 0, on
             transition={{ delay: 0.3, duration: 0.4 }}
           >
             <h3 className={styles.cardTitle}>
-              {card.nameRu} {reversed ? `(${t('tarot.reversed')})` : ''}
+              {lCard.nameRu} {reversed ? `(${t('tarot.reversed')})` : ''}
             </h3>
             <p className={styles.meaning}>
-              {reversed ? card.meanings.reversed : card.meanings.upright}
+              {reversed ? lCard.meanings.reversed : lCard.meanings.upright}
             </p>
           </motion.div>
         )}
@@ -167,7 +169,7 @@ export default function CardReveal({ card, reversed, positionName, delay = 0, on
         {zoomed && (
           <CardZoom
             src={card.image}
-            name={card.nameRu}
+            name={lCard.nameRu}
             reversed={reversed}
             onClose={() => setZoomed(false)}
           />

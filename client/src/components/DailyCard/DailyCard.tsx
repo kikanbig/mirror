@@ -4,6 +4,7 @@ import { fullDeck } from '../../data/tarot-deck';
 import { hashSeed, seededShuffle } from '../../utils/shuffle';
 import { useHaptic } from '../../hooks/useHaptic';
 import { useTranslation } from '../../i18n';
+import { localizeCard } from '../../i18n/data';
 import { useUserStore } from '../../stores/userStore';
 import CardZoom from '../CardZoom/CardZoom';
 import styles from './DailyCard.module.scss';
@@ -25,6 +26,8 @@ export default function DailyCard() {
     const reversed = seed % 3 === 0;
     return { card, reversed };
   }, [userId, today]);
+
+  const localizedCard = useMemo(() => localizeCard(dailyResult.card, lang), [dailyResult.card, lang]);
 
   const handleReveal = useCallback(() => {
     if (revealed) return;
@@ -76,7 +79,7 @@ export default function DailyCard() {
               style={{ cursor: 'pointer' }}
             >
               <div className={styles.frontInner}>
-                <img src={dailyResult.card.image} alt={dailyResult.card.nameRu} className={styles.cardImg} />
+                <img src={dailyResult.card.image} alt={localizedCard.nameRu} className={styles.cardImg} />
               </div>
               {dailyResult.reversed && (
                 <div className={styles.reversedLabel}>{t('daily.reversed')}</div>
@@ -100,11 +103,11 @@ export default function DailyCard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4, duration: 0.4 }}
           >
-            <h3 className={styles.cardName}>{dailyResult.card.nameRu}</h3>
+            <h3 className={styles.cardName}>{localizedCard.nameRu}</h3>
             <div className={styles.keywords}>
               {(dailyResult.reversed
-                ? dailyResult.card.keywords.reversed
-                : dailyResult.card.keywords.upright
+                ? localizedCard.keywords.reversed
+                : localizedCard.keywords.upright
               ).map((kw, i) => (
                 <motion.span
                   key={kw}
@@ -124,8 +127,8 @@ export default function DailyCard() {
               transition={{ delay: 0.7 }}
             >
               {dailyResult.reversed
-                ? dailyResult.card.meanings.reversed
-                : dailyResult.card.meanings.upright}
+                ? localizedCard.meanings.reversed
+                : localizedCard.meanings.upright}
             </motion.p>
             <motion.div
               className={styles.advice}
@@ -133,7 +136,7 @@ export default function DailyCard() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.9 }}
             >
-              <p>{dailyResult.card.advice}</p>
+              <p>{localizedCard.advice}</p>
             </motion.div>
             <motion.div
               className={styles.affirmation}
@@ -141,7 +144,7 @@ export default function DailyCard() {
               animate={{ opacity: 1 }}
               transition={{ delay: 1.1 }}
             >
-              &#171;{dailyResult.card.affirmation}&#187;
+              &#171;{localizedCard.affirmation}&#187;
             </motion.div>
           </motion.div>
         )}
@@ -150,7 +153,7 @@ export default function DailyCard() {
         {zoomed && (
           <CardZoom
             src={dailyResult.card.image}
-            name={dailyResult.card.nameRu}
+            name={localizedCard.nameRu}
             reversed={dailyResult.reversed}
             onClose={() => setZoomed(false)}
           />
